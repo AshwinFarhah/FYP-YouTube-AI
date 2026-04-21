@@ -24,11 +24,14 @@ def extract_frames(video_path, fps_rate=1):
     return frames
 
 
-def extract_audio(video_path, output_audio="data/extracted/audio.wav"):
-    # Ensure folder exists
-    os.makedirs(os.path.dirname(output_audio), exist_ok=True)
+def extract_audio(video_path):
+    # create proper folder
+    output_dir = "data/extracted"
+    os.makedirs(output_dir, exist_ok=True)
+
+    audio_path = os.path.join(output_dir, "audio.wav")
 
     video = VideoFileClip(video_path)
-    video.audio.write_audiofile(output_audio)
+    video.audio.write_audiofile(audio_path)
 
-    return output_audio
+    return audio_path

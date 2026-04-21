@@ -4,6 +4,7 @@ from modules.audio_features import load_audio, compute_loudness, compute_sound_d
 from modules.scoring import compute_visual_score, compute_audio_score
 import csv
 import os
+import numpy as np
 
 video_path = "data/sample_video.mp4"
 
@@ -66,7 +67,7 @@ except Exception as e:
     density = 0
 
 # =========================
-# STEP 4: Scoring
+# STEP 4: Scoring (Rule-based backup)
 # =========================
 print("\n🧠 Computing scores...")
 
@@ -78,12 +79,27 @@ print("Visual Score:", visual_score)
 print("Audio Score:", audio_score)
 
 # =========================
-# STEP 5: Create Label (temporary for dataset)
+# STEP 5: AI FEATURE VECTOR (IMPORTANT FOR TRAINING)
 # =========================
-label = "High" if avg_motion > 5 else "Low"
+features = np.array([[
+    avg_sat,
+    avg_motion,
+    loudness,
+    density
+]])
 
 # =========================
-# STEP 6: Save Dataset Row
+# STEP 6: SIMPLE LABEL (temporary ground truth)
+# =========================
+if avg_motion > 6 or loudness > 0.12:
+    label = "High"
+elif avg_motion > 3:
+    label = "Medium"
+else:
+    label = "Low"
+
+# =========================
+# STEP 7: Save Dataset Row
 # =========================
 print("\n💾 Saving to dataset...")
 
@@ -100,5 +116,7 @@ with open("data/dataset.csv", "a", newline="") as file:
     ])
 
 print("✅ Saved to dataset.csv")
+
+print("\n📦 Feature Vector for ML:", features)
 
 print("\n✅ Pipeline completed successfully!")
