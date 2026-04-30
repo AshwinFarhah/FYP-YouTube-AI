@@ -18,17 +18,17 @@ os.makedirs("data", exist_ok=True)
 # =========================
 # SETTINGS
 # =========================
-FRAME_SAMPLE_RATE = 1          # seconds
+FRAME_SAMPLE_RATE = 1
 RESIZE = (160, 120)
 
-SCENE_THRESHOLD = 0.5          # histogram diff
-FLICKER_THRESHOLD = 30         # luminance change
+SCENE_THRESHOLD = 0.5
+FLICKER_THRESHOLD = 30
 MOTION_SPIKE_THRESHOLD = 2.5
 
 # =========================
 # LIMIT VIDEO DURATION
 # =========================
-MAX_SECONDS = 600   # 600 = 10 min (use 300 for 5 min)
+MAX_SECONDS = 600
 
 print("🚀 Building Multimodal Dataset")
 print(f"⏱️ Max processing per video: {MAX_SECONDS} seconds")
@@ -85,16 +85,19 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             "avg_pitch",
             "pitch_variation",
 
-            # ATTENTION / ENGAGEMENT
+            # ATTENTION
             "motion_spike_rate",
             "attention_score",
 
-            # TEXT (placeholder for now)
+            # TEXT
             "text_complexity",
             "phrase_repetition",
 
-            # LABEL
-            "content_label",
+            # ORIGINAL LABEL
+            "content_name",
+            "development_label",
+
+            # PATH
             "video_path"
         ])
 
@@ -142,7 +145,6 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                 if not ret:
                     break
 
-                # ⛔ STOP after MAX_SECONDS
                 if frame_count >= fps * MAX_SECONDS:
                     print("⏹️ Reached max duration limit")
                     break
@@ -153,27 +155,23 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
 
                 current_sec = int(frame_count / fps)
 
-                # 🔍 Progress every 30 sec (no spam)
                 if current_sec % 30 == 0 and frame_count % interval == 0:
                     print(f"   ⏱️ Processing: {current_sec}s")
 
                 frame = cv2.resize(frame, RESIZE)
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-                # --- COLOR FEATURES ---
                 hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
                 sat_vals.append(hsv[:, :, 1].mean() / 255)
                 brightness_vals.append(frame.mean() / 255)
 
                 luminance = gray.mean()
 
-                # --- FLICKER ---
                 if prev_luminance is not None:
                     if abs(luminance - prev_luminance) > FLICKER_THRESHOLD:
                         flicker_count += 1
                 prev_luminance = luminance
 
-                # --- MOTION (OPTICAL FLOW) ---
                 if prev_gray is not None:
                     flow = cv2.calcOpticalFlowFarneback(
                         prev_gray, gray, None,
@@ -187,7 +185,6 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                     if motion > MOTION_SPIKE_THRESHOLD:
                         motion_spikes += 1
 
-                # --- SCENE CHANGE ---
                 if prev_frame is not None:
                     prev_hist = cv2.calcHist([prev_frame], [0], None, [256], [0, 256])
                     curr_hist = cv2.calcHist([frame], [0], None, [256], [0, 256])
@@ -206,18 +203,13 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
 
             duration = max(len(sat_vals) * FRAME_SAMPLE_RATE, 1)
 
-            # =========================
-            # VISUAL METRICS
-            # =========================
             avg_sat = np.mean(sat_vals) if sat_vals else 0
             avg_brightness = np.mean(brightness_vals) if brightness_vals else 0
-
             motion_mean = np.mean(motion_vals) if motion_vals else 0
             motion_std = np.std(motion_vals) if motion_vals else 0
 
             scene_rate = scene_changes / duration
             flicker_rate = flicker_count / duration
-
             motion_spike_rate = motion_spikes / duration
 
             # =========================
@@ -230,12 +222,20 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             density = compute_sound_density(y, sr)
             audio_variation = float(np.std(y)) if len(y) > 0 else 0
 
-            # --- PITCH ---
             pitches, _ = librosa.piptrack(y=y, sr=sr)
             pitch_vals = pitches[pitches > 0]
 
             avg_pitch = np.mean(pitch_vals) if len(pitch_vals) > 0 else 0
             pitch_var = np.std(pitch_vals) if len(pitch_vals) > 0 else 0
+
+            # =========================
+            # SIMPLE REPETITION PROXY
+            # =========================
+            # low variation = repetitive audio (songs, loops)
+            if audio_variation < 0.08:
+                repetition_score = 1
+            else:
+                repetition_score = 0
 
             # =========================
             # ATTENTION SCORE
@@ -247,10 +247,41 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             )
 
             # =========================
+            # REWARD CUE PROXY
+            # =========================
+            # high motion + high sound = stimulation spike
+            if motion_spike_rate > 0.3 and density > 2.0:
+                reward_score = 1
+            else:
+                reward_score = 0
+
+            # =========================
             # TEXT PLACEHOLDER
             # =========================
             text_complexity = 0
             phrase_repetition = 0
+
+            # =========================
+            # NEW LABELS (IMPROVED)
+            # =========================
+            content_name = label
+
+            # 🔥 Improved stimulation score (adds visual intensity influence)
+            stim_score = (
+                    attention_score +
+                    0.2 * avg_sat +
+                    0.1 * avg_brightness +
+                    0.4 * reward_score +
+                    0.2 * repetition_score
+            )
+
+            # 🔥 Calibrated thresholds (CHANGE IN THE FUTURE)
+            if stim_score < 0.9:
+                development_label = "low_stimulation"
+            elif stim_score < 1.2:
+                development_label = "medium_stimulation"
+            else:
+                development_label = "high_stimulation"
 
             # =========================
             # SAVE
@@ -271,7 +302,8 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                 attention_score,
                 text_complexity,
                 phrase_repetition,
-                label,
+                content_name,
+                development_label,
                 video_id
             ])
 
