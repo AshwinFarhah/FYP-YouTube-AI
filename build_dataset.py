@@ -94,6 +94,7 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             "phrase_repetition",
 
             # ORIGINAL LABEL
+            "stim_score",
             "content_name",
             "development_label",
 
@@ -231,8 +232,8 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             # =========================
             # SIMPLE REPETITION PROXY
             # =========================
-            # low variation = repetitive audio (songs, loops)
-            if audio_variation < 0.08:
+            # Combine variation + pitch stability (better signal)
+            if audio_variation < 0.08 and pitch_var < 50:
                 repetition_score = 1
             else:
                 repetition_score = 0
@@ -302,6 +303,7 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                 attention_score,
                 text_complexity,
                 phrase_repetition,
+                stim_score,
                 content_name,
                 development_label,
                 video_id
