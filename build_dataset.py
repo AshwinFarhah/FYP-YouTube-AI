@@ -10,7 +10,7 @@ from modules.audio_features import load_audio, compute_loudness, compute_sound_d
 # =========================
 # CONFIG
 # =========================
-VIDEO_ROOT = r"D:\testvids"
+VIDEO_ROOT = r"D:\batch1"
 OUTPUT_FILE = "data/dataset.csv"
 
 os.makedirs("data", exist_ok=True)
@@ -28,7 +28,7 @@ MOTION_SPIKE_THRESHOLD = 2.5
 # =========================
 # LIMIT VIDEO DURATION
 # =========================
-MAX_SECONDS = 600
+MAX_SECONDS = 300
 
 print("🚀 Building Multimodal Dataset")
 print(f"⏱️ Max processing per video: {MAX_SECONDS} seconds")
