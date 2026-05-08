@@ -10,7 +10,7 @@ from modules.audio_features import load_audio, compute_loudness, compute_sound_d
 # =========================
 # CONFIG
 # =========================
-VIDEO_ROOT = r"D:\batch1"
+VIDEO_ROOT = r"D:\KidsVideos1"
 OUTPUT_FILE = "data/dataset.csv"
 
 os.makedirs("data", exist_ok=True)
