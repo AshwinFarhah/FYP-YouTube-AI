@@ -10,7 +10,7 @@ from modules.audio_features import load_audio, compute_loudness, compute_sound_d
 # =========================
 # CONFIG
 # =========================
-VIDEO_ROOT = r"D:\KidsVideos18"
+VIDEO_ROOT = r"D:\KidsVideos20"
 OUTPUT_FILE = "data/dataset.csv"
 
 os.makedirs("data", exist_ok=True)
@@ -230,7 +230,7 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             pitch_var = np.std(pitch_vals) if len(pitch_vals) > 0 else 0
 
             # =========================
-            # SIMPLE REPETITION PROXY
+            # REPETITION PROXY
             # =========================
             # Combine variation + pitch stability (better signal)
             if audio_variation < 0.08 and pitch_var < 50:
