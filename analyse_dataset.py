@@ -7,7 +7,7 @@ import numpy as np
 # =====================================================
 
 INPUT_FILE = "data/dataset_test.csv"
-OUTPUT_FILE = "data/dataset_refined.csv"
+OUTPUT_FILE = "data/dataset_refined1.csv"
 
 
 # =====================================================
