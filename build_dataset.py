@@ -2,16 +2,29 @@ import os
 import csv
 import cv2
 import numpy as np
-import librosa
 
 from modules.video_extractor import extract_audio
-from modules.audio_features import load_audio, compute_loudness, compute_sound_density
+from modules.audio_features import (
+    extract_audio_features
+)
 
+from modules.behavioural_features import (
+    extract_behavioural_features
+)
+from modules.emotional_features import (
+    extract_emotional_features
+)
+from modules.text_features import (
+    extract_text_features
+)
+from modules.whisper_features import (
+    extract_transcript
+)
 # =========================
 # CONFIG
 # =========================
-VIDEO_ROOT = r"D:\KidsVideos20"
-OUTPUT_FILE = "data/dataset.csv"
+VIDEO_ROOT = r"D:\videos\test"
+OUTPUT_FILE = "data/dataset_test.csv"
 
 os.makedirs("data", exist_ok=True)
 
@@ -84,19 +97,44 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             "audio_variation",
             "avg_pitch",
             "pitch_variation",
+            "spectral_centroid",
+            "spectral_bandwidth",
+            "spectral_rolloff",
+            "spectral_contrast",
+            "zero_crossing_rate",
+            "harmonic_ratio",
+            "percussive_ratio",
+            "tempo",
 
-            # ATTENTION
+            # ATTENTION / BEHAVIOUR
             "motion_spike_rate",
             "attention_score",
+            "loop_detection_score",
+            "reward_cue_frequency",
+            "attention_reset_rate",
 
             # TEXT
-            "text_complexity",
+            "transcript_length",
+            "sentence_complexity",
+            "average_sentence_length",
+            "vocabulary_diversity",
             "phrase_repetition",
+            "educational_word_ratio",
+            "reward_keyword_frequency",
+            "transcript",
+
+            # EMOTION
+            "emotion_arousal",
+            "emotion_valence",
+            "emotion_stability",
 
             # ORIGINAL LABEL
             "stim_score",
             "content_name",
             "development_label",
+
+            # VIDEO INFORMATION
+            "video_duration_seconds",
 
             # PATH
             "video_path"
@@ -203,6 +241,10 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             print("   ✅ Video processed")
 
             duration = max(len(sat_vals) * FRAME_SAMPLE_RATE, 1)
+            video_duration_seconds = min(
+                frame_count / fps,
+                MAX_SECONDS
+            )
 
             avg_sat = np.mean(sat_vals) if sat_vals else 0
             avg_brightness = np.mean(brightness_vals) if brightness_vals else 0
@@ -216,35 +258,102 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             # =========================
             # AUDIO
             # =========================
+
             audio_path = extract_audio(video_path)
-            y, sr = load_audio(audio_path)
 
-            loudness = compute_loudness(y)
-            density = compute_sound_density(y, sr)
-            audio_variation = float(np.std(y)) if len(y) > 0 else 0
+            audio_features = extract_audio_features(
+                audio_path
+            )
 
-            pitches, _ = librosa.piptrack(y=y, sr=sr)
-            pitch_vals = pitches[pitches > 0]
+            loudness = audio_features[
+                "loudness"
+            ]
 
-            avg_pitch = np.mean(pitch_vals) if len(pitch_vals) > 0 else 0
-            pitch_var = np.std(pitch_vals) if len(pitch_vals) > 0 else 0
+            density = audio_features[
+                "sound_density"
+            ]
+
+            audio_variation = audio_features[
+                "audio_variation"
+            ]
+
+            avg_pitch = audio_features[
+                "avg_pitch"
+            ]
+
+            pitch_var = audio_features[
+                "pitch_variation"
+            ]
+
+            tempo = audio_features[
+                "tempo"
+            ]
+
+            spectral_centroid = audio_features[
+                "spectral_centroid"
+            ]
+
+            spectral_bandwidth = audio_features[
+                "spectral_bandwidth"
+            ]
+
+            spectral_rolloff = audio_features[
+                "spectral_rolloff"
+            ]
+
+            spectral_contrast = audio_features[
+                "spectral_contrast"
+            ]
+
+            zero_crossing_rate = audio_features[
+                "zero_crossing_rate"
+            ]
+
+            harmonic_ratio = audio_features[
+                "harmonic_ratio"
+            ]
+
+            percussive_ratio = audio_features[
+                "percussive_ratio"
+            ]
 
             # =========================
-            # REPETITION PROXY
+            # EMOTIONAL FEATURES
             # =========================
-            # Combine variation + pitch stability (better signal)
-            if audio_variation < 0.08 and pitch_var < 50:
-                repetition_score = 1
-            else:
-                repetition_score = 0
+
+            emotion_features = extract_emotional_features(
+                loudness,
+                pitch_var,
+                tempo,
+                spectral_contrast
+            )
+
+            emotion_arousal = emotion_features[
+                "emotion_arousal"
+            ]
+
+            emotion_valence = emotion_features[
+                "emotion_valence"
+            ]
+
+            emotion_stability = emotion_features[
+                "emotion_stability"
+            ]
+
+            # =========================
+            # REPETITION (Audio repetition was extracted using chroma similarity analysis rather than a manually defined threshold.)
+            # =========================
+            repetition_score = audio_features[
+                "audio_repetition"
+            ]
 
             # =========================
             # ATTENTION SCORE
             # =========================
             attention_score = (
-                0.4 * motion_spike_rate +
-                0.3 * scene_rate +
-                0.3 * density
+                    0.4 * min(motion_spike_rate, 1) +
+                    0.3 * min(scene_rate, 1) +
+                    0.3 * min(density, 1)
             )
 
             # =========================
@@ -257,65 +366,212 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                 reward_score = 0
 
             # =========================
-            # TEXT PLACEHOLDER
+            # TEXT FEATURES (WHISPER)
             # =========================
-            text_complexity = 0
-            phrase_repetition = 0
 
-            # =========================
-            # NEW LABELS (IMPROVED)
-            # =========================
-            content_name = label
+            if audio_path is not None:
 
-            # 🔥 Improved stimulation score (adds visual intensity influence)
-            stim_score = (
-                    attention_score +
-                    0.2 * avg_sat +
-                    0.1 * avg_brightness +
-                    0.4 * reward_score +
-                    0.2 * repetition_score
+                print("Audio path:", audio_path)
+                print("Exists:", os.path.exists(audio_path))
+
+                transcript = extract_transcript(
+                    audio_path
+                )
+
+            else:
+
+                print("⚠️ Skipping Whisper - no audio")
+
+                transcript = ""
+
+            text_features = extract_text_features(
+                transcript
             )
 
-            # 🔥 Calibrated thresholds (CHANGE IN THE FUTURE)
-            if stim_score < 0.9:
-                development_label = "low_stimulation"
-            elif stim_score < 1.2:
-                development_label = "medium_stimulation"
+            text_complexity = text_features[
+                "sentence_complexity"
+            ]
+
+            average_sentence_length = text_features[
+                "average_sentence_length"
+            ]
+
+            vocabulary_diversity = text_features[
+                "vocabulary_diversity"
+            ]
+
+            phrase_repetition = text_features[
+                "phrase_repetition"
+            ]
+
+            educational_word_ratio = text_features[
+                "educational_word_ratio"
+            ]
+
+            reward_keyword_frequency = text_features[
+                "reward_keyword_frequency"
+            ]
+
+            transcript_length = text_features[
+                "transcript_length"
+            ]
+
+
+            # =========================
+            # BEHAVIOURAL FEATURES
+            # =========================
+
+            visual_features = {
+
+                "scene_rate": scene_rate,
+                "motion_std": motion_std,
+                "motion_spike_rate": motion_spike_rate,
+                "flicker_rate": flicker_rate
+
+            }
+
+            audio_features = {
+
+                "audio_variation": audio_variation,
+                "audio_repetition": repetition_score
+
+            }
+
+            behaviour = extract_behavioural_features(
+                visual_features,
+                audio_features,
+                text_features
+            )
+
+            loop_detection_score = behaviour[
+                "loop_detection_score"
+            ]
+
+            reward_cue_frequency = behaviour[
+                "reward_cue_frequency"
+            ]
+
+            attention_reset_rate = behaviour[
+                "attention_reset_rate"
+            ]
+
+            # =========================
+            # DEVELOPMENTAL IMPACT SCORE
+            # =========================
+
+            content_name = label
+
+            # Weighted multimodal stimulation score
+            # Combines visual, audio, behavioural indicators
+            stim_score = (
+
+                    0.35 * attention_score +
+
+                    0.15 * avg_sat +
+
+                    0.10 * avg_brightness +
+
+                    0.15 * reward_cue_frequency +
+
+                    0.10 * loop_detection_score +
+
+                    0.05 * attention_reset_rate +
+
+                    0.10 * repetition_score
+
+            )
+
+            # Normalize score into range 0 - 1
+            # Ensures compatibility with ML models
+            stim_score = np.clip(
+                stim_score,
+                0,
+                1
+            )
+
+            # =========================
+            # DEVELOPMENTAL RISK LABEL
+            # =========================
+
+            if stim_score < 0.33:
+
+                development_label = "low_risk"
+
+            elif stim_score < 0.66:
+
+                development_label = "medium_risk"
+
             else:
-                development_label = "high_stimulation"
+
+                development_label = "high_risk"
 
             # =========================
             # SAVE
             # =========================
             writer.writerow([
+
+                # VISUAL
                 avg_sat,
                 avg_brightness,
                 motion_mean,
                 motion_std,
                 scene_rate,
                 flicker_rate,
+
+                # AUDIO
                 loudness,
                 density,
                 audio_variation,
                 avg_pitch,
                 pitch_var,
+                spectral_centroid,
+                spectral_bandwidth,
+                spectral_rolloff,
+                spectral_contrast,
+                zero_crossing_rate,
+                harmonic_ratio,
+                percussive_ratio,
+                tempo,
+
+                # BEHAVIOUR
                 motion_spike_rate,
                 attention_score,
+                loop_detection_score,
+                reward_cue_frequency,
+                attention_reset_rate,
+
+                # TEXT
+                transcript_length,
                 text_complexity,
+                average_sentence_length,
+                vocabulary_diversity,
                 phrase_repetition,
+                educational_word_ratio,
+                reward_keyword_frequency,
+                transcript,
+
+                # EMOTION
+                emotion_arousal,
+                emotion_valence,
+                emotion_stability,
+
+                # LABEL
                 stim_score,
                 content_name,
                 development_label,
+
+                video_duration_seconds,
+
+                # PATH
                 video_id
+
             ])
 
             file.flush()
 
-            try:
-                if os.path.exists(audio_path):
-                    os.remove(audio_path)
-            except:
-                pass
+            # Keep audio files temporarily for debugging
+
+            pass
 
             processed.add(video_id)
 

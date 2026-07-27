@@ -76,6 +76,8 @@ def extract_audio_features(audio_path):
         sr=sr
     )
 
+    tempo = float(np.mean(tempo))
+
     # =====================================================
     # Pitch
     # =====================================================
@@ -165,7 +167,7 @@ def extract_audio_features(audio_path):
         sr=sr
     )
 
-    sound_density = np.mean(onset_env)
+    sound_density = float(np.mean(onset_env))
 
     # =====================================================
     # Audio Repetition
@@ -178,7 +180,7 @@ def extract_audio_features(audio_path):
 
     similarity = np.corrcoef(chroma)
 
-    repetition = np.mean(similarity > 0.95)
+    repetition = float(np.mean(similarity > 0.95))
 
     return {
 
