@@ -8,7 +8,7 @@ import os
 # =========================
 
 INPUT_FILE = "data/dataset_test.csv"
-OUTPUT_FILE = "data/dataset_refined_test.csv"
+OUTPUT_FILE = "data/dataset_refined_test2.csv"
 
 
 print("\n📂 Loading dataset...")

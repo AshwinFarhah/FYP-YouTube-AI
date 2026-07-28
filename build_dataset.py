@@ -24,7 +24,7 @@ from modules.whisper_features import (
 # CONFIG
 # =========================
 VIDEO_ROOT = r"D:\videos\test"
-OUTPUT_FILE = "data/dataset_test.csv"
+OUTPUT_FILE = "data/dataset_test2.csv"
 
 os.makedirs("data", exist_ok=True)
 
