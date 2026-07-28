@@ -1,20 +1,17 @@
 import pandas as pd
 import numpy as np
+import os
 
 
-# =====================================================
-# CONFIG
-# =====================================================
+# =========================
+# LOAD DATASET
+# =========================
 
 INPUT_FILE = "data/dataset_test.csv"
-OUTPUT_FILE = "data/dataset_refined1.csv"
+OUTPUT_FILE = "data/dataset_refined_test.csv"
 
 
-# =====================================================
-# LOAD DATASET
-# =====================================================
-
-print("📂 Loading dataset...")
+print("\n📂 Loading dataset...")
 
 df = pd.read_csv(INPUT_FILE)
 
@@ -26,49 +23,84 @@ print("=================================")
 print("\nShape:")
 print(df.shape)
 
-
 print("\nColumns:")
 print(df.columns.tolist())
 
 
-# =====================================================
-# MISSING VALUE CHECK
-# =====================================================
-
-print("\n=================================")
-print("MISSING VALUE ANALYSIS")
-print("=================================")
-
-missing = df.isnull().sum()
-
-print(
-    missing[missing > 0]
-)
-
-
-if missing.sum() == 0:
-    print("✅ No missing values detected")
-
-
-# =====================================================
-# DUPLICATE CHECK
-# =====================================================
+# =========================
+# REMOVE DUPLICATES
+# =========================
 
 print("\n=================================")
 print("DUPLICATE CHECK")
 print("=================================")
 
-duplicates = df["video_path"].duplicated().sum()
+
+before = len(df)
+
+df = df.drop_duplicates(
+    subset=["video_path"]
+)
+
+after = len(df)
+
 
 print(
-    "Duplicate videos:",
-    duplicates
+    "Removed duplicates:",
+    before-after
 )
 
 
-# =====================================================
-# STIMULATION SCORE ANALYSIS
-# =====================================================
+# =========================
+# MISSING VALUES
+# =========================
+
+
+print("\n=================================")
+print("MISSING VALUE ANALYSIS")
+print("=================================")
+
+
+missing = df.isnull().sum()
+
+print(
+    missing[missing>0]
+)
+
+
+if missing.sum()==0:
+    print("✅ No missing values")
+
+
+# =========================
+# NORMALIZE TEXT FEATURES
+# =========================
+
+
+print("\n=================================")
+print("TEXT NORMALIZATION")
+print("=================================")
+
+
+df["transcript_length_normalized"] = (
+    df["transcript_length"]
+    /
+    df["video_duration_seconds"]
+)
+
+
+# Fix sentence complexity
+
+df["sentence_complexity"] = (
+    df["sentence_complexity"]
+    .clip(lower=0)
+)
+
+
+# =========================
+# STIM SCORE ANALYSIS
+# =========================
+
 
 print("\n=================================")
 print("STIM SCORE DISTRIBUTION")
@@ -80,63 +112,58 @@ print(
 )
 
 
-# =====================================================
-# AUTOMATIC THRESHOLD ANALYSIS
-# =====================================================
-
-low_threshold = (
-    df["stim_score"]
-    .quantile(0.33)
-)
+# =========================
+# CREATE DATA DRIVEN LABELS
+# =========================
 
 
-high_threshold = (
-    df["stim_score"]
-    .quantile(0.66)
-)
+low_threshold = df["stim_score"].quantile(0.33)
+
+high_threshold = df["stim_score"].quantile(0.66)
 
 
 print("\nSuggested thresholds:")
+
 print(
-    f"Low risk < {low_threshold:.3f}"
+    f"Low stimulation < {low_threshold:.3f}"
 )
 
 print(
-    f"Medium risk < {high_threshold:.3f}"
+    f"Medium stimulation < {high_threshold:.3f}"
 )
 
 print(
-    f"High risk >= {high_threshold:.3f}"
+    f"High stimulation >= {high_threshold:.3f}"
 )
 
 
 
-# =====================================================
-# RELABEL DEVELOPMENT IMPACT
-# =====================================================
-
-
-def relabel(score):
+def create_label(score):
 
     if score < low_threshold:
 
-        return "low_risk"
+        return "low_stimulation"
 
     elif score < high_threshold:
 
-        return "medium_risk"
+        return "medium_stimulation"
 
     else:
 
-        return "high_risk"
+        return "high_stimulation"
 
 
 
 df["development_label_refined"] = (
     df["stim_score"]
-    .apply(relabel)
+    .apply(create_label)
 )
 
+
+
+# =========================
+# LABEL DISTRIBUTION
+# =========================
 
 
 print("\n=================================")
@@ -151,59 +178,31 @@ print(
 
 
 
-# =====================================================
-# TRANSCRIPT ANALYSIS
-# =====================================================
+# =========================
+# FEATURE SUMMARY
+# =========================
 
-print("\n=================================")
-print("TEXT FEATURE CHECK")
-print("=================================")
-
-
-print(
-    "Videos with transcript:"
-)
-
-print(
-    (df["transcript_length"] > 0)
-    .sum()
-)
-
-
-print(
-    "Videos without transcript:"
-)
-
-print(
-    (df["transcript_length"] == 0)
-    .sum()
-)
-
-
-
-# =====================================================
-# FEATURE RANGE CHECK
-# =====================================================
 
 print("\n=================================")
 print("NUMERIC FEATURE SUMMARY")
 print("=================================")
 
 
-numeric_features = df.select_dtypes(
+numeric = df.select_dtypes(
     include=np.number
 )
 
 
 print(
-    numeric_features.describe().T
+    numeric.describe().T
 )
 
 
 
-# =====================================================
-# SAVE CLEAN DATASET
-# =====================================================
+# =========================
+# SAVE
+# =========================
+
 
 df.to_csv(
     OUTPUT_FILE,
@@ -212,7 +211,12 @@ df.to_csv(
 
 
 print("\n=================================")
+
 print("✅ ANALYSIS COMPLETE")
-print("Saved:")
-print(OUTPUT_FILE)
+
+print(
+    "Saved:",
+    OUTPUT_FILE
+)
+
 print("=================================")
