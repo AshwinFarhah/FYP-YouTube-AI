@@ -1,16 +1,16 @@
 import re
-import numpy as np
-
-import nltk
-import textstat
-
 from collections import Counter
+
+import numpy as np
+import textstat
 
 from modules.config import COMMON_EDUCATIONAL_WORDS
 
+
 # =====================================================
-# Text Feature Extraction (NLP)
+# TEXT FEATURE EXTRACTION (NLP)
 # =====================================================
+
 # =====================================================
 # CLEAN TRANSCRIPT
 # =====================================================
@@ -22,8 +22,9 @@ def clean_transcript(text):
 
     text = text.lower()
 
+    # Keep sentence punctuation for sentence detection
     text = re.sub(
-        r"[^a-zA-Z\s]",
+        r"[^a-zA-Z.!?\s]",
         "",
         text
     )
@@ -37,7 +38,6 @@ def clean_transcript(text):
     return text.strip()
 
 
-
 # =====================================================
 # SENTENCE COMPLEXITY
 # =====================================================
@@ -47,18 +47,18 @@ def calculate_sentence_complexity(text):
     if len(text) == 0:
         return 0
 
-
     try:
 
         score = textstat.flesch_reading_ease(text)
 
-    except:
+        # Prevent impossible negative values
+        score = np.clip(score, 0, 100)
+
+    except Exception:
 
         score = 0
 
-
     return float(score)
-
 
 
 # =====================================================
@@ -70,12 +70,12 @@ def average_sentence_length(text):
     if len(text) == 0:
         return 0
 
+    words = text.split()
 
     sentences = re.split(
-        r'[.!?]+',
+        r"[.!?]+",
         text
     )
-
 
     sentences = [
 
@@ -87,14 +87,24 @@ def average_sentence_length(text):
 
     ]
 
+    # Whisper transcripts often contain no punctuation.
+    # Estimate sentence count instead of treating
+    # everything as one giant sentence.
 
-    words = text.split()
+    if len(sentences) <= 1:
 
+        estimated_sentences = max(
+            1,
+            len(words) // 18
+        )
 
-    if len(sentences) == 0:
+        return float(
 
-        return 0
+            len(words)
+            /
+            estimated_sentences
 
+        )
 
     return float(
 
@@ -105,7 +115,6 @@ def average_sentence_length(text):
     )
 
 
-
 # =====================================================
 # VOCABULARY DIVERSITY
 # =====================================================
@@ -114,14 +123,10 @@ def vocabulary_diversity(text):
 
     words = text.split()
 
-
-    if len(words)==0:
-
+    if len(words) == 0:
         return 0
 
-
     unique_words = set(words)
-
 
     return float(
 
@@ -132,7 +137,6 @@ def vocabulary_diversity(text):
     )
 
 
-
 # =====================================================
 # PHRASE REPETITION
 # =====================================================
@@ -141,35 +145,26 @@ def phrase_repetition(text):
 
     words = text.split()
 
-
-    if len(words)<3:
-
+    if len(words) < 3:
         return 0
 
+    phrases = []
 
-    phrases=[]
-
-
-    for i in range(len(words)-2):
+    for i in range(len(words) - 2):
 
         phrase = (
 
             words[i]
-            +" "
-            +words[i+1]
-            +" "
-            +words[i+2]
+            + " "
+            + words[i + 1]
+            + " "
+            + words[i + 2]
 
         )
 
         phrases.append(phrase)
 
-
-
-    frequency = Counter(
-        phrases
-    )
-
+    frequency = Counter(phrases)
 
     repeated = sum(
 
@@ -181,14 +176,16 @@ def phrase_repetition(text):
 
     )
 
+    if len(frequency) == 0:
+        return 0
 
     return float(
 
-        repeated /
+        repeated
+        /
         len(frequency)
 
     )
-
 
 
 # =====================================================
@@ -197,33 +194,26 @@ def phrase_repetition(text):
 
 def educational_word_ratio(text):
 
-    words=text.split()
+    words = text.split()
 
-
-    if len(words)==0:
-
+    if len(words) == 0:
         return 0
 
-
-
-    count=0
-
+    count = 0
 
     for word in words:
 
         if word in COMMON_EDUCATIONAL_WORDS:
 
-            count +=1
-
-
+            count += 1
 
     return float(
 
-        count /
+        count
+        /
         len(words)
 
     )
-
 
 
 # =====================================================
@@ -232,30 +222,36 @@ def educational_word_ratio(text):
 
 def reward_keyword_frequency(text):
 
-
-    keywords=[
+    keywords = [
 
         "again",
-        "subscribe",
-        "like",
+        "more",
         "watch",
-        "fun",
         "play",
-        "game",
-        "wow"
+        "fun",
+        "wow",
+        "subscribe",
+        "click",
+        "next",
+        "repeat",
+        "dance",
+        "sing",
+        "music",
+        "surprise",
+        "magic",
+        "toy",
+        "challenge",
+        "happy",
+        "laugh"
 
     ]
 
+    words = text.split()
 
-    words=text.split()
-
-
-    if len(words)==0:
-
+    if len(words) == 0:
         return 0
 
-
-    count=sum(
+    count = sum(
 
         1
 
@@ -265,14 +261,13 @@ def reward_keyword_frequency(text):
 
     )
 
-
     return float(
 
-        count /
+        count
+        /
         len(words)
 
     )
-
 
 
 # =====================================================
@@ -281,19 +276,16 @@ def reward_keyword_frequency(text):
 
 def extract_text_features(transcript):
 
+    transcript = clean_transcript(transcript)
 
-    transcript = clean_transcript(
-        transcript
-    )
-
+    words = transcript.split()
 
     return {
 
-
+        # Word count (better than character count)
         "transcript_length":
 
-            len(transcript),
-
+            len(words),
 
         "sentence_complexity":
 
@@ -301,13 +293,11 @@ def extract_text_features(transcript):
                 transcript
             ),
 
-
         "average_sentence_length":
 
             average_sentence_length(
                 transcript
             ),
-
 
         "vocabulary_diversity":
 
@@ -315,20 +305,17 @@ def extract_text_features(transcript):
                 transcript
             ),
 
-
         "phrase_repetition":
 
             phrase_repetition(
                 transcript
             ),
 
-
         "educational_word_ratio":
 
             educational_word_ratio(
                 transcript
             ),
-
 
         "reward_keyword_frequency":
 

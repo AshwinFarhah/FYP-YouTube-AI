@@ -20,6 +20,11 @@ from modules.text_features import (
 from modules.whisper_features import (
     extract_transcript
 )
+from utils.text_cleaner import clean_transcript
+
+from utils.transcript_quality import evaluate_transcript_quality
+
+
 # =========================
 # CONFIG
 # =========================
@@ -114,6 +119,7 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             "attention_reset_rate",
 
             # TEXT
+
             "transcript_length",
             "sentence_complexity",
             "average_sentence_length",
@@ -121,6 +127,16 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             "phrase_repetition",
             "educational_word_ratio",
             "reward_keyword_frequency",
+
+            # Transcript Quality
+            "transcript_word_count",
+            "unique_word_ratio",
+            "repeated_word_ratio",
+            "hallucination_score",
+            "english_ratio",
+            "nonsense_ratio",
+            "transcript_quality_score",
+            "transcript_quality_label",
             "transcript",
 
             # EMOTION
@@ -374,7 +390,7 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                 print("Audio path:", audio_path)
                 print("Exists:", os.path.exists(audio_path))
 
-                transcript = extract_transcript(
+                raw_transcript = extract_transcript(
                     audio_path
                 )
 
@@ -382,7 +398,38 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
 
                 print("⚠️ Skipping Whisper - no audio")
 
-                transcript = ""
+                raw_transcript = ""
+
+            # =========================
+            # CLEAN TRANSCRIPT
+            # =========================
+
+            transcript = clean_transcript(
+                raw_transcript
+            )
+
+            print("Raw transcript length:",
+                  len(raw_transcript))
+
+            print("Clean transcript length:",
+                  len(transcript))
+
+            # =========================
+            # TRANSCRIPT QUALITY CHECK
+            # =========================
+
+            transcript_quality = evaluate_transcript_quality(
+                transcript
+            )
+
+            print(
+                "Transcript quality:",
+                transcript_quality["transcript_quality_label"]
+            )
+
+            # =========================
+            # NLP FEATURES
+            # =========================
 
             text_features = extract_text_features(
                 transcript
@@ -548,6 +595,17 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                 phrase_repetition,
                 educational_word_ratio,
                 reward_keyword_frequency,
+
+                # Transcript quality
+                transcript_quality["transcript_word_count"],
+                transcript_quality["unique_word_ratio"],
+                transcript_quality["repeated_word_ratio"],
+                transcript_quality["hallucination_score"],
+                transcript_quality["english_ratio"],
+                transcript_quality["nonsense_ratio"],
+                transcript_quality["transcript_quality_score"],
+                transcript_quality["transcript_quality_label"],
+
                 transcript,
 
                 # EMOTION
