@@ -29,7 +29,7 @@ from utils.transcript_quality import evaluate_transcript_quality
 # CONFIG
 # =========================
 VIDEO_ROOT = r"D:\videos\test"
-OUTPUT_FILE = "data/dataset_test2.csv"
+OUTPUT_FILE = "data/dataset_test5.csv"
 
 os.makedirs("data", exist_ok=True)
 
@@ -135,8 +135,14 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             "hallucination_score",
             "english_ratio",
             "nonsense_ratio",
-            "transcript_quality_score",
-            "transcript_quality_label",
+
+            # ORIGINAL QUALITY BEFORE FILTERING
+            "original_transcript_quality_score",
+            "original_transcript_quality_label",
+
+            # FILTERING RESULT
+            "transcript_rejected",
+
             "transcript",
 
             # EMOTION
@@ -373,15 +379,6 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             )
 
             # =========================
-            # REWARD CUE PROXY
-            # =========================
-            # high motion + high sound = stimulation spike
-            if motion_spike_rate > 0.3 and density > 2.0:
-                reward_score = 1
-            else:
-                reward_score = 0
-
-            # =========================
             # TEXT FEATURES (WHISPER)
             # =========================
 
@@ -418,14 +415,41 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
             # TRANSCRIPT QUALITY CHECK
             # =========================
 
-            transcript_quality = evaluate_transcript_quality(
-                transcript
+            transcript_quality = evaluate_transcript_quality(transcript)
+
+            # Keep original quality before filtering
+            original_transcript_quality_score = transcript_quality[
+                "transcript_quality_score"
+            ]
+
+            original_transcript_quality_label = transcript_quality[
+                "transcript_quality_label"
+            ]
+
+            print(
+                "Original transcript quality:",
+                original_transcript_quality_label
             )
 
             print(
-                "Transcript quality:",
-                transcript_quality["transcript_quality_label"]
+                "Original quality score:",
+                original_transcript_quality_score
             )
+
+            # Default = accepted
+            transcript_rejected = False
+
+            # Reject weak Whisper transcripts
+            if (
+                    original_transcript_quality_score < 0.70
+                    or transcript_quality["english_ratio"] < 0.75
+                    or transcript_quality["transcript_word_count"] < 20
+            ):
+                print("⚠️ Transcript rejected.")
+
+                transcript_rejected = True
+
+                transcript = ""
 
             # =========================
             # NLP FEATURES
@@ -603,9 +627,9 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                 transcript_quality["hallucination_score"],
                 transcript_quality["english_ratio"],
                 transcript_quality["nonsense_ratio"],
-                transcript_quality["transcript_quality_score"],
-                transcript_quality["transcript_quality_label"],
-
+                original_transcript_quality_score,
+                original_transcript_quality_label,
+                transcript_rejected,
                 transcript,
 
                 # EMOTION

@@ -324,6 +324,8 @@ def nonsense_ratio(text):
 def transcript_quality_score(text):
 
 
+    word_count = count_words(text)
+
     length = length_score(text)
 
     diversity = unique_word_ratio(text)
@@ -365,6 +367,21 @@ def transcript_quality_score(text):
     )
 
 
+    # =====================================
+    # Additional transcript reliability rules
+    # =====================================
+
+    # Very short Whisper outputs are unreliable
+    if word_count < 20:
+        score *= 0.2
+
+
+    # Non-English or corrupted transcripts
+    if english < 0.75:
+        score *= 0.5
+
+
+
     return max(
 
         0,
@@ -381,21 +398,17 @@ def transcript_quality_score(text):
 
 def quality_label(score):
 
-
-    if score >= 0.75:
-
+    if score >= 0.85:
         return "good"
 
-
-    elif score >= 0.45:
-
+    elif score >= 0.70:
         return "acceptable"
 
-
-    else:
-
+    elif score >= 0.50:
         return "poor"
 
+    else:
+        return "rejected"
 
 
 # =====================================================

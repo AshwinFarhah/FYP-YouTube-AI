@@ -29,8 +29,9 @@ REMOVE_WORDS = {
 HALLUCINATION_PHRASES = [
     "thank you for watching",
     "please subscribe",
-    "thanks for watching",
-    "see you next time"
+    "don't forget to subscribe",
+    "don't forget to click subscribe",
+    "click subscribe",
 ]
 
 

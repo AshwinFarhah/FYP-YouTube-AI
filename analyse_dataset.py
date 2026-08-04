@@ -2,221 +2,246 @@ import pandas as pd
 import numpy as np
 import os
 
+# ==========================================
+# CONFIG
+# ==========================================
 
-# =========================
-# LOAD DATASET
-# =========================
-
-INPUT_FILE = "data/dataset_test.csv"
+INPUT_FILE = "data/dataset_test2.csv"
 OUTPUT_FILE = "data/dataset_refined_test2.csv"
 
+print("\n=========================================")
+print("MULTIMODAL DATASET ANALYSIS")
+print("=========================================")
 
-print("\n📂 Loading dataset...")
+# ==========================================
+# LOAD DATASET
+# ==========================================
+
+print("\nLoading dataset...")
 
 df = pd.read_csv(INPUT_FILE)
 
+print("Loaded successfully.")
 
-print("\n=================================")
-print("DATASET OVERVIEW")
-print("=================================")
+print("\nRows:", len(df))
+print("Columns:", len(df.columns))
 
-print("\nShape:")
-print(df.shape)
-
-print("\nColumns:")
-print(df.columns.tolist())
-
-
-# =========================
+# ==========================================
 # REMOVE DUPLICATES
-# =========================
+# ==========================================
 
-print("\n=================================")
-print("DUPLICATE CHECK")
-print("=================================")
-
+print("\n=========================================")
+print("DUPLICATE ANALYSIS")
+print("=========================================")
 
 before = len(df)
 
-df = df.drop_duplicates(
-    subset=["video_path"]
-)
+df = df.drop_duplicates(subset=["video_path"])
 
 after = len(df)
 
+print("Duplicates removed:", before - after)
+print("Remaining videos:", after)
 
-print(
-    "Removed duplicates:",
-    before-after
-)
-
-
-# =========================
+# ==========================================
 # MISSING VALUES
-# =========================
+# ==========================================
 
-
-print("\n=================================")
+print("\n=========================================")
 print("MISSING VALUE ANALYSIS")
-print("=================================")
-
+print("=========================================")
 
 missing = df.isnull().sum()
 
-print(
-    missing[missing>0]
-)
+missing = missing[missing > 0]
 
+if len(missing) == 0:
+    print("No missing values found.")
+else:
+    print(missing)
 
-if missing.sum()==0:
-    print("✅ No missing values")
+# ==========================================
+# REMOVE EMPTY TRANSCRIPTS
+# ==========================================
 
+print("\n=========================================")
+print("TRANSCRIPT VALIDATION")
+print("=========================================")
 
-# =========================
-# NORMALIZE TEXT FEATURES
-# =========================
+before = len(df)
 
+df = df[
+    df["transcript_quality_score"] >= 0.40
+]
 
-print("\n=================================")
-print("TEXT NORMALIZATION")
-print("=================================")
+after = len(df)
 
+print("Poor transcripts removed:", before - after)
+print("Remaining:", after)
+
+# ==========================================
+# NORMALIZE TRANSCRIPT LENGTH
+# ==========================================
+
+print("\n=========================================")
+print("TEXT FEATURE NORMALIZATION")
+print("=========================================")
 
 df["transcript_length_normalized"] = (
-    df["transcript_length"]
-    /
-    df["video_duration_seconds"]
+    df["transcript_length"] /
+    df["video_duration_seconds"].clip(lower=1)
 )
-
-
-# Fix sentence complexity
 
 df["sentence_complexity"] = (
     df["sentence_complexity"]
     .clip(lower=0)
 )
 
+print("Transcript length normalized.")
 
-# =========================
-# STIM SCORE ANALYSIS
-# =========================
+# ==========================================
+# CHECK FEATURE RANGES
+# ==========================================
 
+print("\n=========================================")
+print("FEATURE RANGE VALIDATION")
+print("=========================================")
 
-print("\n=================================")
-print("STIM SCORE DISTRIBUTION")
-print("=================================")
+features = [
 
+    "avg_saturation",
+    "avg_brightness",
+    "motion_mean",
+    "scene_rate",
+    "flicker_rate",
 
-print(
-    df["stim_score"].describe()
-)
+    "loudness",
+    "sound_density",
+    "avg_pitch",
+    "tempo",
 
+    "attention_score",
 
-# =========================
-# CREATE DATA DRIVEN LABELS
-# =========================
+    "emotion_arousal",
+    "emotion_valence",
+    "emotion_stability",
 
+    "stim_score"
+
+]
+
+for col in features:
+
+    if col in df.columns:
+
+        print(f"{col:30s}"
+              f" min={df[col].min():.3f}"
+              f" max={df[col].max():.3f}"
+              f" mean={df[col].mean():.3f}")
+
+# ==========================================
+# TRANSCRIPT QUALITY SUMMARY
+# ==========================================
+
+print("\n=========================================")
+print("TRANSCRIPT QUALITY")
+print("=========================================")
+
+print(df["transcript_quality_label"].value_counts())
+
+print()
+
+print(df["transcript_quality_score"].describe())
+
+# ==========================================
+# STIMULATION SCORE
+# ==========================================
+
+print("\n=========================================")
+print("STIMULATION SCORE")
+print("=========================================")
+
+print(df["stim_score"].describe())
+
+# ==========================================
+# CREATE DATA-DRIVEN LABELS
+# ==========================================
 
 low_threshold = df["stim_score"].quantile(0.33)
-
 high_threshold = df["stim_score"].quantile(0.66)
 
+print("\nSuggested thresholds")
 
-print("\nSuggested thresholds:")
-
-print(
-    f"Low stimulation < {low_threshold:.3f}"
-)
-
-print(
-    f"Medium stimulation < {high_threshold:.3f}"
-)
-
-print(
-    f"High stimulation >= {high_threshold:.3f}"
-)
-
-
+print(f"Low    < {low_threshold:.3f}")
+print(f"Medium < {high_threshold:.3f}")
+print(f"High   >= {high_threshold:.3f}")
 
 def create_label(score):
 
     if score < low_threshold:
-
-        return "low_stimulation"
+        return "low_risk"
 
     elif score < high_threshold:
-
-        return "medium_stimulation"
+        return "medium_risk"
 
     else:
-
-        return "high_stimulation"
-
-
+        return "high_risk"
 
 df["development_label_refined"] = (
     df["stim_score"]
     .apply(create_label)
 )
 
-
-
-# =========================
+# ==========================================
 # LABEL DISTRIBUTION
-# =========================
+# ==========================================
 
-
-print("\n=================================")
+print("\n=========================================")
 print("LABEL DISTRIBUTION")
-print("=================================")
+print("=========================================")
 
+print(df["development_label_refined"].value_counts())
 
-print(
-    df["development_label_refined"]
-    .value_counts()
-)
+# ==========================================
+# NUMERIC SUMMARY
+# ==========================================
 
-
-
-# =========================
-# FEATURE SUMMARY
-# =========================
-
-
-print("\n=================================")
+print("\n=========================================")
 print("NUMERIC FEATURE SUMMARY")
-print("=================================")
+print("=========================================")
 
+numeric = df.select_dtypes(include=np.number)
 
-numeric = df.select_dtypes(
-    include=np.number
-)
+print(numeric.describe().T)
 
+# ==========================================
+# CORRELATION WITH STIM SCORE
+# ==========================================
 
-print(
-    numeric.describe().T
-)
+print("\n=========================================")
+print("TOP FEATURES CORRELATED WITH STIM SCORE")
+print("=========================================")
 
+corr = numeric.corr(numeric_only=True)["stim_score"]
 
+corr = corr.sort_values(ascending=False)
 
-# =========================
+print(corr)
+
+# ==========================================
 # SAVE
-# =========================
-
+# ==========================================
 
 df.to_csv(
     OUTPUT_FILE,
     index=False
 )
 
+print("\n=========================================")
+print("DATASET ANALYSIS COMPLETE")
+print("=========================================")
 
-print("\n=================================")
+print("Saved refined dataset to:")
+print(OUTPUT_FILE)
 
-print("✅ ANALYSIS COMPLETE")
-
-print(
-    "Saved:",
-    OUTPUT_FILE
-)
-
-print("=================================")
+print("\nFinal dataset size:", df.shape)
