@@ -29,7 +29,7 @@ from utils.transcript_quality import evaluate_transcript_quality
 # CONFIG
 # =========================
 VIDEO_ROOT = r"D:\videos\test"
-OUTPUT_FILE = "data/dataset_test7.csv"
+OUTPUT_FILE = "data/dataset_test.csv"
 
 os.makedirs("data", exist_ok=True)
 
@@ -445,7 +445,7 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
 
             # Reject weak or unreliable Whisper transcripts
             if (
-                    original_transcript_quality_score < 0.75
+                    original_transcript_quality_score < 0.70
                     or transcript_quality["english_ratio"] < 0.75
                     or transcript_quality["transcript_word_count"] < 20
             ):
