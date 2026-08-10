@@ -29,7 +29,7 @@ from utils.transcript_quality import evaluate_transcript_quality
 # CONFIG
 # =========================
 VIDEO_ROOT = r"D:\videos\test"
-OUTPUT_FILE = "data/dataset_test5.csv"
+OUTPUT_FILE = "data/dataset_test7.csv"
 
 os.makedirs("data", exist_ok=True)
 
@@ -436,12 +436,16 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
                 original_transcript_quality_score
             )
 
+            # =========================
+            # TRANSCRIPT FILTERING
+            # =========================
+
             # Default = accepted
             transcript_rejected = False
 
-            # Reject weak Whisper transcripts
+            # Reject weak or unreliable Whisper transcripts
             if (
-                    original_transcript_quality_score < 0.70
+                    original_transcript_quality_score < 0.75
                     or transcript_quality["english_ratio"] < 0.75
                     or transcript_quality["transcript_word_count"] < 20
             ):
@@ -449,43 +453,70 @@ with open(OUTPUT_FILE, "a", newline="", encoding="utf-8") as file:
 
                 transcript_rejected = True
 
+                # Remove unreliable transcript before NLP processing
                 transcript = ""
 
             # =========================
             # NLP FEATURES
             # =========================
 
-            text_features = extract_text_features(
-                transcript
-            )
+            if transcript_rejected:
 
-            text_complexity = text_features[
-                "sentence_complexity"
-            ]
+                print("ℹ️ NLP features skipped because transcript was rejected.")
 
-            average_sentence_length = text_features[
-                "average_sentence_length"
-            ]
+                # Dataset values
+                transcript_length = 0
+                text_complexity = np.nan
+                average_sentence_length = np.nan
+                vocabulary_diversity = np.nan
+                phrase_repetition = np.nan
+                educational_word_ratio = np.nan
+                reward_keyword_frequency = np.nan
 
-            vocabulary_diversity = text_features[
-                "vocabulary_diversity"
-            ]
+                # Safe values for behavioural calculations
+                text_features = {
+                    "sentence_complexity": 0,
+                    "average_sentence_length": 0,
+                    "vocabulary_diversity": 0,
+                    "phrase_repetition": 0,
+                    "educational_word_ratio": 0,
+                    "reward_keyword_frequency": 0,
+                    "transcript_length": 0
+                }
 
-            phrase_repetition = text_features[
-                "phrase_repetition"
-            ]
+            else:
 
-            educational_word_ratio = text_features[
-                "educational_word_ratio"
-            ]
+                text_features = extract_text_features(
+                    transcript
+                )
 
-            reward_keyword_frequency = text_features[
-                "reward_keyword_frequency"
-            ]
+                transcript_length = text_features[
+                    "transcript_length"
+                ]
 
-            transcript_length = text_features[
-                "transcript_length"
-            ]
+                text_complexity = text_features[
+                    "sentence_complexity"
+                ]
+
+                average_sentence_length = text_features[
+                    "average_sentence_length"
+                ]
+
+                vocabulary_diversity = text_features[
+                    "vocabulary_diversity"
+                ]
+
+                phrase_repetition = text_features[
+                    "phrase_repetition"
+                ]
+
+                educational_word_ratio = text_features[
+                    "educational_word_ratio"
+                ]
+
+                reward_keyword_frequency = text_features[
+                    "reward_keyword_frequency"
+                ]
 
 
             # =========================
