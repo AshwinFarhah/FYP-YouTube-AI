@@ -188,34 +188,33 @@ def hallucination_score(text):
 # =====================================================
 # English confidence
 #
-# Simple language estimation
+# Proportion of words containing English letters
 # =====================================================
 
 def english_ratio(text):
 
     if not text:
-
         return 0
 
+    words = text.split()
 
-    characters = len(text)
+    if not words:
+        return 0
 
-    english_characters = len(
+    english_words = 0
 
-        re.findall(
+    for word in words:
+
+        if re.search(
             r"[a-zA-Z]",
-            text
-        )
+            word
+        ):
 
-    )
-
+            english_words += 1
 
     return (
-
-        english_characters
-        /
-        characters
-
+        english_words /
+        len(words)
     )
 
 
@@ -275,23 +274,17 @@ def nonsense_ratio(text):
 
     words = text.split()
 
-
-    if len(words)==0:
+    if len(words) == 0:
 
         return 1
 
-
-
     nonsense = 0
 
-
     for word in words:
-
 
         if len(word) > 15:
 
             nonsense += 1
-
 
         elif not re.search(
             "[aeiou]",
@@ -300,13 +293,9 @@ def nonsense_ratio(text):
 
             nonsense += 1
 
-
-
     return (
-
         nonsense /
         len(words)
-
     )
 
 
@@ -371,26 +360,24 @@ def transcript_quality_score(text):
     # Additional transcript reliability rules
     # =====================================
 
-    # Very short Whisper outputs are unreliable
+    # -------------------------------------------------
+    # Very short transcripts
+    # -------------------------------------------------
+
     if word_count < 20:
         score *= 0.2
 
+    # -------------------------------------------------
+    # Low English confidence
+    # -------------------------------------------------
 
-    # Non-English or corrupted transcripts
     if english < 0.75:
         score *= 0.5
 
-
-
     return max(
-
         0,
-
-        min(score,1)
-
+        min(score, 1)
     )
-
-
 
 # =====================================================
 # Quality label
@@ -417,59 +404,34 @@ def quality_label(score):
 
 def evaluate_transcript_quality(text):
 
-
     score = transcript_quality_score(
         text
     )
 
-
     return {
 
-
         "transcript_word_count":
-
             count_words(text),
 
-
-
         "unique_word_ratio":
-
             unique_word_ratio(text),
 
-
-
         "repeated_word_ratio":
-
             repeated_word_ratio(text),
 
-
-
         "hallucination_score":
-
             hallucination_score(text),
 
-
-
         "english_ratio":
-
             english_ratio(text),
 
-
-
         "nonsense_ratio":
-
             nonsense_ratio(text),
 
-
-
         "transcript_quality_score":
-
             score,
 
-
-
         "transcript_quality_label":
-
             quality_label(score)
 
     }

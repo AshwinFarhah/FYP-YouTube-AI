@@ -1,7 +1,9 @@
 """
 Text cleaning utilities for Whisper transcripts.
 
-This module cleans noisy transcripts before NLP feature extraction.
+The cleaning process removes obvious Whisper noise and
+hallucination artefacts while preserving meaningful
+repetition for NLP analysis.
 """
 
 import re
@@ -26,12 +28,28 @@ REMOVE_WORDS = {
     "inaudible"
 
 }
+
+
+# =====================================================
+# Whisper hallucination phrases
+# =====================================================
+
 HALLUCINATION_PHRASES = [
+
     "thank you for watching",
+
     "please subscribe",
+
     "don't forget to subscribe",
+
     "don't forget to click subscribe",
+
     "click subscribe",
+
+    "thanks for watching",
+
+    "see you next time"
+
 ]
 
 
@@ -73,7 +91,6 @@ def remove_unicode(text):
     return cleaned
 
 
-
 # =====================================================
 # Remove emojis
 # Keep sentence punctuation
@@ -82,17 +99,12 @@ def remove_unicode(text):
 def clean_punctuation(text):
 
     text = re.sub(
-
         r"[^a-zA-Z.!?\s]",
-
         "",
-
         text
-
     )
 
     return text
-
 
 
 # =====================================================
@@ -102,98 +114,10 @@ def clean_punctuation(text):
 def normalize_spaces(text):
 
     return re.sub(
-
         r"\s+",
-
         " ",
-
         text
-
     ).strip()
-
-
-
-# =====================================================
-# Remove repeated consecutive words
-#
-# baby baby baby shark
-#
-# ->
-#
-# baby shark
-# =====================================================
-
-def remove_repeated_words(text):
-
-    words = text.split()
-
-    cleaned = []
-
-    previous = None
-
-
-    for word in words:
-
-        if word != previous:
-
-            cleaned.append(word)
-
-        previous = word
-
-
-    return " ".join(cleaned)
-
-
-
-# =====================================================
-# Remove repeated phrases
-#
-# do do do do do do
-#
-# ->
-#
-# do do do
-# =====================================================
-
-def remove_repeated_phrases(text):
-
-    words = text.split()
-
-    if len(words) < 6:
-
-        return text
-
-
-    cleaned = []
-
-    i = 0
-
-
-    while i < len(words):
-
-        if i + 5 < len(words):
-
-            first = words[i:i+3]
-
-            second = words[i+3:i+6]
-
-
-            if first == second:
-
-                cleaned.extend(first)
-
-                i += 6
-
-                continue
-
-
-        cleaned.append(words[i])
-
-        i += 1
-
-
-    return " ".join(cleaned)
-
 
 
 # =====================================================
@@ -204,18 +128,13 @@ def remove_long_tokens(text):
 
     cleaned = []
 
-
     for word in text.split():
-
-        # remove extremely long Whisper errors
 
         if len(word) <= 20:
 
             cleaned.append(word)
 
-
     return " ".join(cleaned)
-
 
 
 # =====================================================
@@ -232,12 +151,13 @@ def remove_hallucinations(text):
 
             words.append(word)
 
-
     return " ".join(words)
 
+
 # =====================================================
-# Remove hallucination phrase
+# Remove hallucination phrases
 # =====================================================
+
 def remove_hallucination_phrases(text):
 
     for phrase in HALLUCINATION_PHRASES:
@@ -249,6 +169,7 @@ def remove_hallucination_phrases(text):
 
     return text
 
+
 # =====================================================
 # Remove filler sounds
 # =====================================================
@@ -257,16 +178,13 @@ def remove_fillers(text):
 
     words = []
 
-
     for word in text.split():
 
         if word not in FILLER_WORDS:
 
             words.append(word)
 
-
     return " ".join(words)
-
 
 
 # =====================================================
@@ -279,38 +197,75 @@ def clean_transcript(text):
 
         return ""
 
+    # -------------------------------------------------
+    # Lowercase
+    # -------------------------------------------------
 
     text = text.lower()
 
+    # -------------------------------------------------
+    # Unicode
+    # -------------------------------------------------
 
     text = remove_unicode(text)
 
+    # -------------------------------------------------
+    # IMPORTANT:
+    # Remove hallucination phrases BEFORE
+    # punctuation cleaning.
+    #
+    # This preserves phrases containing apostrophes.
+    # -------------------------------------------------
 
-    text = clean_punctuation(text)
+    text = remove_hallucination_phrases(
+        text
+    )
 
+    # -------------------------------------------------
+    # Remove hallucination words
+    # -------------------------------------------------
 
-    text = normalize_spaces(text)
+    text = remove_hallucinations(
+        text
+    )
 
+    # -------------------------------------------------
+    # Remove fillers
+    # -------------------------------------------------
 
-    text = remove_hallucination_phrases(text)
+    text = remove_fillers(
+        text
+    )
 
+    # -------------------------------------------------
+    # Remove punctuation / symbols
+    # -------------------------------------------------
 
-    text = remove_hallucinations(text)
+    text = clean_punctuation(
+        text
+    )
 
+    # -------------------------------------------------
+    # Remove extremely long tokens
+    # -------------------------------------------------
 
-    text = remove_fillers(text)
+    text = remove_long_tokens(
+        text
+    )
 
+    # -------------------------------------------------
+    # Normalize spaces
+    # -------------------------------------------------
 
-    text = remove_long_tokens(text)
+    text = normalize_spaces(
+        text
+    )
 
-
-    text = remove_repeated_words(text)
-
-
-    text = remove_repeated_phrases(text)
-
-
-    text = normalize_spaces(text)
-
+    # -------------------------------------------------
+    # IMPORTANT:
+    # Do NOT remove repeated words or phrases here.
+    #
+    # Repetition is an important NLP feature in this FYP.
+    # -------------------------------------------------
 
     return text

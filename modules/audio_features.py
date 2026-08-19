@@ -3,22 +3,35 @@ import numpy as np
 
 from modules.config import *
 
-# =====================================================
-# Audio Feature Extraction (Librosa)
-# =====================================================
+
 # =====================================================
 # LOAD AUDIO
 # =====================================================
 
 def load_audio(audio_path):
 
-    y, sr = librosa.load(
-        audio_path,
-        sr=TARGET_SAMPLE_RATE,
-        mono=True
-    )
+    if audio_path is None:
 
-    return y, sr
+        return np.array([]), TARGET_SAMPLE_RATE
+
+    try:
+
+        y, sr = librosa.load(
+            audio_path,
+            sr=TARGET_SAMPLE_RATE,
+            mono=True
+        )
+
+        return y, sr
+
+    except Exception as e:
+
+        print(
+            "⚠️ Failed to load audio:",
+            e
+        )
+
+        return np.array([]), TARGET_SAMPLE_RATE
 
 
 # =====================================================
@@ -29,158 +42,256 @@ def extract_audio_features(audio_path):
 
     y, sr = load_audio(audio_path)
 
+    # =================================================
+    # No audio / failed audio
+    # =================================================
+
     if len(y) == 0:
+
+        print(
+            "⚠️ Audio features set to zero."
+        )
 
         return {
 
-            "loudness": 0,
-            "rms_energy": 0,
-            "sound_density": 0,
-            "tempo": 0,
-            "avg_pitch": 0,
-            "pitch_variation": 0,
-            "audio_variation": 0,
-            "spectral_centroid": 0,
-            "spectral_bandwidth": 0,
-            "spectral_rolloff": 0,
-            "spectral_contrast": 0,
-            "zero_crossing_rate": 0,
-            "harmonic_ratio": 0,
-            "percussive_ratio": 0,
-            "audio_repetition": 0
+            "loudness": 0.0,
+
+            "rms_energy": 0.0,
+
+            "sound_density": 0.0,
+
+            "tempo": 0.0,
+
+            "avg_pitch": 0.0,
+
+            "pitch_variation": 0.0,
+
+            "audio_variation": 0.0,
+
+            "spectral_centroid": 0.0,
+
+            "spectral_bandwidth": 0.0,
+
+            "spectral_rolloff": 0.0,
+
+            "spectral_contrast": 0.0,
+
+            "zero_crossing_rate": 0.0,
+
+            "harmonic_ratio": 0.0,
+
+            "percussive_ratio": 0.0,
+
+            "audio_repetition": 0.0
 
         }
 
-    # =====================================================
+    # =================================================
     # Loudness
-    # =====================================================
+    # =================================================
 
     loudness = np.mean(
         librosa.feature.rms(y=y)
     )
 
-    # =====================================================
+    # =================================================
     # RMS Energy
-    # =====================================================
+    # =================================================
 
     rms = np.mean(
         librosa.feature.rms(y=y)
     )
 
-    # =====================================================
+    # =================================================
     # Tempo
-    # =====================================================
+    # =================================================
 
-    tempo, _ = librosa.beat.beat_track(
-        y=y,
-        sr=sr
-    )
+    try:
 
-    tempo = float(np.mean(tempo))
+        tempo, _ = librosa.beat.beat_track(
+            y=y,
+            sr=sr
+        )
 
-    # =====================================================
+        tempo = float(
+            np.mean(tempo)
+        )
+
+    except Exception:
+
+        tempo = 0.0
+
+    # =================================================
     # Pitch
-    # =====================================================
+    # =================================================
 
-    pitches, magnitudes = librosa.piptrack(
-        y=y,
-        sr=sr
-    )
+    try:
 
-    pitch_values = pitches[pitches > 0]
+        pitches, magnitudes = librosa.piptrack(
+            y=y,
+            sr=sr
+        )
 
-    if len(pitch_values):
+        pitch_values = pitches[
+            pitches > 0
+        ]
 
-        avg_pitch = np.mean(pitch_values)
+        if len(pitch_values):
 
-        pitch_variation = np.std(pitch_values)
+            avg_pitch = np.mean(
+                pitch_values
+            )
 
-    else:
+            pitch_variation = np.std(
+                pitch_values
+            )
 
-        avg_pitch = 0
-        pitch_variation = 0
+        else:
 
-    # =====================================================
+            avg_pitch = 0.0
+            pitch_variation = 0.0
+
+    except Exception:
+
+        avg_pitch = 0.0
+        pitch_variation = 0.0
+
+    # =================================================
     # Audio Variation
-    # =====================================================
+    # =================================================
 
     audio_variation = np.std(y)
 
-    # =====================================================
+    # =================================================
     # Spectral Features
-    # =====================================================
+    # =================================================
 
-    spectral_centroid = np.mean(
-        librosa.feature.spectral_centroid(
-            y=y,
-            sr=sr
+    try:
+
+        spectral_centroid = np.mean(
+            librosa.feature.spectral_centroid(
+                y=y,
+                sr=sr
+            )
         )
-    )
 
-    spectral_bandwidth = np.mean(
-        librosa.feature.spectral_bandwidth(
-            y=y,
-            sr=sr
+        spectral_bandwidth = np.mean(
+            librosa.feature.spectral_bandwidth(
+                y=y,
+                sr=sr
+            )
         )
-    )
 
-    spectral_rolloff = np.mean(
-        librosa.feature.spectral_rolloff(
-            y=y,
-            sr=sr
+        spectral_rolloff = np.mean(
+            librosa.feature.spectral_rolloff(
+                y=y,
+                sr=sr
+            )
         )
-    )
 
-    spectral_contrast = np.mean(
-        librosa.feature.spectral_contrast(
-            y=y,
-            sr=sr
+        spectral_contrast = np.mean(
+            librosa.feature.spectral_contrast(
+                y=y,
+                sr=sr
+            )
         )
-    )
 
-    zero_crossing_rate = np.mean(
-        librosa.feature.zero_crossing_rate(y)
-    )
+        zero_crossing_rate = np.mean(
+            librosa.feature.zero_crossing_rate(y)
+        )
 
-    # =====================================================
+    except Exception:
+
+        spectral_centroid = 0.0
+        spectral_bandwidth = 0.0
+        spectral_rolloff = 0.0
+        spectral_contrast = 0.0
+        zero_crossing_rate = 0.0
+
+    # =================================================
     # Harmonic / Percussive
-    # =====================================================
+    # =================================================
 
-    harmonic, percussive = librosa.effects.hpss(y)
+    try:
 
-    harmonic_energy = np.mean(np.abs(harmonic))
+        harmonic, percussive = librosa.effects.hpss(y)
 
-    percussive_energy = np.mean(np.abs(percussive))
+        harmonic_energy = np.mean(
+            np.abs(harmonic)
+        )
 
-    total = harmonic_energy + percussive_energy + 1e-8
+        percussive_energy = np.mean(
+            np.abs(percussive)
+        )
 
-    harmonic_ratio = harmonic_energy / total
+        total = (
+            harmonic_energy
+            +
+            percussive_energy
+            +
+            1e-8
+        )
 
-    percussive_ratio = percussive_energy / total
+        harmonic_ratio = (
+            harmonic_energy / total
+        )
 
-    # =====================================================
+        percussive_ratio = (
+            percussive_energy / total
+        )
+
+    except Exception:
+
+        harmonic_ratio = 0.0
+        percussive_ratio = 0.0
+
+    # =================================================
     # Sound Density
-    # =====================================================
+    # =================================================
 
-    onset_env = librosa.onset.onset_strength(
-        y=y,
-        sr=sr
-    )
+    try:
 
-    sound_density = float(np.mean(onset_env))
+        onset_env = librosa.onset.onset_strength(
+            y=y,
+            sr=sr
+        )
 
-    # =====================================================
+        sound_density = float(
+            np.mean(onset_env)
+        )
+
+    except Exception:
+
+        sound_density = 0.0
+
+    # =================================================
     # Audio Repetition
-    # =====================================================
+    # =================================================
 
-    chroma = librosa.feature.chroma_stft(
-        y=y,
-        sr=sr
-    )
+    try:
 
-    similarity = np.corrcoef(chroma)
+        chroma = librosa.feature.chroma_stft(
+            y=y,
+            sr=sr
+        )
 
-    repetition = float(np.mean(similarity > 0.95))
+        similarity = np.corrcoef(
+            chroma
+        )
+
+        repetition = float(
+            np.mean(
+                similarity > 0.95
+            )
+        )
+
+    except Exception:
+
+        repetition = 0.0
+
+    # =================================================
+    # RETURN FEATURES
+    # =================================================
 
     return {
 

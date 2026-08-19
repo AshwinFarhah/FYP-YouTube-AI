@@ -1,14 +1,13 @@
 """
-===========================================================
 VIDEO EXTRACTION MODULE
 
 Handles:
 - Frame extraction
 - Audio extraction
 
-===========================================================
+Audio extraction is limited to the first 300 seconds
+to keep visual, audio and transcript analysis consistent.
 """
-
 
 import cv2
 import os
@@ -16,6 +15,12 @@ import hashlib
 
 from moviepy import VideoFileClip
 
+
+# =====================================================
+# CONFIGURATION
+# =====================================================
+
+MAX_AUDIO_SECONDS = 300
 
 
 # =====================================================
@@ -30,46 +35,35 @@ def extract_frames(video_path, fps_rate=1):
         cv2.CAP_PROP_FPS
     )
 
-
     if fps == 0:
         cap.release()
         return []
-
 
     interval = max(
         int(fps / fps_rate),
         1
     )
 
-
     frames = []
 
     count = 0
-
 
     while cap.isOpened():
 
         ret, frame = cap.read()
 
-
         if not ret:
             break
-
 
         if count % interval == 0:
 
             frames.append(frame)
 
-
         count += 1
-
-
 
     cap.release()
 
-
     return frames
-
 
 
 # =====================================================
@@ -78,7 +72,6 @@ def extract_frames(video_path, fps_rate=1):
 
 def extract_audio(video_path):
 
-
     output_dir = "data/extracted/audio"
 
     os.makedirs(
@@ -86,26 +79,26 @@ def extract_audio(video_path):
         exist_ok=True
     )
 
-
-    # create unique filename
+    # -------------------------------------------------
+    # Create unique filename
+    # -------------------------------------------------
 
     filename = hashlib.md5(
         video_path.encode()
     ).hexdigest()
-
 
     audio_path = os.path.join(
         output_dir,
         filename + ".wav"
     )
 
-
-    # avoid extracting again
+    # -------------------------------------------------
+    # Avoid extracting again
+    # -------------------------------------------------
 
     if os.path.exists(audio_path):
 
         return audio_path
-
 
     video = None
 
@@ -115,12 +108,11 @@ def extract_audio(video_path):
             video_path
         )
 
-
-        # check if video contains audio
+        # -------------------------------------------------
+        # Check whether video contains audio
+        # -------------------------------------------------
 
         if video.audio is None:
-
-            video.close()
 
             print(
                 "⚠️ No audio found:",
@@ -129,23 +121,38 @@ def extract_audio(video_path):
 
             return None
 
+        # -------------------------------------------------
+        # Limit audio to first 300 seconds
+        # -------------------------------------------------
 
+        video_duration = video.duration
 
-        video.audio.write_audiofile(
+        audio_duration = min(
+            video_duration,
+            MAX_AUDIO_SECONDS
+        )
+
+        print(
+            f"🔊 Extracting audio: "
+            f"0-{audio_duration:.1f}s"
+        )
+
+        # MoviePy v2
+        audio_clip = video.audio.subclipped(
+            0,
+            audio_duration
+        )
+
+        audio_clip.write_audiofile(
             audio_path,
             logger=None
         )
 
-
-        video.close()
-
+        audio_clip.close()
 
         return audio_path
 
-
-
     except Exception as e:
-
 
         print(
             "❌ Audio extraction failed:",
@@ -157,8 +164,9 @@ def extract_audio(video_path):
             e
         )
 
+        return None
 
-        # ensure video closes after failure
+    finally:
 
         if video is not None:
 
@@ -166,9 +174,6 @@ def extract_audio(video_path):
 
                 video.close()
 
-            except:
+            except Exception:
 
                 pass
-
-
-        return None
