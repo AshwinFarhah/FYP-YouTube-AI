@@ -39,9 +39,9 @@ from utils.transcript_quality import (
 # CONFIG
 # =====================================================
 
-VIDEO_ROOT = r"D:\videos\test"
+VIDEO_ROOT = r"D:\videos\KidsVideos1"
 
-OUTPUT_FILE = "data/dataset_test4.csv"
+OUTPUT_FILE = "data/final_dataset.csv"
 
 os.makedirs("data",exist_ok=True)
 
@@ -62,7 +62,7 @@ MOTION_SPIKE_THRESHOLD = 2.5
 
 MAX_SECONDS = 300
 
-DATASET_VERSION = ("FYP_V3_300SEC_MULTIMODAL")
+DATASET_VERSION = ("FYP_FinalVer_300SEC_MULTIMODAL")
 
 
 print("🚀 Building Multimodal Dataset")
