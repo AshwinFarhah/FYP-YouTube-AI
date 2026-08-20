@@ -1,179 +1,270 @@
 """
-VIDEO EXTRACTION MODULE
+===========================================================
+VIDEO / AUDIO EXTRACTION MODULE
 
-Handles:
-- Frame extraction
-- Audio extraction
+Multimodal Explainable AI Framework
+YouTube Child Content Analysis
 
-Audio extraction is limited to the first 300 seconds
-to keep visual, audio and transcript analysis consistent.
+Purpose:
+- Extract audio from videos
+- Enforce the 300-second analysis limit
+- Keep audio and visual analysis temporally aligned
+- Store extracted audio inside the FYP project
+===========================================================
 """
 
-import cv2
 import os
-import hashlib
-
-from moviepy import VideoFileClip
+import subprocess
 
 
-# =====================================================
+# ============================================================
 # CONFIGURATION
-# =====================================================
+# ============================================================
 
 MAX_AUDIO_SECONDS = 300
 
+FFMPEG_PATH = r"C:\ffmpeg\bin\ffmpeg.exe"
 
-# =====================================================
-# FRAME EXTRACTION
-# =====================================================
+# Project-level extracted audio directory
+AUDIO_OUTPUT_DIR = os.path.join(
+    "Data",
+    "Extracted",
+    "Audio"
+)
 
-def extract_frames(video_path, fps_rate=1):
+# Convert to absolute path
+AUDIO_OUTPUT_DIR = os.path.abspath(
+    AUDIO_OUTPUT_DIR
+)
 
-    cap = cv2.VideoCapture(video_path)
-
-    fps = cap.get(
-        cv2.CAP_PROP_FPS
-    )
-
-    if fps == 0:
-        cap.release()
-        return []
-
-    interval = max(
-        int(fps / fps_rate),
-        1
-    )
-
-    frames = []
-
-    count = 0
-
-    while cap.isOpened():
-
-        ret, frame = cap.read()
-
-        if not ret:
-            break
-
-        if count % interval == 0:
-
-            frames.append(frame)
-
-        count += 1
-
-    cap.release()
-
-    return frames
+# Make sure directory exists
+os.makedirs(
+    AUDIO_OUTPUT_DIR,
+    exist_ok=True
+)
 
 
-# =====================================================
-# AUDIO EXTRACTION
-# =====================================================
+# ============================================================
+# EXTRACT AUDIO
+# ============================================================
 
-def extract_audio(video_path):
+def extract_audio(
+        video_path,
+        max_seconds=MAX_AUDIO_SECONDS
+):
+    """
+    Extracts only the first max_seconds of audio.
 
-    output_dir = "data/extracted/audio"
+    The extracted audio is stored in:
+
+        Data/Extracted/Audio/
+
+    This guarantees that the audio analysed by Librosa
+    and Whisper corresponds to the same time window
+    as the visual analysis.
+
+    Returns:
+        path to extracted WAV file
+        or None if extraction fails
+    """
+
+    # --------------------------------------------------------
+    # Validate video path
+    # --------------------------------------------------------
+
+    if video_path is None:
+
+        print(
+            "⚠️ Audio extraction skipped - no video path."
+        )
+
+        return None
+
+
+    if not os.path.exists(video_path):
+
+        print(
+            "⚠️ Audio extraction skipped - video does not exist."
+        )
+
+        return None
+
+
+    # --------------------------------------------------------
+    # Create output directory
+    # --------------------------------------------------------
 
     os.makedirs(
-        output_dir,
+        AUDIO_OUTPUT_DIR,
         exist_ok=True
     )
 
-    # -------------------------------------------------
-    # Create unique filename
-    # -------------------------------------------------
 
-    filename = hashlib.md5(
-        video_path.encode()
-    ).hexdigest()
+    # --------------------------------------------------------
+    # Create safe output filename
+    # --------------------------------------------------------
 
-    audio_path = os.path.join(
-        output_dir,
-        filename + ".wav"
+    video_name = os.path.splitext(
+        os.path.basename(video_path)
+    )[0]
+
+
+    output_filename = (
+        video_name
+        +
+        "_300sec.wav"
     )
 
-    # -------------------------------------------------
-    # Avoid extracting again
-    # -------------------------------------------------
 
-    if os.path.exists(audio_path):
+    output_path = os.path.join(
+        AUDIO_OUTPUT_DIR,
+        output_filename
+    )
 
-        return audio_path
 
-    video = None
+    # --------------------------------------------------------
+    # Remove previous temporary/existing file
+    # --------------------------------------------------------
+
+    if os.path.exists(output_path):
+
+        try:
+
+            os.remove(
+                output_path
+            )
+
+        except Exception as e:
+
+            print(
+                "⚠️ Could not remove existing audio file:",
+                e
+            )
+
+
+    # ========================================================
+    # FFMPEG COMMAND
+    # ========================================================
+
+    command = [
+
+        FFMPEG_PATH,
+
+        "-y",
+
+        "-i",
+        video_path,
+
+        # Start from beginning
+        "-ss",
+        "0",
+
+        # HARD 300-second limit
+        "-t",
+        str(max_seconds),
+
+        # Convert to mono
+        "-ac",
+        "1",
+
+        # Sample rate
+        "-ar",
+        "16000",
+
+        # WAV PCM
+        "-c:a",
+        "pcm_s16le",
+
+        output_path
+    ]
+
+
+    # ========================================================
+    # RUN FFMPEG
+    # ========================================================
 
     try:
 
-        video = VideoFileClip(
-            video_path
+        result = subprocess.run(
+
+            command,
+
+            stdout=subprocess.PIPE,
+
+            stderr=subprocess.PIPE,
+
+            text=True
+
         )
-
-        # -------------------------------------------------
-        # Check whether video contains audio
-        # -------------------------------------------------
-
-        if video.audio is None:
-
-            print(
-                "⚠️ No audio found:",
-                video_path
-            )
-
-            return None
-
-        # -------------------------------------------------
-        # Limit audio to first 300 seconds
-        # -------------------------------------------------
-
-        video_duration = video.duration
-
-        audio_duration = min(
-            video_duration,
-            MAX_AUDIO_SECONDS
-        )
-
-        print(
-            f"🔊 Extracting audio: "
-            f"0-{audio_duration:.1f}s"
-        )
-
-        # MoviePy v2
-        audio_clip = video.audio.subclipped(
-            0,
-            audio_duration
-        )
-
-        audio_clip.write_audiofile(
-            audio_path,
-            logger=None
-        )
-
-        audio_clip.close()
-
-        return audio_path
 
     except Exception as e:
 
         print(
-            "❌ Audio extraction failed:",
-            video_path
-        )
-
-        print(
-            "Reason:",
+            "❌ FFmpeg execution failed:",
             e
         )
 
         return None
 
-    finally:
 
-        if video is not None:
+    # ========================================================
+    # VALIDATE OUTPUT
+    # ========================================================
 
-            try:
+    if (
+        result.returncode != 0
+        or
+        not os.path.exists(output_path)
+    ):
 
-                video.close()
+        print(
+            "⚠️ Audio extraction failed."
+        )
 
-            except Exception:
+        print(
+            result.stderr[-1000:]
+        )
 
-                pass
+        return None
+
+
+    # --------------------------------------------------------
+    # Check file size
+    # --------------------------------------------------------
+
+    if os.path.getsize(
+        output_path
+    ) == 0:
+
+        print(
+            "⚠️ Extracted audio file is empty."
+        )
+
+        try:
+
+            os.remove(
+                output_path
+            )
+
+        except Exception:
+
+            pass
+
+        return None
+
+
+    # ========================================================
+    # SUCCESS
+    # ========================================================
+
+    print(
+        "   🎵 Audio extracted:",
+        output_path
+    )
+
+    print(
+        f"   ⏱️ Audio limit: "
+        f"{max_seconds} seconds"
+    )
+
+    return output_path

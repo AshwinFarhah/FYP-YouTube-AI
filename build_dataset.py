@@ -41,7 +41,7 @@ from utils.transcript_quality import (
 
 VIDEO_ROOT = r"D:\videos\test"
 
-OUTPUT_FILE = "data/dataset_test1.csv"
+OUTPUT_FILE = "data/dataset_test4.csv"
 
 os.makedirs("data",exist_ok=True)
 
@@ -62,105 +62,258 @@ MOTION_SPIKE_THRESHOLD = 2.5
 
 MAX_SECONDS = 300
 
-DATASET_VERSION = ("FYP_V2_300SEC_MULTIMODAL")
+DATASET_VERSION = ("FYP_V3_300SEC_MULTIMODAL")
 
 
 print("🚀 Building Multimodal Dataset")
 
 print(f"⏱️ Max processing per video: " f"{MAX_SECONDS} seconds")
 
+# =====================================================
+#
+#  Converts problematic numerical values into
+#  CSV-safe values.
+#
+# =====================================================
 
+def safe_value(value):
+
+
+    if value is None:
+        return ""
+
+    try:
+
+        if isinstance(
+            value,
+            (float, np.floating)
+        ):
+
+            if np.isnan(value):
+                return ""
+
+            if np.isinf(value):
+                return ""
+
+        return value
+
+    except Exception:
+
+        return value
 # =====================================================
 # RESUME SYSTEM
 # =====================================================
 
 processed = set()
 
-if os.path.exists(
-    OUTPUT_FILE
-):
+existing_rows = 0
+duplicate_rows = 0
+invalid_rows = 0
 
-    with open(
-        OUTPUT_FILE,
-        "r",
-        encoding="utf-8"
-    ) as f:
+if os.path.exists(OUTPUT_FILE):
 
-        reader = csv.reader(f)
+    print(
+        "🔄 Checking existing dataset..."
+    )
 
-        existing_header = next(
-            reader,
-            None
-        )
+    try:
 
-        # ---------------------------------------------
-        # Check old CSV
-        # ---------------------------------------------
+        with open(
+            OUTPUT_FILE,
+            "r",
+            encoding="utf-8",
+            newline=""
+        ) as f:
 
-        if (
-            existing_header is None
-            or
-            "dataset_version"
-            not in existing_header
-        ):
+            reader = csv.DictReader(f)
 
-            backup_file = (
-                OUTPUT_FILE
-                +
-                ".old"
+            existing_header = (
+                reader.fieldnames
             )
 
-            print(
-                "⚠️ Existing CSV uses an old format."
-            )
+            # -------------------------------------------------
+            # Validate existing CSV
+            # -------------------------------------------------
 
-            print(
-                "📦 Moving old CSV to:",
-                backup_file
-            )
+            if not existing_header:
 
-            f.close()
+                print(
+                    "⚠️ Existing CSV has no header."
+                )
 
-            if os.path.exists(
-                backup_file
-            ):
+                backup_file = (
+                    OUTPUT_FILE
+                    +
+                    ".old"
+                )
 
-                os.remove(
+                if os.path.exists(
+                    backup_file
+                ):
+
+                    os.remove(
+                        backup_file
+                    )
+
+                shutil.move(
+                    OUTPUT_FILE,
                     backup_file
                 )
 
-            shutil.move(
-                OUTPUT_FILE,
-                backup_file
-            )
+                existing_header = None
 
-        else:
+            elif "dataset_version" not in existing_header:
 
-            version_index = (
-                existing_header.index(
-                    "dataset_version"
+                print(
+                    "⚠️ Existing CSV uses an old format."
                 )
-            )
 
-            for row in reader:
+                backup_file = (
+                    OUTPUT_FILE
+                    +
+                    ".old"
+                )
 
-                if (
-                    len(row)
-                    >
-                    version_index
+                if os.path.exists(
+                    backup_file
                 ):
 
+                    os.remove(
+                        backup_file
+                    )
+
+                shutil.move(
+                    OUTPUT_FILE,
+                    backup_file
+                )
+
+                existing_header = None
+
+            elif "video_path" not in existing_header:
+
+                print(
+                    "⚠️ Existing CSV has no video_path column."
+                )
+
+                backup_file = (
+                    OUTPUT_FILE
+                    +
+                    ".old"
+                )
+
+                if os.path.exists(
+                    backup_file
+                ):
+
+                    os.remove(
+                        backup_file
+                    )
+
+                shutil.move(
+                    OUTPUT_FILE,
+                    backup_file
+                )
+
+                existing_header = None
+
+            else:
+
+                # -------------------------------------------------
+                # Read existing processed videos
+                # -------------------------------------------------
+
+                for row in reader:
+
+                    dataset_version = (
+                        row.get(
+                            "dataset_version",
+                            ""
+                        )
+                        or ""
+                    ).strip()
+
+                    video_path = (
+                        row.get(
+                            "video_path",
+                            ""
+                        )
+                        or ""
+                    ).strip()
+
+                    # ---------------------------------------------
+                    # Only accept rows from current dataset version
+                    # ---------------------------------------------
+
                     if (
-                        row[
-                            version_index
-                        ]
-                        ==
+                        dataset_version
+                        !=
                         DATASET_VERSION
                     ):
 
-                        processed.add(
-                            row[-1]
-                        )
+                        continue
+
+                    # ---------------------------------------------
+                    # Invalid row
+                    # ---------------------------------------------
+
+                    if not video_path:
+
+                        invalid_rows += 1
+
+                        continue
+
+                    # ---------------------------------------------
+                    # Duplicate row
+                    # ---------------------------------------------
+
+                    if video_path in processed:
+
+                        duplicate_rows += 1
+
+                        continue
+
+                    # ---------------------------------------------
+                    # Valid processed row
+                    # ---------------------------------------------
+
+                    processed.add(
+                        video_path
+                    )
+
+                    existing_rows += 1
+
+        print(
+            f"   📂 Existing valid rows: "
+            f"{existing_rows}"
+        )
+
+        print(
+            f"   🔁 Existing duplicate rows: "
+            f"{duplicate_rows}"
+        )
+
+        print(
+            f"   ⚠️ Invalid rows: "
+            f"{invalid_rows}"
+        )
+
+        print(
+            f"   ✅ Videos available for resume: "
+            f"{len(processed)}"
+        )
+
+    except Exception as e:
+
+        print(
+            "❌ Failed to read existing dataset."
+        )
+
+        print(
+            "Reason:",
+            e
+        )
+
+        raise
 
 
 # =====================================================
@@ -201,6 +354,15 @@ print(
     f"{len(video_list)}"
 )
 
+# =====================================================
+# CURRENT RUN DUPLICATE PROTECTION
+# =====================================================
+
+current_run_paths = set()
+
+print(
+    f"🔒 Resume protection active."
+)
 
 # =====================================================
 # CSV SETUP
@@ -317,11 +479,11 @@ with open(
         1
     ):
 
-        video_id = (
-            video_path
-            .replace(
-                "\\",
-                "/"
+        video_id = os.path.normcase(
+            os.path.normpath(
+                os.path.abspath(
+                    video_path
+                )
             )
         )
 
@@ -330,13 +492,28 @@ with open(
         # ---------------------------------------------
 
         if video_id in processed:
-
             print(
                 f"⏭️ Skipping already processed: "
                 f"{os.path.basename(video_path)}"
             )
 
             continue
+
+        if video_id in current_run_paths:
+            print(
+                f"⚠️ Duplicate video detected in current run: "
+                f"{os.path.basename(video_path)}"
+            )
+
+            print(
+                "   Skipping duplicate."
+            )
+
+            continue
+
+        current_run_paths.add(
+            video_id
+        )
 
 
         print(
@@ -1371,102 +1548,133 @@ with open(
                 "to preserve 1-row-per-video."
             )
 
-
         # =================================================
         # SAVE ROW
         # =================================================
 
-        writer.writerow([
+        try:
 
-            # VERSION
-            DATASET_VERSION,
+            writer.writerow([
 
-            # VISUAL
-            avg_sat,
-            avg_brightness,
-            motion_mean,
-            motion_std,
-            scene_rate,
-            flicker_rate,
+                # VERSION
+                DATASET_VERSION,
 
-            # AUDIO
-            audio_available,
-            loudness,
-            density,
-            audio_variation,
-            avg_pitch,
-            pitch_var,
-            spectral_centroid,
-            spectral_bandwidth,
-            spectral_rolloff,
-            spectral_contrast,
-            zero_crossing_rate,
-            harmonic_ratio,
-            percussive_ratio,
-            tempo,
+                # VISUAL
+                safe_value(avg_sat),
+                safe_value(avg_brightness),
+                safe_value(motion_mean),
+                safe_value(motion_std),
+                safe_value(scene_rate),
+                safe_value(flicker_rate),
 
-            # BEHAVIOUR
-            motion_spike_rate,
-            attention_score,
-            loop_detection_score,
-            reward_cue_frequency,
-            attention_reset_rate,
+                # AUDIO
+                audio_available,
+                safe_value(loudness),
+                safe_value(density),
+                safe_value(audio_variation),
+                safe_value(avg_pitch),
+                safe_value(pitch_var),
+                safe_value(spectral_centroid),
+                safe_value(spectral_bandwidth),
+                safe_value(spectral_rolloff),
+                safe_value(spectral_contrast),
+                safe_value(zero_crossing_rate),
+                safe_value(harmonic_ratio),
+                safe_value(percussive_ratio),
+                safe_value(tempo),
 
-            # TEXT
-            transcript_length,
-            text_complexity,
-            average_sentence_length,
-            vocabulary_diversity,
-            phrase_repetition,
-            educational_word_ratio,
-            reward_keyword_frequency,
+                # BEHAVIOUR
+                safe_value(motion_spike_rate),
+                safe_value(attention_score),
+                safe_value(loop_detection_score),
+                safe_value(reward_cue_frequency),
+                safe_value(attention_reset_rate),
 
-            # TRANSCRIPT QUALITY
-            transcript_word_count,
-            unique_word_ratio_value,
-            repeated_word_ratio_value,
-            hallucination_score_value,
-            english_ratio_value,
-            nonsense_ratio_value,
+                # TEXT
+                safe_value(transcript_length),
+                safe_value(text_complexity),
+                safe_value(average_sentence_length),
+                safe_value(vocabulary_diversity),
+                safe_value(phrase_repetition),
+                safe_value(educational_word_ratio),
+                safe_value(reward_keyword_frequency),
 
-            original_transcript_quality_score,
-            original_transcript_quality_label,
+                # TRANSCRIPT QUALITY
+                safe_value(transcript_word_count),
+                safe_value(unique_word_ratio_value),
+                safe_value(repeated_word_ratio_value),
+                safe_value(hallucination_score_value),
+                safe_value(english_ratio_value),
+                safe_value(nonsense_ratio_value),
 
-            transcript_rejected,
+                # ORIGINAL QUALITY
+                safe_value(
+                    original_transcript_quality_score
+                ),
 
-            transcript,
+                original_transcript_quality_label,
 
-            # EMOTION
-            emotion_arousal,
-            emotion_valence,
-            emotion_stability,
+                # FILTERING
+                transcript_rejected,
 
-            # LABEL
-            stim_score,
-            content_name,
-            development_label,
+                transcript,
 
-            # VIDEO INFORMATION
-            video_duration_seconds,
-            analysis_duration_seconds,
+                # EMOTION
+                safe_value(emotion_arousal),
+                safe_value(emotion_valence),
+                safe_value(emotion_stability),
 
-            # PATH
-            video_id
+                # LABEL
+                safe_value(stim_score),
+                content_name,
+                development_label,
 
-        ])
+                # VIDEO INFORMATION
+                safe_value(
+                    video_duration_seconds
+                ),
 
+                safe_value(
+                    analysis_duration_seconds
+                ),
 
-        file.flush()
+                # PATH
+                video_id
 
+            ])
 
-        processed.add(
-            video_id
-        )
+            # -------------------------------------------------
+            # Force data to disk
+            # -------------------------------------------------
 
+            file.flush()
 
-        print(
-            "   💾 Row saved successfully."
-        )
+            # -------------------------------------------------
+            # Only mark processed AFTER successful write
+            # -------------------------------------------------
+
+            processed.add(
+                video_id
+            )
+
+            print(
+                "   💾 Row saved successfully."
+            )
+
+        except Exception as e:
+
+            print(
+                "❌ CSV row could not be saved."
+            )
+
+            print(
+                "Reason:",
+                e
+            )
+
+            print(
+                "⚠️ Video will NOT be marked as processed."
+            )
 
 
 print(
