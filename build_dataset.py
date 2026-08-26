@@ -39,7 +39,7 @@ from utils.transcript_quality import (
 # CONFIG
 # =====================================================
 
-VIDEO_ROOT = r"D:\videos\KidsVideos1"
+VIDEO_ROOT = r"D:\videos\KidsVideos2"
 
 OUTPUT_FILE = "data/final_dataset.csv"
 
