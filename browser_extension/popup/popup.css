@@ -35,59 +35,6 @@ body {
 
 
 /* =========================================
-   HEADER
-========================================= */
-
-.popup-header {
-
-    margin-bottom: 22px;
-
-}
-
-
-.brand {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-}
-
-
-.brand-logo {
-
-    width: 95px;
-
-    height: 52px;
-
-    object-fit: contain;
-
-    border-radius: 15px;
-
-}
-
-
-.brand h1 {
-
-    font-size: 20px;
-
-    margin-bottom: 4px;
-
-}
-
-
-.brand p {
-
-    font-size: 11px;
-
-    color: #777;
-
-}
-
-
-/* =========================================
    SCREEN
 ========================================= */
 
@@ -109,48 +56,55 @@ body {
    INITIAL SCREEN
 ========================================= */
 
+/* ============================================================
+   NEUROSHIELD LOGO
+   ============================================================ */
+
 .hero-icon {
+    width: 95px;
+    height: 55px;
 
-    width: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    height: 76px;
+    flex-shrink: 0;
 
     margin: 10px auto 20px;
 
-    border-radius: 24px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #5c6cff,
-            #7d89ff
-        );
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 34px;
-
-    box-shadow:
-        0 10px 25px
-        rgba(92, 108, 255, 0.25);
-
+    background: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
 }
 
+.hero-icon img {
+    width: 135px;
+    height: 95px;
+
+    object-fit: contain;
+    display: block;
+}
 
 h2 {
 
     text-align: center;
 
-    font-size: 23px;
+    font-size: 35px;
 
     margin-bottom: 10px;
 
 }
+h3 {
 
+    text-align: center;
+
+    font-size: 15px;
+
+    margin-bottom: 10px;
+
+}
 
 .description {
 
@@ -168,50 +122,94 @@ h2 {
 
 
 /* =========================================
-   INFORMATION
+   FLOATING INFORMATION
 ========================================= */
 
 .protection-info {
 
-    background: white;
+    width: 100%;
 
-    border-radius: 20px;
-
-    padding: 15px;
+    margin-top: 12px;
 
     margin-bottom: 20px;
 
-    border: 1px solid #e6ebf3;
+    padding: 4px 4px 16px;
+
+    background: transparent;
+
+    border: none;
 
 }
 
 
-.info-row {
+/* =========================================
+   BUBBLE AREA
+========================================= */
+
+.floating-bubbles {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 145px;
+
+}
+
+
+/* =========================================
+   BASE BUBBLE
+========================================= */
+
+.info-bubble {
+
+    position: absolute;
 
     display: flex;
 
     align-items: center;
 
-    gap: 12px;
+    gap: 8px;
 
-    padding: 9px 4px;
+    padding: 8px 14px 8px 8px;
 
-    font-size: 13px;
+    background: rgba(255, 255, 255, 0.96);
 
-    color: #555;
+    border: 1px solid #e4e9f2;
+
+    border-radius: 999px;
+
+    box-shadow:
+        0 7px 18px rgba(60, 70, 100, 0.08);
+
+    color: #555f70;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
 
 }
 
 
+/* =========================================
+   ICON
+========================================= */
+
 .info-icon {
 
-    width: 32px;
+    width: 30px;
 
-    height: 32px;
+    height: 30px;
 
-    border-radius: 10px;
+    min-width: 30px;
 
-    background: #eef2ff;
+    border-radius: 50%;
 
     display: flex;
 
@@ -219,7 +217,163 @@ h2 {
 
     justify-content: center;
 
-    font-size: 15px;
+    font-size: 14px;
+
+}
+
+
+/* =========================================
+   BUBBLE POSITIONS
+   Straight — no rotation
+========================================= */
+
+.bubble-visual {
+
+    left: 2%;
+
+    top: 5px;
+
+}
+
+
+.bubble-audio {
+
+    right: 2%;
+
+    top: 20px;
+
+}
+
+
+.bubble-language {
+
+    left: 10%;
+
+    top: 78px;
+
+}
+
+
+.bubble-engagement {
+
+    right: 9%;
+
+    top: 92px;
+
+}
+
+
+/* =========================================
+   ICON COLORS
+========================================= */
+
+.bubble-visual .info-icon {
+
+    background: #fff0dc;
+
+}
+
+
+.bubble-audio .info-icon {
+
+    background: #ffe7e7;
+
+}
+
+
+.bubble-language .info-icon {
+
+    background: #eee9ff;
+
+}
+
+
+.bubble-engagement .info-icon {
+
+    background: #e4f1ff;
+
+}
+
+
+/* =========================================
+   HOVER
+========================================= */
+
+.info-bubble:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 11px 24px rgba(60, 70, 100, 0.13);
+
+}
+
+
+/* =========================================
+   SMALL SCREENS
+========================================= */
+
+@media (max-width: 450px) {
+
+    .floating-bubbles {
+
+        height: 160px;
+
+    }
+
+
+    .info-bubble {
+
+        font-size: 10px;
+
+        padding: 7px 11px 7px 7px;
+
+    }
+
+
+    .info-icon {
+
+        width: 27px;
+
+        height: 27px;
+
+        min-width: 27px;
+
+        font-size: 13px;
+
+    }
+
+
+    .bubble-visual {
+
+        left: 0;
+
+    }
+
+
+    .bubble-audio {
+
+        right: 0;
+
+    }
+
+
+    .bubble-language {
+
+        left: 4%;
+
+        top: 82px;
+
+    }
+
+
+    .bubble-engagement {
+
+        right: 3%;
+
+        top: 100px;
+
+    }
 
 }
 

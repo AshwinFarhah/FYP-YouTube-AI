@@ -18,6 +18,9 @@ let isDragging = false;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
 
+let notificationsEnabled = true;
+let lastAlertedVideoId = null;
+
 
 // ============================================================
 // INITIALISE
@@ -27,19 +30,23 @@ async function initialise() {
 
     try {
 
-        const result = await chrome.storage.local.get(
-            ["protectionEnabled"]
-        );
+        const result = await chrome.storage.local.get([
+            "protectionEnabled",
+            "neuroshieldNotificationsEnabled"
+        ]);
 
         protectionEnabled =
             result.protectionEnabled === true;
+
+        notificationsEnabled =
+            result.neuroshieldNotificationsEnabled !== false;
 
         checkCurrentPage();
 
     } catch (error) {
 
         console.error(
-            "NeuroShield AI: Could not initialise:",
+            "NeuroShield AI: Initialisation failed:",
             error
         );
 
@@ -62,11 +69,12 @@ function checkCurrentPage() {
 
     }
 
-
     const videoId = getCurrentVideoId();
 
+    // --------------------------------------------------------
+    // YOUTUBE HOME / NO VIDEO
+    // --------------------------------------------------------
 
-    // No video selected
     if (!videoId) {
 
         currentVideoId = null;
@@ -77,11 +85,15 @@ function checkCurrentPage() {
 
     }
 
+    // --------------------------------------------------------
+    // NEW VIDEO
+    // --------------------------------------------------------
 
-    // New video
     if (videoId !== currentVideoId) {
 
         currentVideoId = videoId;
+
+        lastAlertedVideoId = null;
 
         showAnalysisTemplate();
 
@@ -89,8 +101,10 @@ function checkCurrentPage() {
 
     }
 
+    // --------------------------------------------------------
+    // OVERLAY DISAPPEARED
+    // --------------------------------------------------------
 
-    // Same video but overlay somehow disappeared
     if (!document.getElementById("neuroshield-overlay")) {
 
         showAnalysisTemplate();
@@ -106,19 +120,27 @@ function checkCurrentPage() {
 
 function getCurrentVideoId() {
 
-    const url = new URL(window.location.href);
+    try {
 
+        const url =
+            new URL(window.location.href);
 
-    // Standard YouTube video page
-    if (
-        url.hostname.includes("youtube.com") &&
-        url.pathname === "/watch"
-    ) {
+        if (
+            url.hostname.includes("youtube.com") &&
+            url.pathname === "/watch"
+        ) {
 
-        return url.searchParams.get("v");
+            return url.searchParams.get("v");
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "NeuroShield AI: Could not read YouTube URL."
+        );
 
     }
-
 
     return null;
 
@@ -133,19 +155,22 @@ function showAnalysisTemplate() {
 
     removeOverlay();
 
-
     overlay =
         document.createElement("div");
 
     overlay.id =
         "neuroshield-overlay";
 
+    const logoURL =
+        chrome.runtime.getURL("icons/logo.png");
 
     overlay.innerHTML = `
 
         <div class="neuroshield-window">
 
+            <!-- ================================================= -->
             <!-- HEADER -->
+            <!-- ================================================= -->
 
             <div
                 class="neuroshield-header"
@@ -154,11 +179,15 @@ function showAnalysisTemplate() {
 
                 <div class="neuroshield-brand">
 
-                    <img
-                        src="${chrome.runtime.getURL("icons/logo.png")}"
-                        class="neuroshield-logo"
-                        alt="NeuroShield AI"
-                    >
+                    <div class="neuroshield-logo-container">
+
+                        <img
+                            src="${logoURL}"
+                            class="neuroshield-logo"
+                            alt="NeuroShield AI"
+                        >
+
+                    </div>
 
                     <div class="neuroshield-brand-text">
 
@@ -177,18 +206,53 @@ function showAnalysisTemplate() {
 
                 <div class="neuroshield-actions">
 
+                    <!-- NOTIFICATION -->
+
+                    <button
+                        id="neuroshield-notification"
+                        class="neuroshield-action"
+                        title="Mute high-risk alerts"
+                        aria-label="Mute high-risk alerts"
+                        type="button"
+                    >
+                        🔔
+                    </button>
+
+
+                    <!-- SETTINGS -->
+
+                    <button
+                        id="neuroshield-settings"
+                        class="neuroshield-action"
+                        title="Open settings"
+                        aria-label="Open settings"
+                        type="button"
+                    >
+                        ⚙
+                    </button>
+
+
+                    <!-- MINIMIZE -->
+
                     <button
                         id="neuroshield-minimize"
                         class="neuroshield-action"
                         title="Minimize"
+                        aria-label="Minimize"
+                        type="button"
                     >
                         −
                     </button>
 
+
+                    <!-- CLOSE -->
+
                     <button
                         id="neuroshield-close"
-                        class="neuroshield-action"
+                        class="neuroshield-action close"
                         title="Close"
+                        aria-label="Close"
+                        type="button"
                     >
                         ×
                     </button>
@@ -198,14 +262,16 @@ function showAnalysisTemplate() {
             </div>
 
 
+            <!-- ================================================= -->
             <!-- CONTENT -->
+            <!-- ================================================= -->
 
             <div
                 class="neuroshield-content"
                 id="neuroshield-content"
             >
 
-                <!-- ANALYSIS STATUS -->
+                <!-- STATUS -->
 
                 <div class="neuroshield-status-card">
 
@@ -219,8 +285,11 @@ function showAnalysisTemplate() {
                                 AI Monitoring
                             </div>
 
-                            <div class="status-text">
-                                Waiting for analysis
+                            <div
+                                class="status-text"
+                                id="analysisStatusText"
+                            >
+                                Waiting for backend analysis
                             </div>
 
                         </div>
@@ -234,38 +303,52 @@ function showAnalysisTemplate() {
                 </div>
 
 
+                <!-- ================================================= -->
                 <!-- MAIN SCORE -->
+                <!-- ================================================= -->
 
-                <section class="neuroshield-main-card">
+                <section
+                    class="neuroshield-main-card"
+                    id="mainScoreCard"
+                >
 
                     <div class="live-badge">
-                        ANALYSIS
+                        READY
                     </div>
 
                     <div class="main-score-title">
                         Overall Developmental Score
                     </div>
 
-                    <div class="main-score-empty">
+                    <div
+                        class="main-score-empty"
+                        id="overallScore"
+                    >
                         —
                     </div>
 
-                    <div class="main-score-label">
+                    <div
+                        class="main-score-label"
+                        id="overallScoreLabel"
+                    >
                         Awaiting analysis
                     </div>
 
                     <div class="main-score-description">
 
-                        Analysis results will appear here once
-                        the NeuroShield AI backend processes
-                        the selected video.
+                        This video has not been analysed yet.
+                        Results will appear here only after
+                        the NeuroShield AI backend provides
+                        verified analysis data.
 
                     </div>
 
                 </section>
 
 
+                <!-- ================================================= -->
                 <!-- DEVELOPMENTAL IMPACT -->
+                <!-- ================================================= -->
 
                 <section class="neuroshield-card">
 
@@ -290,7 +373,7 @@ function showAnalysisTemplate() {
                                     Cognitive Impact
                                 </span>
 
-                                <strong>
+                                <strong id="cognitiveScore">
                                     —
                                 </strong>
 
@@ -298,7 +381,10 @@ function showAnalysisTemplate() {
 
                             <div class="progress-track">
 
-                                <div class="progress-fill"></div>
+                                <div
+                                    class="progress-fill cognitive-fill"
+                                    id="cognitiveBar"
+                                ></div>
 
                             </div>
 
@@ -327,7 +413,7 @@ function showAnalysisTemplate() {
                                     Behavioural Risk
                                 </span>
 
-                                <strong>
+                                <strong id="behaviouralScore">
                                     —
                                 </strong>
 
@@ -335,7 +421,10 @@ function showAnalysisTemplate() {
 
                             <div class="progress-track">
 
-                                <div class="progress-fill"></div>
+                                <div
+                                    class="progress-fill behavioural-fill"
+                                    id="behaviouralBar"
+                                ></div>
 
                             </div>
 
@@ -364,7 +453,7 @@ function showAnalysisTemplate() {
                                     Emotional Stimulation
                                 </span>
 
-                                <strong>
+                                <strong id="emotionalScore">
                                     —
                                 </strong>
 
@@ -372,7 +461,10 @@ function showAnalysisTemplate() {
 
                             <div class="progress-track">
 
-                                <div class="progress-fill"></div>
+                                <div
+                                    class="progress-fill emotional-fill"
+                                    id="emotionalBar"
+                                ></div>
 
                             </div>
 
@@ -387,7 +479,9 @@ function showAnalysisTemplate() {
                 </section>
 
 
+                <!-- ================================================= -->
                 <!-- EXPLAINABILITY -->
+                <!-- ================================================= -->
 
                 <section class="neuroshield-card">
 
@@ -395,8 +489,10 @@ function showAnalysisTemplate() {
                         Explainability Insights
                     </div>
 
-
-                    <div class="empty-insight">
+                    <div
+                        class="empty-insight"
+                        id="insightContainer"
+                    >
 
                         <div class="empty-insight-icon">
                             ✦
@@ -421,14 +517,15 @@ function showAnalysisTemplate() {
                 </section>
 
 
+                <!-- ================================================= -->
                 <!-- MULTIMEDIA FEATURES -->
+                <!-- ================================================= -->
 
                 <section class="neuroshield-card">
 
                     <div class="card-title">
                         Detected Multimedia Features
                     </div>
-
 
                     <div class="feature-stack">
 
@@ -459,41 +556,34 @@ function showAnalysisTemplate() {
 
                                 </div>
 
-                                <span class="feature-level">
+                                <span
+                                    class="feature-level"
+                                    id="visualLevel"
+                                >
                                     —
                                 </span>
 
                             </div>
 
-
                             <div class="mini-progress">
 
-                                <div class="mini-fill"></div>
+                                <div
+                                    class="mini-fill"
+                                    id="visualBar"
+                                ></div>
 
                             </div>
 
+                            <div
+                                class="feature-bubbles"
+                                id="visualFeatures"
+                            >
 
-                            <div class="feature-bubbles">
-
-                                <span>
-                                    Motion Intensity
-                                </span>
-
-                                <span>
-                                    Scene Changes
-                                </span>
-
-                                <span>
-                                    Brightness
-                                </span>
-
-                                <span>
-                                    Saturation
-                                </span>
-
-                                <span>
-                                    Flicker Rate
-                                </span>
+                                <span>Motion Intensity</span>
+                                <span>Scene Changes</span>
+                                <span>Brightness</span>
+                                <span>Saturation</span>
+                                <span>Flicker Rate</span>
 
                             </div>
 
@@ -526,37 +616,33 @@ function showAnalysisTemplate() {
 
                                 </div>
 
-                                <span class="feature-level">
+                                <span
+                                    class="feature-level"
+                                    id="audioLevel"
+                                >
                                     —
                                 </span>
 
                             </div>
 
-
                             <div class="mini-progress">
 
-                                <div class="mini-fill"></div>
+                                <div
+                                    class="mini-fill"
+                                    id="audioBar"
+                                ></div>
 
                             </div>
 
+                            <div
+                                class="feature-bubbles"
+                                id="audioFeatures"
+                            >
 
-                            <div class="feature-bubbles">
-
-                                <span>
-                                    Loudness
-                                </span>
-
-                                <span>
-                                    Pitch Variation
-                                </span>
-
-                                <span>
-                                    Tempo
-                                </span>
-
-                                <span>
-                                    Spectral Density
-                                </span>
+                                <span>Loudness</span>
+                                <span>Pitch Variation</span>
+                                <span>Tempo</span>
+                                <span>Spectral Density</span>
 
                             </div>
 
@@ -589,33 +675,32 @@ function showAnalysisTemplate() {
 
                                 </div>
 
-                                <span class="feature-level">
+                                <span
+                                    class="feature-level"
+                                    id="textLevel"
+                                >
                                     —
                                 </span>
 
                             </div>
 
-
                             <div class="mini-progress">
 
-                                <div class="mini-fill"></div>
+                                <div
+                                    class="mini-fill"
+                                    id="textBar"
+                                ></div>
 
                             </div>
 
+                            <div
+                                class="feature-bubbles"
+                                id="textFeatures"
+                            >
 
-                            <div class="feature-bubbles">
-
-                                <span>
-                                    Phrase Repetition
-                                </span>
-
-                                <span>
-                                    Sentence Complexity
-                                </span>
-
-                                <span>
-                                    Vocabulary Diversity
-                                </span>
+                                <span>Phrase Repetition</span>
+                                <span>Sentence Complexity</span>
+                                <span>Vocabulary Diversity</span>
 
                             </div>
 
@@ -648,37 +733,33 @@ function showAnalysisTemplate() {
 
                                 </div>
 
-                                <span class="feature-level">
+                                <span
+                                    class="feature-level"
+                                    id="engagementLevel"
+                                >
                                     —
                                 </span>
 
                             </div>
 
-
                             <div class="mini-progress">
 
-                                <div class="mini-fill"></div>
+                                <div
+                                    class="mini-fill"
+                                    id="engagementBar"
+                                ></div>
 
                             </div>
 
+                            <div
+                                class="feature-bubbles"
+                                id="engagementFeatures"
+                            >
 
-                            <div class="feature-bubbles">
-
-                                <span>
-                                    Reward Cues
-                                </span>
-
-                                <span>
-                                    Attention Resets
-                                </span>
-
-                                <span>
-                                    Loop Detection
-                                </span>
-
-                                <span>
-                                    Motion Spikes
-                                </span>
+                                <span>Reward Cues</span>
+                                <span>Attention Resets</span>
+                                <span>Loop Detection</span>
+                                <span>Motion Spikes</span>
 
                             </div>
 
@@ -689,7 +770,9 @@ function showAnalysisTemplate() {
                 </section>
 
 
+                <!-- ================================================= -->
                 <!-- RECOMMENDATION -->
+                <!-- ================================================= -->
 
                 <section class="neuroshield-card">
 
@@ -697,16 +780,19 @@ function showAnalysisTemplate() {
                         Recommendation
                     </div>
 
-                    <div class="empty-recommendation">
+                    <div
+                        class="empty-recommendation"
+                        id="recommendation"
+                    >
 
                         <span>
                             💡
                         </span>
 
                         <p>
-                            Recommendation will be generated
-                            after the developmental analysis
-                            is completed.
+                            No recommendation is available.
+                            A recommendation will appear only
+                            after verified backend analysis.
                         </p>
 
                     </div>
@@ -730,9 +816,7 @@ function showAnalysisTemplate() {
 
     `;
 
-
     document.body.appendChild(overlay);
-
 
     initialiseOverlayControls();
 
@@ -752,35 +836,107 @@ function initialiseOverlayControls() {
             ".neuroshield-window"
         );
 
-
     const dragHandle =
         document.getElementById(
             "neuroshield-drag-handle"
         );
-
 
     const closeButton =
         document.getElementById(
             "neuroshield-close"
         );
 
-
     const minimizeButton =
         document.getElementById(
             "neuroshield-minimize"
         );
 
+    const notificationButton =
+        document.getElementById(
+            "neuroshield-notification"
+        );
+
+    const settingsButton =
+        document.getElementById(
+            "neuroshield-settings"
+        );
+
 
     if (!windowElement || !dragHandle) {
+
+        console.error(
+            "NeuroShield AI: Overlay controls could not initialise."
+        );
 
         return;
 
     }
 
 
-    // --------------------------------------------------------
+    // ========================================================
+    // NOTIFICATIONS
+    // ========================================================
+
+    if (notificationButton) {
+
+        updateNotificationButton(
+            notificationButton
+        );
+
+        notificationButton.addEventListener(
+            "click",
+            async function(event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                await toggleNotifications();
+
+            }
+        );
+
+    }
+
+
+    // ========================================================
+    // SETTINGS
+    // ========================================================
+
+    if (settingsButton) {
+
+        settingsButton.addEventListener(
+            "click",
+            function(event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                chrome.runtime.sendMessage(
+                    {
+                        action: "OPEN_SETTINGS"
+                    },
+                    function() {
+
+                        if (chrome.runtime.lastError) {
+
+                            console.log(
+                                "NeuroShield AI: Settings request sent."
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    // ========================================================
     // CLOSE
-    // --------------------------------------------------------
+    // ========================================================
 
     if (closeButton) {
 
@@ -788,6 +944,7 @@ function initialiseOverlayControls() {
             "click",
             function(event) {
 
+                event.preventDefault();
                 event.stopPropagation();
 
                 removeOverlay();
@@ -798,9 +955,9 @@ function initialiseOverlayControls() {
     }
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // MINIMIZE
-    // --------------------------------------------------------
+    // ========================================================
 
     if (minimizeButton) {
 
@@ -808,6 +965,7 @@ function initialiseOverlayControls() {
             "click",
             function(event) {
 
+                event.preventDefault();
                 event.stopPropagation();
 
                 windowElement.classList.toggle(
@@ -834,15 +992,14 @@ function initialiseOverlayControls() {
     }
 
 
-    // --------------------------------------------------------
-    // DRAGGING
-    // --------------------------------------------------------
+    // ========================================================
+    // DRAG
+    // ========================================================
 
     dragHandle.addEventListener(
         "mousedown",
         function(event) {
 
-            // Don't drag when clicking buttons
             if (
                 event.target.closest(
                     ".neuroshield-action"
@@ -853,13 +1010,10 @@ function initialiseOverlayControls() {
 
             }
 
-
             isDragging = true;
-
 
             const rect =
                 windowElement.getBoundingClientRect();
-
 
             dragOffsetX =
                 event.clientX - rect.left;
@@ -867,11 +1021,9 @@ function initialiseOverlayControls() {
             dragOffsetY =
                 event.clientY - rect.top;
 
-
             windowElement.classList.add(
                 "dragging"
             );
-
 
             event.preventDefault();
 
@@ -879,16 +1031,122 @@ function initialiseOverlayControls() {
     );
 
 
-    document.addEventListener(
-        "mousemove",
-        handleDrag
-    );
+    // ========================================================
+    // SAVE SIZE WHEN RESIZED
+    // ========================================================
+
+    if (window.ResizeObserver) {
+
+        const resizeObserver =
+            new ResizeObserver(
+                function() {
+
+                    if (!windowElement.classList.contains("minimized")) {
+
+                        saveOverlayPosition();
+
+                    }
+
+                }
+            );
+
+        resizeObserver.observe(
+            windowElement
+        );
+
+    }
+
+}
 
 
-    document.addEventListener(
-        "mouseup",
-        stopDrag
-    );
+// ============================================================
+// NOTIFICATION TOGGLE
+// ============================================================
+
+async function toggleNotifications() {
+
+    notificationsEnabled =
+        !notificationsEnabled;
+
+    try {
+
+        await chrome.storage.local.set({
+
+            neuroshieldNotificationsEnabled:
+                notificationsEnabled
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "NeuroShield AI: Could not save notification setting:",
+            error
+        );
+
+    }
+
+    const button =
+        document.getElementById(
+            "neuroshield-notification"
+        );
+
+    if (button) {
+
+        updateNotificationButton(
+            button
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// UPDATE NOTIFICATION BUTTON
+// ============================================================
+
+function updateNotificationButton(button) {
+
+    if (!button) {
+        return;
+    }
+
+    if (notificationsEnabled) {
+
+        button.textContent =
+            "🔔";
+
+        button.title =
+            "Mute high-risk alerts";
+
+        button.setAttribute(
+            "aria-label",
+            "Mute high-risk alerts"
+        );
+
+        button.classList.remove(
+            "muted"
+        );
+
+    } else {
+
+        button.textContent =
+            "🔕";
+
+        button.title =
+            "Unmute high-risk alerts";
+
+        button.setAttribute(
+            "aria-label",
+            "Unmute high-risk alerts"
+        );
+
+        button.classList.add(
+            "muted"
+        );
+
+    }
 
 }
 
@@ -905,12 +1163,10 @@ function handleDrag(event) {
 
     }
 
-
     const windowElement =
         document.querySelector(
             ".neuroshield-window"
         );
-
 
     if (!windowElement) {
 
@@ -918,13 +1174,11 @@ function handleDrag(event) {
 
     }
 
-
     let x =
         event.clientX - dragOffsetX;
 
     let y =
         event.clientY - dragOffsetY;
-
 
     const width =
         windowElement.offsetWidth;
@@ -932,14 +1186,17 @@ function handleDrag(event) {
     const height =
         windowElement.offsetHeight;
 
-
-    // Keep window inside browser
     const maxX =
-        window.innerWidth - width;
+        Math.max(
+            0,
+            window.innerWidth - width
+        );
 
     const maxY =
-        window.innerHeight - 60;
-
+        Math.max(
+            0,
+            window.innerHeight - height
+        );
 
     x =
         Math.max(
@@ -950,7 +1207,6 @@ function handleDrag(event) {
             )
         );
 
-
     y =
         Math.max(
             0,
@@ -960,7 +1216,6 @@ function handleDrag(event) {
             )
         );
 
-
     windowElement.style.left =
         `${x}px`;
 
@@ -969,9 +1224,6 @@ function handleDrag(event) {
 
     windowElement.style.right =
         "auto";
-
-
-    saveOverlayPosition();
 
 }
 
@@ -988,15 +1240,12 @@ function stopDrag() {
 
     }
 
-
     isDragging = false;
-
 
     const windowElement =
         document.querySelector(
             ".neuroshield-window"
         );
-
 
     if (windowElement) {
 
@@ -1006,14 +1255,13 @@ function stopDrag() {
 
     }
 
-
     saveOverlayPosition();
 
 }
 
 
 // ============================================================
-// SAVE SIZE / POSITION
+// SAVE POSITION + SIZE
 // ============================================================
 
 function saveOverlayPosition() {
@@ -1023,28 +1271,22 @@ function saveOverlayPosition() {
             ".neuroshield-window"
         );
 
-
     if (!windowElement) {
 
         return;
 
     }
 
-
     const rect =
         windowElement.getBoundingClientRect();
-
 
     chrome.storage.local.set({
 
         neuroshieldWindowPosition: {
 
             left: rect.left,
-
             top: rect.top,
-
             width: rect.width,
-
             height: rect.height
 
         }
@@ -1055,7 +1297,7 @@ function saveOverlayPosition() {
 
 
 // ============================================================
-// LOAD SIZE / POSITION
+// LOAD POSITION + SIZE
 // ============================================================
 
 async function loadOverlayPosition() {
@@ -1065,13 +1307,11 @@ async function loadOverlayPosition() {
             ".neuroshield-window"
         );
 
-
     if (!windowElement) {
 
         return;
 
     }
-
 
     try {
 
@@ -1080,10 +1320,8 @@ async function loadOverlayPosition() {
                 "neuroshieldWindowPosition"
             );
 
-
         const position =
             result.neuroshieldWindowPosition;
-
 
         if (!position) {
 
@@ -1091,49 +1329,75 @@ async function loadOverlayPosition() {
 
         }
 
-
-        if (position.width) {
+        if (
+            typeof position.width === "number"
+        ) {
 
             windowElement.style.width =
                 `${position.width}px`;
 
         }
 
-
-        if (position.height) {
+        if (
+            typeof position.height === "number"
+        ) {
 
             windowElement.style.height =
                 `${position.height}px`;
 
         }
 
-
         if (
             typeof position.left === "number"
         ) {
 
+            const maxLeft =
+                Math.max(
+                    0,
+                    window.innerWidth -
+                    120
+                );
+
             windowElement.style.left =
-                `${position.left}px`;
+                `${Math.max(
+                    0,
+                    Math.min(
+                        position.left,
+                        maxLeft
+                    )
+                )}px`;
 
             windowElement.style.right =
                 "auto";
 
         }
 
-
         if (
             typeof position.top === "number"
         ) {
 
+            const maxTop =
+                Math.max(
+                    0,
+                    window.innerHeight -
+                    120
+                );
+
             windowElement.style.top =
-                `${position.top}px`;
+                `${Math.max(
+                    0,
+                    Math.min(
+                        position.top,
+                        maxTop
+                    )
+                )}px`;
 
         }
 
     } catch (error) {
 
         console.log(
-            "NeuroShield AI: Could not restore window position."
+            "NeuroShield AI: Could not restore window settings."
         );
 
     }
@@ -1152,13 +1416,11 @@ function removeOverlay() {
             "neuroshield-overlay"
         );
 
-
     if (existing) {
 
         existing.remove();
 
     }
-
 
     overlay = null;
 
@@ -1166,7 +1428,7 @@ function removeOverlay() {
 
 
 // ============================================================
-// POPUP MESSAGES
+// MESSAGE HANDLING
 // ============================================================
 
 chrome.runtime.onMessage.addListener(
@@ -1179,69 +1441,82 @@ chrome.runtime.onMessage.addListener(
         }
 
 
-        // ----------------------------------------------------
-        // TURN PROTECTION ON
-        // ----------------------------------------------------
+        // ====================================================
+        // START
+        // ====================================================
 
         if (
             message.action ===
             "START_ANALYSIS"
         ) {
 
-            protectionEnabled = true;
+            protectionEnabled =
+                true;
+
+            chrome.storage.local.set({
+                protectionEnabled: true
+            });
 
             checkCurrentPage();
-
 
             sendResponse({
                 success: true
             });
 
-            return;
+            return true;
 
         }
 
 
-        // ----------------------------------------------------
-        // TURN PROTECTION OFF
-        // ----------------------------------------------------
+        // ====================================================
+        // STOP
+        // ====================================================
 
         if (
             message.action ===
             "STOP_ANALYSIS"
         ) {
 
-            protectionEnabled = false;
+            protectionEnabled =
+                false;
+
+            chrome.storage.local.set({
+                protectionEnabled: false
+            });
 
             removeOverlay();
-
 
             sendResponse({
                 success: true
             });
 
-            return;
+            return true;
 
         }
 
 
-        // ----------------------------------------------------
-        // BACKEND ANALYSIS RESULT
-        // ----------------------------------------------------
+        // ====================================================
+        // REAL BACKEND RESULT
+        // ====================================================
 
         if (
             message.type ===
             "NEUROSHIELD_ANALYSIS_UPDATE"
         ) {
 
+            console.log(
+                "NeuroShield AI: Backend analysis received."
+            );
+
             applyBackendResults(
                 message.data
             );
 
-
             sendResponse({
                 success: true
             });
+
+            return true;
 
         }
 
@@ -1250,7 +1525,7 @@ chrome.runtime.onMessage.addListener(
 
 
 // ============================================================
-// BACKEND RESULTS
+// APPLY REAL BACKEND RESULTS
 // ============================================================
 
 function applyBackendResults(data) {
@@ -1261,47 +1536,617 @@ function applyBackendResults(data) {
 
     }
 
+    console.log(
+        "NeuroShield AI: Applying verified backend data:",
+        data
+    );
 
-    /*
-        IMPORTANT:
 
-        This function is intentionally empty-ish for now.
+    // ========================================================
+    // OVERALL
+    // ========================================================
 
-        Your Python backend will eventually send something
-        like:
+    if (
+        typeof data.overall === "number"
+    ) {
 
-        {
-            overall: 72,
-            cognitive: 78,
-            behavioural: 65,
-            emotional: 72,
+        updateScore(
+            data.overall,
+            "overallScore",
+            "overallScoreLabel"
+        );
 
-            visual: 88,
-            audio: 82,
-            text: 58,
-            engagement: 90
+        updateMainCardLevel(
+            data.overall
+        );
+
+    }
+
+
+    // ========================================================
+    // DEVELOPMENTAL
+    // ========================================================
+
+    updateScoreBar(
+        data.cognitive,
+        "cognitiveScore",
+        "cognitiveBar"
+    );
+
+    updateScoreBar(
+        data.behavioural,
+        "behaviouralScore",
+        "behaviouralBar"
+    );
+
+    updateScoreBar(
+        data.emotional,
+        "emotionalScore",
+        "emotionalBar"
+    );
+
+
+    // ========================================================
+    // MULTIMEDIA
+    // ========================================================
+
+    updateFeatureScore(
+        data.visual,
+        "visualBar",
+        "visualLevel"
+    );
+
+    updateFeatureScore(
+        data.audio,
+        "audioBar",
+        "audioLevel"
+    );
+
+    updateFeatureScore(
+        data.text,
+        "textBar",
+        "textLevel"
+    );
+
+    updateFeatureScore(
+        data.engagement,
+        "engagementBar",
+        "engagementLevel"
+    );
+
+
+    // ========================================================
+    // STATUS
+    // ========================================================
+
+    const status =
+        document.getElementById(
+            "analysisStatusText"
+        );
+
+    if (status) {
+
+        status.textContent =
+            "Analysis complete";
+
+    }
+
+
+    // ========================================================
+    // RECOMMENDATION
+    // ========================================================
+
+    if (
+        typeof data.recommendation === "string" &&
+        data.recommendation.trim() !== ""
+    ) {
+
+        const recommendation =
+            document.getElementById(
+                "recommendation"
+            );
+
+        if (recommendation) {
+
+            recommendation.innerHTML = `
+
+                <span>
+                    💡
+                </span>
+
+                <p>
+                    ${escapeHTML(
+                        data.recommendation
+                    )}
+                </p>
+
+            `;
+
         }
 
-        We will connect these values to the UI once your
-        backend communication is ready.
-    */
+    }
 
 
-    console.log(
-        "NeuroShield AI: Backend result received:",
-        data
+    // ========================================================
+    // INSIGHTS
+    // ========================================================
+
+    if (
+        Array.isArray(data.insights) &&
+        data.insights.length > 0
+    ) {
+
+        renderInsights(
+            data.insights
+        );
+
+    }
+
+
+    // ========================================================
+    // HIGH ALERT
+    // ========================================================
+
+    if (
+        typeof data.overall === "number" &&
+        data.overall > 75
+    ) {
+
+        triggerHighRiskAlert();
+
+    }
+
+}
+
+
+// ============================================================
+// UPDATE MAIN SCORE
+// ============================================================
+
+function updateScore(
+    value,
+    valueId,
+    labelId
+) {
+
+    if (
+        typeof value !== "number"
+    ) {
+
+        return;
+
+    }
+
+    const valueElement =
+        document.getElementById(
+            valueId
+        );
+
+    const labelElement =
+        document.getElementById(
+            labelId
+        );
+
+    const safeValue =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                value
+            )
+        );
+
+    if (valueElement) {
+
+        valueElement.textContent =
+            `${Math.round(safeValue)}%`;
+
+    }
+
+    if (labelElement) {
+
+        if (safeValue > 75) {
+
+            labelElement.textContent =
+                "High Stimulation";
+
+        } else if (safeValue < 40) {
+
+            labelElement.textContent =
+                "Low Stimulation";
+
+        } else {
+
+            labelElement.textContent =
+                "Moderate Stimulation";
+
+        }
+
+    }
+
+}
+
+
+// ============================================================
+// MAIN CARD COLOUR
+// ============================================================
+
+function updateMainCardLevel(score) {
+
+    const card =
+        document.getElementById(
+            "mainScoreCard"
+        );
+
+    if (!card) {
+
+        return;
+
+    }
+
+    card.classList.remove(
+        "low",
+        "moderate",
+        "high"
+    );
+
+    if (score > 75) {
+
+        card.classList.add(
+            "high"
+        );
+
+    } else if (score < 40) {
+
+        card.classList.add(
+            "low"
+        );
+
+    } else {
+
+        card.classList.add(
+            "moderate"
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// SCORE BAR
+// ============================================================
+
+function updateScoreBar(
+    value,
+    valueId,
+    barId
+) {
+
+    if (
+        typeof value !== "number"
+    ) {
+
+        return;
+
+    }
+
+    const safeValue =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                value
+            )
+        );
+
+    const valueElement =
+        document.getElementById(
+            valueId
+        );
+
+    const barElement =
+        document.getElementById(
+            barId
+        );
+
+    if (valueElement) {
+
+        valueElement.textContent =
+            `${Math.round(safeValue)}%`;
+
+    }
+
+    if (barElement) {
+
+        barElement.style.width =
+            `${safeValue}%`;
+
+    }
+
+}
+
+
+// ============================================================
+// FEATURE SCORE
+// ============================================================
+
+function updateFeatureScore(
+    value,
+    barId,
+    levelId
+) {
+
+    if (
+        typeof value !== "number"
+    ) {
+
+        return;
+
+    }
+
+    const safeValue =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                value
+            )
+        );
+
+    const bar =
+        document.getElementById(
+            barId
+        );
+
+    const level =
+        document.getElementById(
+            levelId
+        );
+
+    if (bar) {
+
+        bar.style.width =
+            `${safeValue}%`;
+
+    }
+
+    if (level) {
+
+        if (safeValue > 75) {
+
+            level.textContent =
+                "High";
+
+        } else if (safeValue < 40) {
+
+            level.textContent =
+                "Low";
+
+        } else {
+
+            level.textContent =
+                "Moderate";
+
+        }
+
+    }
+
+}
+
+
+// ============================================================
+// INSIGHTS
+// ============================================================
+
+function renderInsights(insights) {
+
+    const container =
+        document.getElementById(
+            "insightContainer"
+        );
+
+    if (!container) {
+
+        return;
+
+    }
+
+    container.innerHTML = "";
+
+    insights.forEach(
+        function(insight) {
+
+            const box =
+                document.createElement("div");
+
+            box.className =
+                "empty-insight";
+
+            box.innerHTML = `
+
+                <div class="empty-insight-icon">
+                    ✦
+                </div>
+
+                <div>
+
+                    <strong>
+                        Explainability Insight
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(insight)}
+                    </p>
+
+                </div>
+
+            `;
+
+            container.appendChild(
+                box
+            );
+
+        }
     );
 
 }
 
 
 // ============================================================
-// YOUTUBE SPA NAVIGATION DETECTION
+// HIGH RISK ALERT
+// ============================================================
+
+function triggerHighRiskAlert() {
+
+    if (!notificationsEnabled) {
+
+        return;
+
+    }
+
+    if (
+        !currentVideoId ||
+        lastAlertedVideoId === currentVideoId
+    ) {
+
+        return;
+
+    }
+
+    lastAlertedVideoId =
+        currentVideoId;
+
+    playAlertSound();
+
+    const mainCard =
+        document.getElementById(
+            "mainScoreCard"
+        );
+
+    if (mainCard) {
+
+        mainCard.classList.add(
+            "alert-pulse"
+        );
+
+        setTimeout(
+            function() {
+
+                mainCard.classList.remove(
+                    "alert-pulse"
+                );
+
+            },
+            2500
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// ALERT SOUND
+// ============================================================
+
+function playAlertSound() {
+
+    try {
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if (!AudioContext) {
+
+            return;
+
+        }
+
+        const audioContext =
+            new AudioContext();
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+        oscillator.type =
+            "sine";
+
+        oscillator.frequency.setValueAtTime(
+            660,
+            audioContext.currentTime
+        );
+
+        oscillator.frequency.setValueAtTime(
+            880,
+            audioContext.currentTime + 0.15
+        );
+
+        gain.gain.setValueAtTime(
+            0.0001,
+            audioContext.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.18,
+            audioContext.currentTime + 0.03
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            audioContext.currentTime + 0.35
+        );
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime + 0.4
+        );
+
+    } catch (error) {
+
+        console.log(
+            "NeuroShield AI: Alert sound unavailable."
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
+
+function escapeHTML(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(value);
+
+    return div.innerHTML;
+
+}
+
+
+// ============================================================
+// YOUTUBE SPA NAVIGATION
 // ============================================================
 
 let lastUrl =
     window.location.href;
-
 
 setInterval(
     function() {
@@ -1309,12 +2154,12 @@ setInterval(
         const currentUrl =
             window.location.href;
 
-
-        if (currentUrl !== lastUrl) {
+        if (
+            currentUrl !== lastUrl
+        ) {
 
             lastUrl =
                 currentUrl;
-
 
             checkCurrentPage();
 
@@ -1322,6 +2167,21 @@ setInterval(
 
     },
     1000
+);
+
+
+// ============================================================
+// GLOBAL DRAG EVENTS
+// ============================================================
+
+document.addEventListener(
+    "mousemove",
+    handleDrag
+);
+
+document.addEventListener(
+    "mouseup",
+    stopDrag
 );
 
 
@@ -1348,8 +2208,32 @@ chrome.storage.onChanged.addListener(
             protectionEnabled =
                 changes.protectionEnabled.newValue === true;
 
-
             checkCurrentPage();
+
+        }
+
+
+        if (
+            changes.neuroshieldNotificationsEnabled
+        ) {
+
+            notificationsEnabled =
+                changes
+                    .neuroshieldNotificationsEnabled
+                    .newValue !== false;
+
+            const button =
+                document.getElementById(
+                    "neuroshield-notification"
+                );
+
+            if (button) {
+
+                updateNotificationButton(
+                    button
+                );
+
+            }
 
         }
 
