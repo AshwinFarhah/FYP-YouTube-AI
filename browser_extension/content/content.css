@@ -1,0 +1,1038 @@
+/* ============================================================
+   NeuroShield AI
+   YouTube Overlay
+============================================================ */
+
+
+/* ============================================================
+   OVERLAY ROOT
+============================================================ */
+
+#neuroshield-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 2147483647;
+
+    pointer-events: none;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+/* ============================================================
+   MAIN WINDOW
+============================================================ */
+
+.neuroshield-window {
+
+    position: fixed;
+
+    top: 80px;
+
+    right: 24px;
+
+    width: 430px;
+
+    height: 720px;
+
+    min-width: 340px;
+
+    min-height: 400px;
+
+    max-width: 90vw;
+
+    max-height: 90vh;
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    border: 1px solid #e4e8ef;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.18);
+
+    overflow: hidden;
+
+    pointer-events: auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    resize: both;
+
+}
+
+
+/* ============================================================
+   DRAGGING
+============================================================ */
+
+.neuroshield-window.dragging {
+
+    user-select: none;
+
+    cursor: grabbing;
+
+    opacity: 0.96;
+
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+.neuroshield-header {
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px 16px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #edf1f7;
+
+    cursor: grab;
+
+}
+
+
+.neuroshield-header:active {
+
+    cursor: grabbing;
+
+}
+
+
+/* ============================================================
+   BRAND
+============================================================ */
+
+.neuroshield-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+
+}
+
+
+/* IMPORTANT:
+   Correct logo sizing
+*/
+
+.neuroshield-logo {
+
+    width: 42px;
+
+    height: 42px;
+
+    min-width: 42px;
+
+    min-height: 42px;
+
+    max-width: 42px;
+
+    max-height: 42px;
+
+    object-fit: contain;
+
+    display: block;
+
+}
+
+
+.neuroshield-brand-text {
+
+    min-width: 0;
+
+}
+
+
+.neuroshield-title {
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    color: #222;
+
+    white-space: nowrap;
+
+}
+
+
+.neuroshield-subtitle {
+
+    margin-top: 3px;
+
+    font-size: 10px;
+
+    color: #777;
+
+    white-space: nowrap;
+
+}
+
+
+/* ============================================================
+   HEADER ACTIONS
+============================================================ */
+
+.neuroshield-actions {
+
+    display: flex;
+
+    gap: 6px;
+
+    flex-shrink: 0;
+
+}
+
+
+.neuroshield-action {
+
+    width: 32px;
+
+    height: 32px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #f3f6fb;
+
+    color: #555;
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.neuroshield-action:hover {
+
+    background: #e4e9f2;
+
+}
+
+
+/* ============================================================
+   CONTENT
+============================================================ */
+
+.neuroshield-content {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 18px;
+
+    background: #f6f8fc;
+
+}
+
+
+.neuroshield-content::-webkit-scrollbar {
+
+    width: 7px;
+
+}
+
+
+.neuroshield-content::-webkit-scrollbar-thumb {
+
+    background: #cbd3e1;
+
+    border-radius: 10px;
+
+}
+
+
+/* ============================================================
+   STATUS CARD
+============================================================ */
+
+.neuroshield-status-card {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: #ffffff;
+
+    border: 1px solid #edf1f7;
+
+    border-radius: 17px;
+
+    padding: 13px 15px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.status-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.status-dot {
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #ffb300;
+
+    box-shadow:
+        0 0 0 4px rgba(255,179,0,0.12);
+
+}
+
+
+.status-title {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: #333;
+
+}
+
+
+.status-text {
+
+    margin-top: 3px;
+
+    font-size: 10px;
+
+    color: #888;
+
+}
+
+
+.status-badge {
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: #e8f7ed;
+
+    color: #35a853;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+}
+
+
+/* ============================================================
+   MAIN SCORE
+============================================================ */
+
+.neuroshield-main-card {
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5c6cff,
+            #7d89ff
+        );
+
+    border-radius: 23px;
+
+    padding: 23px;
+
+    color: #ffffff;
+
+    margin-bottom: 17px;
+
+    box-shadow:
+        0 10px 25px rgba(92,108,255,0.25);
+
+}
+
+
+.neuroshield-main-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+
+    height: 150px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    top: -50px;
+
+    right: -35px;
+
+}
+
+
+.live-badge {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: inline-block;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,0.18);
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+}
+
+
+.main-score-title {
+
+    margin-top: 18px;
+
+    font-size: 13px;
+
+    opacity: 0.9;
+
+}
+
+
+.main-score-empty {
+
+    margin-top: 5px;
+
+    font-size: 62px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+}
+
+
+.main-score-label {
+
+    margin-top: 7px;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+}
+
+
+.main-score-description {
+
+    margin-top: 12px;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+
+    opacity: 0.9;
+
+    max-width: 320px;
+
+}
+
+
+/* ============================================================
+   CARD
+============================================================ */
+
+.neuroshield-card {
+
+    background: #ffffff;
+
+    border: 1px solid #edf1f7;
+
+    border-radius: 20px;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.card-title {
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    color: #222;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* ============================================================
+   SCORE ROW
+============================================================ */
+
+.score-row {
+
+    display: flex;
+
+    gap: 11px;
+
+    padding: 12px;
+
+    border-radius: 15px;
+
+    background: #f7f9fd;
+
+    margin-bottom: 10px;
+
+}
+
+
+.score-row:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+.score-icon {
+
+    width: 39px;
+
+    height: 39px;
+
+    min-width: 39px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 16px;
+
+}
+
+
+.cognitive-icon {
+
+    background: #fff0d7;
+
+}
+
+
+.behavioural-icon {
+
+    background: #ffe3e3;
+
+}
+
+
+.emotional-icon {
+
+    background: #f1e5fa;
+
+}
+
+
+.score-content {
+
+    width: 100%;
+
+}
+
+
+.score-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 8px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.score-header strong {
+
+    color: #777;
+
+}
+
+
+.progress-track {
+
+    height: 8px;
+
+    width: 100%;
+
+    background: #e1e6ef;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
+}
+
+
+.progress-fill {
+
+    width: 0%;
+
+    height: 100%;
+
+    border-radius: 999px;
+
+}
+
+
+.score-description {
+
+    margin-top: 6px;
+
+    font-size: 9px;
+
+    color: #888;
+
+}
+
+
+/* ============================================================
+   EMPTY INSIGHT
+============================================================ */
+
+.empty-insight {
+
+    display: flex;
+
+    gap: 12px;
+
+    align-items: flex-start;
+
+    padding: 14px;
+
+    border-radius: 15px;
+
+    background: #f7f9fd;
+
+}
+
+
+.empty-insight-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    min-width: 38px;
+
+    border-radius: 11px;
+
+    background: #eef2ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.empty-insight strong {
+
+    font-size: 12px;
+
+    color: #444;
+
+}
+
+
+.empty-insight p {
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+    color: #888;
+
+}
+
+
+/* ============================================================
+   FEATURE STACK
+============================================================ */
+
+.feature-stack {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 11px;
+
+}
+
+
+.feature-card {
+
+    background: #f8faff;
+
+    border: 1px solid #edf1f7;
+
+    border-radius: 17px;
+
+    padding: 14px;
+
+}
+
+
+.feature-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+}
+
+
+.feature-heading {
+
+    display: flex;
+
+    gap: 10px;
+
+    min-width: 0;
+
+}
+
+
+.feature-icon {
+
+    width: 40px;
+
+    height: 40px;
+
+    min-width: 40px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 17px;
+
+}
+
+
+.feature-icon.visual {
+
+    background: #fff0d7;
+
+}
+
+
+.feature-icon.audio {
+
+    background: #ffe3e3;
+
+}
+
+
+.feature-icon.text {
+
+    background: #eee6fa;
+
+}
+
+
+.feature-icon.engagement {
+
+    background: #e2efff;
+
+}
+
+
+.feature-name {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: #333;
+
+}
+
+
+.feature-subtitle {
+
+    margin-top: 4px;
+
+    font-size: 9px;
+
+    color: #888;
+
+    line-height: 1.4;
+
+}
+
+
+.feature-level {
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    background: #edf1f7;
+
+    color: #888;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+}
+
+
+/* ============================================================
+   MINI PROGRESS
+============================================================ */
+
+.mini-progress {
+
+    width: 100%;
+
+    height: 7px;
+
+    background: #e1e6ef;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
+    margin-top: 12px;
+
+    margin-bottom: 11px;
+
+}
+
+
+.mini-fill {
+
+    width: 0%;
+
+    height: 100%;
+
+    border-radius: 999px;
+
+}
+
+
+/* ============================================================
+   FEATURE BUBBLES
+============================================================ */
+
+.feature-bubbles {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+}
+
+
+.feature-bubbles span {
+
+    background: #ffffff;
+
+    border: 1px solid #dde5f2;
+
+    color: #777;
+
+    padding: 6px 9px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+
+    font-weight: 600;
+
+}
+
+
+/* ============================================================
+   EMPTY RECOMMENDATION
+============================================================ */
+
+.empty-recommendation {
+
+    display: flex;
+
+    gap: 11px;
+
+    align-items: flex-start;
+
+    background: #f7f9fd;
+
+    border-radius: 15px;
+
+    padding: 14px;
+
+    color: #888;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+}
+
+
+.empty-recommendation span {
+
+    font-size: 17px;
+
+}
+
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+.neuroshield-footer {
+
+    text-align: center;
+
+    color: #999;
+
+    font-size: 8px;
+
+    padding: 5px 0 12px;
+
+}
+
+
+.neuroshield-footer span {
+
+    margin: 0 4px;
+
+}
+
+
+/* ============================================================
+   MINIMIZED
+============================================================ */
+
+.neuroshield-window.minimized {
+
+    height: auto !important;
+
+    min-height: 0 !important;
+
+    resize: none;
+
+}
+
+
+.neuroshield-window.minimized
+.neuroshield-content {
+
+    display: none;
+
+}
+
+
+/* ============================================================
+   SMALL SCREEN
+============================================================ */
+
+@media (max-width: 700px) {
+
+    .neuroshield-window {
+
+        width: 380px;
+
+        right: 10px;
+
+        top: 65px;
+
+    }
+
+}

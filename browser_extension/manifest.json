@@ -1,0 +1,54 @@
+{
+    "manifest_version": 3,
+
+    "name": "NeuroShield AI",
+
+    "version": "1.0.0",
+
+    "description": "Explainable Multimodal AI Browser Extension for Developmental Impact Analysis of Children's YouTube Content.",
+
+    "permissions": [
+        "storage",
+        "activeTab",
+        "tabs"
+    ],
+
+    "host_permissions": [
+        "*://www.youtube.com/*",
+        "*://youtube.com/*"
+    ],
+
+    "action": {
+        "default_title": "NeuroShield AI",
+        "default_popup": "popup/popup.html"
+    },
+
+    "background": {
+        "service_worker": "background.js"
+    },
+
+    "options_page": "settings/settings.html",
+
+    "icons": {
+        "16": "icons/logo.png",
+        "32": "icons/logo.png",
+        "48": "icons/logo.png",
+        "128": "icons/logo.png"
+    },
+
+    "content_scripts": [
+        {
+            "matches": [
+                "*://www.youtube.com/*",
+                "*://youtube.com/*"
+            ],
+            "js": [
+                "content/content.js"
+            ],
+            "css": [
+                "content/content.css"
+            ],
+            "run_at": "document_idle"
+        }
+    ]
+}
