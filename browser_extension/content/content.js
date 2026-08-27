@@ -163,6 +163,10 @@ function showAnalysisTemplate() {
 
     const logoURL =
         chrome.runtime.getURL("icons/logo.png");
+    console.log(
+    "NeuroShield AI: Logo URL =",
+    logoURL
+);
 
     overlay.innerHTML = `
 
@@ -181,15 +185,16 @@ function showAnalysisTemplate() {
 
                     <div class="neuroshield-logo-container">
 
-                        <img
+                         <img
                             src="${logoURL}"
                             class="neuroshield-logo"
-                            alt="NeuroShield AI"
-                        >
+                            alt="NeuroShield AI Logo"
+                            onerror="this.style.display='none'; console.error('NeuroShield AI: Logo failed to load:', this.src);"
+                         >
 
                     </div>
 
-                    <div class="neuroshield-brand-text">
+    <div class="neuroshield-brand-text">
 
                         <div class="neuroshield-title">
                             NeuroShield AI

@@ -136,17 +136,8 @@
 
 .neuroshield-logo-container {
 
-    width: 95px;
-
-    height: 55px;
-
-    min-width: 95px;
-
-    min-height: 55px;
-
-    max-width: 95px;
-
-    max-height: 55px;
+    width: 78px;
+    height: 52px;
 
     display: flex;
 
@@ -167,27 +158,46 @@
 
 .neuroshield-logo {
 
-    width: 95px !important;
+    width: 78px !important;
 
-    height: 55px !important;
+    height: 52px !important;
 
-    min-width: 95px !important;
+    max-width: 78px !important;
 
-    min-height: 55px !important;
+    max-height: 52px !important;
 
-    max-width: 95px !important;
+    min-width: 0 !important;
 
-    max-height: 55px !important;
+    min-height: 0 !important;
 
-    object-fit: contain !important;
+    object-fit: contain;
 
     object-position: center;
 
-    display: block !important;
+    display: block;
 
-    visibility: visible !important;
+    flex-shrink: 0;
 
-    opacity: 1 !important;
+}
+
+
+/* ============================================================
+   BRAND
+============================================================ */
+
+.neuroshield-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex: 1;
+
+    min-width: 0;
+
+    overflow: hidden;
 
 }
 
@@ -199,8 +209,6 @@
 .neuroshield-brand-text {
 
     min-width: 0;
-
-    flex: 1;
 
     overflow: hidden;
 
@@ -226,9 +234,9 @@
 
 .neuroshield-subtitle {
 
-    margin-top: 4px;
+    margin-top: 3px;
 
-    font-size: 10px;
+    font-size: 11px;
 
     color: #7a8290;
 

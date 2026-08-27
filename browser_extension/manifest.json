@@ -35,6 +35,16 @@
         "48": "icons/logo.png",
         "128": "icons/logo.png"
     },
+    "web_accessible_resources": [
+    {
+        "resources": [
+            "icons/logo.png"
+        ],
+        "matches": [
+            "https://www.youtube.com/*"
+        ]
+    }
+],
 
     "content_scripts": [
         {
@@ -51,4 +61,5 @@
             "run_at": "document_idle"
         }
     ]
+
 }
