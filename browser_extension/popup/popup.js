@@ -41,7 +41,6 @@ const steps = [
 ];
 
 
-
 /* =========================================
    PROTECTION BUTTON
 ========================================= */
@@ -50,12 +49,48 @@ if (protectionButton) {
 
     protectionButton.addEventListener(
         "click",
-        startProtection
+        toggleProtection
     );
 
 }
 
+// ==========================================
+// PROTECTION TOGGLE
+// ==========================================
 
+async function toggleProtection() {
+
+    try {
+
+        const result =
+            await chrome.storage.local.get(
+                "protectionEnabled"
+            );
+
+        const currentlyEnabled =
+            result.protectionEnabled === true;
+
+
+        if (currentlyEnabled) {
+
+            await stopProtection();
+
+        } else {
+
+            await startProtection();
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "NeuroShield AI: Could not toggle protection:",
+            error
+        );
+
+    }
+
+}
 
 /* =========================================
    START PROTECTION
@@ -145,13 +180,11 @@ async function startProtection() {
                     activeTab.id,
                     {
                         action:
-                            "PROTECTION_ENABLED"
+                            "START_ANALYSIS"
                     }
                 );
 
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 /*
                     This can happen if the content
@@ -168,9 +201,7 @@ async function startProtection() {
 
         }
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "NeuroShield AI:",
@@ -193,7 +224,153 @@ async function startProtection() {
 
 }
 
+// ==========================================
+// STOP PROTECTION
+// ==========================================
 
+async function stopProtection() {
+
+    console.log(
+        "NeuroShield AI: Turning protection off."
+    );
+
+
+    await chrome.storage.local.set({
+
+        protectionEnabled: false
+
+    });
+
+
+    try {
+
+        const tabs =
+            await chrome.tabs.query({
+
+                active: true,
+
+                currentWindow: true
+
+            });
+
+
+        const activeTab =
+            tabs[0];
+
+
+        if (
+            activeTab &&
+            activeTab.id &&
+            activeTab.url &&
+            activeTab.url.includes("youtube.com")
+        ) {
+
+            try {
+
+                await chrome.tabs.sendMessage(
+                    activeTab.id,
+                    {
+                        action: "STOP_ANALYSIS"
+                    }
+                );
+
+            } catch (error) {
+
+                console.log(
+                    "NeuroShield AI: Content script not available. Protection state was still disabled."
+                );
+
+            }
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "NeuroShield AI:",
+            error
+        );
+
+    }
+
+
+    // Return to initial screen
+
+    if (analysingScreen) {
+
+        analysingScreen.classList.remove(
+            "active"
+        );
+
+    }
+
+    if (initialScreen) {
+
+        initialScreen.classList.add(
+            "active"
+        );
+
+    }
+
+
+    updateProtectionButton();
+
+}
+
+// ==========================================
+// UPDATE PROTECTION BUTTON
+// ==========================================
+
+async function updateProtectionButton() {
+
+    if (!protectionButton) {
+
+        return;
+
+    }
+
+
+    const result =
+        await chrome.storage.local.get(
+            "protectionEnabled"
+        );
+
+
+    const enabled =
+        result.protectionEnabled === true;
+
+
+    if (enabled) {
+
+        protectionButton.textContent =
+            "Turn Off Protection";
+
+        protectionButton.classList.add(
+            "enabled"
+        );
+
+        protectionButton.setAttribute(
+            "aria-pressed",
+            "true"
+        );
+
+    } else {
+
+        protectionButton.textContent =
+            "Turn On Protection";
+
+        protectionButton.classList.remove(
+            "enabled"
+        );
+
+        protectionButton.setAttribute(
+            "aria-pressed",
+            "false"
+        );
+
+    }
+
+}
 
 /* =========================================
    ANIMATION
@@ -212,11 +389,9 @@ function animateAnalysis() {
 
 
     percentages.forEach(
-
         (percentage, index) => {
 
             setTimeout(
-
                 () => {
 
                     if (loadingBar) {
@@ -240,11 +415,15 @@ function animateAnalysis() {
                 },
 
                 index * 700
-
             );
 
         }
-
     );
 
 }
+
+// ==========================================
+// INITIALISE POPUP STATE
+// ==========================================
+
+updateProtectionButton();

@@ -11,19 +11,26 @@ console.log("NeuroShield AI: Background service worker loaded.");
 ========================================= */
 
 chrome.runtime.onMessage.addListener(
-    (message, sender, sendResponse) => {
+    function(message, sender, sendResponse) {
 
         if (!message) {
             return;
         }
 
 
-        if (message.type === "OPEN_NEUROSHIELD_SETTINGS") {
+        if (message.action === "OPEN_SETTINGS") {
 
             chrome.runtime.openOptionsPage();
 
-            return;
+            sendResponse({
+                success: true
+            });
+
+            return true;
+
         }
 
+
+        // your other existing actions...
     }
 );

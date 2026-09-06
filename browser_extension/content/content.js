@@ -164,9 +164,9 @@ function showAnalysisTemplate() {
     const logoURL =
         chrome.runtime.getURL("icons/logo.png");
     console.log(
-    "NeuroShield AI: Logo URL =",
-    logoURL
-);
+        "NeuroShield AI: Logo URL =",
+        logoURL
+    );
 
     overlay.innerHTML = `
 
@@ -276,35 +276,46 @@ function showAnalysisTemplate() {
                 id="neuroshield-content"
             >
 
-                <!-- STATUS -->
-
-                <div class="neuroshield-status-card">
-
+                <!-- ================================================= -->
+                <!-- MONITORING STATUS -->
+                <!-- ================================================= -->
+                
+                <div
+                    class="neuroshield-status-card waiting"
+                    id="monitoringStatusCard"
+                >
+                
                     <div class="status-left">
-
-                        <span class="status-dot"></span>
-
+                
+                        <span
+                            class="status-dot waiting"
+                            id="monitoringStatusDot"
+                        ></span>
+                
                         <div>
-
+                
                             <div class="status-title">
                                 AI Monitoring
                             </div>
-
+                
                             <div
                                 class="status-text"
                                 id="analysisStatusText"
                             >
                                 Waiting for backend analysis
                             </div>
-
+                
                         </div>
-
+                
                     </div>
-
-                    <div class="status-badge">
-                        ACTIVE
+                
+                    <div
+                        class="status-badge waiting"
+                        id="monitoringStatusBadge"
+                    >
+                        Waiting
                     </div>
-
+                
                 </div>
 
 
@@ -317,8 +328,11 @@ function showAnalysisTemplate() {
                     id="mainScoreCard"
                 >
 
-                    <div class="live-badge">
-                        READY
+                    <div
+                        class="live-badge"
+                        id="analysisLiveBadge"
+                    >
+                        WAITING
                     </div>
 
                     <div class="main-score-title">
@@ -827,6 +841,8 @@ function showAnalysisTemplate() {
 
     loadOverlayPosition();
 
+    setMonitoringStatus(false);
+
 }
 
 
@@ -890,7 +906,7 @@ function initialiseOverlayControls() {
 
         notificationButton.addEventListener(
             "click",
-            async function(event) {
+            async function (event) {
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -911,7 +927,7 @@ function initialiseOverlayControls() {
 
         settingsButton.addEventListener(
             "click",
-            function(event) {
+            function (event) {
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -920,7 +936,7 @@ function initialiseOverlayControls() {
                     {
                         action: "OPEN_SETTINGS"
                     },
-                    function() {
+                    function () {
 
                         if (chrome.runtime.lastError) {
 
@@ -947,7 +963,7 @@ function initialiseOverlayControls() {
 
         closeButton.addEventListener(
             "click",
-            function(event) {
+            function (event) {
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -968,7 +984,7 @@ function initialiseOverlayControls() {
 
         minimizeButton.addEventListener(
             "click",
-            function(event) {
+            function (event) {
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -1003,7 +1019,7 @@ function initialiseOverlayControls() {
 
     dragHandle.addEventListener(
         "mousedown",
-        function(event) {
+        function (event) {
 
             if (
                 event.target.closest(
@@ -1044,7 +1060,7 @@ function initialiseOverlayControls() {
 
         const resizeObserver =
             new ResizeObserver(
-                function() {
+                function () {
 
                     if (!windowElement.classList.contains("minimized")) {
 
@@ -1078,7 +1094,7 @@ async function toggleNotifications() {
         await chrome.storage.local.set({
 
             neuroshieldNotificationsEnabled:
-                notificationsEnabled
+            notificationsEnabled
 
         });
 
@@ -1437,7 +1453,7 @@ function removeOverlay() {
 // ============================================================
 
 chrome.runtime.onMessage.addListener(
-    function(message, sender, sendResponse) {
+    function (message, sender, sendResponse) {
 
         if (!message) {
 
@@ -1528,6 +1544,191 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
+// ============================================================
+// MONITORING STATUS
+// ============================================================
+
+function setMonitoringStatus(isReady) {
+
+    const card =
+        document.getElementById(
+            "monitoringStatusCard"
+        );
+
+    const dot =
+        document.getElementById(
+            "monitoringStatusDot"
+        );
+
+    const badge =
+        document.getElementById(
+            "monitoringStatusBadge"
+        );
+
+    const text =
+        document.getElementById(
+            "analysisStatusText"
+        );
+
+    const liveBadge =
+        document.getElementById(
+            "analysisLiveBadge"
+        );
+
+
+    if (
+        !card ||
+        !dot ||
+        !badge ||
+        !text
+    ) {
+
+        console.warn(
+            "NeuroShield AI: Monitoring status elements not found."
+        );
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // REMOVE OLD STATES
+    // ========================================================
+
+    card.classList.remove(
+        "waiting",
+        "active"
+    );
+
+    dot.classList.remove(
+        "waiting",
+        "active"
+    );
+
+    badge.classList.remove(
+        "waiting",
+        "active"
+    );
+
+
+    // ========================================================
+    // BACKEND READY
+    // ========================================================
+
+    if (isReady) {
+
+        card.classList.add(
+            "active"
+        );
+
+        dot.classList.add(
+            "active"
+        );
+
+        badge.classList.add(
+            "active"
+        );
+
+        badge.textContent =
+            "Active";
+
+        text.textContent =
+            "Analysis complete";
+
+
+        if (liveBadge) {
+
+            liveBadge.textContent =
+                "LIVE";
+
+        }
+
+    }
+
+
+    // ========================================================
+    // WAITING FOR BACKEND
+    // ========================================================
+
+    else {
+
+        card.classList.add(
+            "waiting"
+        );
+
+        dot.classList.add(
+            "waiting"
+        );
+
+        badge.classList.add(
+            "waiting"
+        );
+
+        badge.textContent =
+            "Waiting";
+
+        text.textContent =
+            "Waiting for backend analysis";
+
+
+        // ====================================================
+        // RESET MAIN SCORE CARD
+        // ====================================================
+
+        const mainCard =
+            document.getElementById(
+                "mainScoreCard"
+            );
+
+        const overallScore =
+            document.getElementById(
+                "overallScore"
+            );
+
+        const overallScoreLabel =
+            document.getElementById(
+                "overallScoreLabel"
+            );
+
+
+        if (mainCard) {
+
+            mainCard.classList.remove(
+                "low",
+                "moderate",
+                "high"
+            );
+
+        }
+
+
+        if (overallScore) {
+
+            overallScore.textContent =
+                "—";
+
+        }
+
+
+        if (overallScoreLabel) {
+
+            overallScoreLabel.textContent =
+                "Awaiting analysis";
+
+        }
+
+
+        if (liveBadge) {
+
+            liveBadge.textContent =
+                "WAITING";
+
+        }
+
+    }
+
+}
 
 // ============================================================
 // APPLY REAL BACKEND RESULTS
@@ -1545,6 +1746,13 @@ function applyBackendResults(data) {
         "NeuroShield AI: Applying verified backend data:",
         data
     );
+
+    // Backend has successfully returned analysis
+    if (typeof data.overall === "number") {
+
+        setMonitoringStatus(true);
+
+    }
 
 
     // ========================================================
@@ -1661,8 +1869,8 @@ function applyBackendResults(data) {
 
                 <p>
                     ${escapeHTML(
-                        data.recommendation
-                    )}
+                data.recommendation
+            )}
                 </p>
 
             `;
@@ -1960,7 +2168,7 @@ function renderInsights(insights) {
     container.innerHTML = "";
 
     insights.forEach(
-        function(insight) {
+        function (insight) {
 
             const box =
                 document.createElement("div");
@@ -2036,7 +2244,7 @@ function triggerHighRiskAlert() {
         );
 
         setTimeout(
-            function() {
+            function () {
 
                 mainCard.classList.remove(
                     "alert-pulse"
@@ -2154,7 +2362,7 @@ let lastUrl =
     window.location.href;
 
 setInterval(
-    function() {
+    function () {
 
         const currentUrl =
             window.location.href;
@@ -2195,7 +2403,7 @@ document.addEventListener(
 // ============================================================
 
 chrome.storage.onChanged.addListener(
-    function(changes, areaName) {
+    function (changes, areaName) {
 
         if (
             areaName !== "local"
