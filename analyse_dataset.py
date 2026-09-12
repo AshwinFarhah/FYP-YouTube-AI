@@ -13,9 +13,9 @@ import os
 # ============================================================
 
 INPUT_FILE = "data/final_dataset.csv"
-OUTPUT_FILE = "data/dataset_refined_batch1.csv"
+OUTPUT_FILE = "data/final_dataset_refined.csv"
 
-EXPECTED_BATCH_SIZE = 84
+EXPECTED_DATASET_SIZE = 1650
 
 
 print("\n=========================================================")
@@ -52,21 +52,21 @@ print("\n=========================================================")
 print("DATASET INFORMATION")
 print("=========================================================")
 
-print("Expected first batch:", EXPECTED_BATCH_SIZE)
+print("Expected dataset:", EXPECTED_DATASET_SIZE)
 print("Actual rows loaded:", len(df))
 
-if len(df) == EXPECTED_BATCH_SIZE:
+if len(df) == EXPECTED_DATASET_SIZE:
 
-    print("✅ Dataset contains exactly 84 videos.")
+    print("✅ Dataset contains exactly 1650 videos.")
 
-elif len(df) > EXPECTED_BATCH_SIZE:
+elif len(df) > EXPECTED_DATASET_SIZE:
 
     print(
         f"⚠️ Dataset contains {len(df)} rows."
     )
 
     print(
-        "This appears to contain more than the first batch."
+        "This appears to contain more than the dataset."
     )
 
 else:
@@ -802,7 +802,7 @@ print(
 
 
 print(
-    "\n✅ Batch 1 analysis finished."
+    "\n✅ Final dataset analysis finished."
 )
 
 print(
