@@ -843,7 +843,17 @@ function showAnalysisTemplate() {
 
     setMonitoringStatus(false);
 
-    checkBackendConnection();
+    checkBackendConnection()
+        .then(function(isReady) {
+
+            if (isReady) {
+
+                requestVideoAnalysis();
+
+            }
+
+        });
+
 
 }
 
@@ -1606,6 +1616,237 @@ async function checkBackendConnection() {
         setMonitoringStatus(false);
 
         return false;
+
+    }
+
+}
+// ============================================================
+// REQUEST VIDEO ANALYSIS
+// ============================================================
+
+async function requestVideoAnalysis() {
+
+    if (!currentVideoId) {
+
+        console.warn(
+            "NeuroShield AI: No YouTube video ID available."
+        );
+
+        return;
+
+    }
+
+
+    const youtubeUrl =
+        `https://www.youtube.com/watch?v=${currentVideoId}`;
+
+
+    console.log(
+        "NeuroShield AI: Requesting analysis:",
+        youtubeUrl
+    );
+
+
+    try {
+
+        const response =
+            await chrome.runtime.sendMessage({
+
+                action: "ANALYZE_VIDEO",
+
+                youtubeUrl:
+                    youtubeUrl
+
+            });
+
+
+        if (
+            !response ||
+            response.success !== true
+        ) {
+
+            console.error(
+                "NeuroShield AI: Analysis request failed:",
+                response
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "NeuroShield AI: REAL ANALYSIS RESULT:",
+            response.data
+        );
+        updateRealRiskResult(response.data);
+
+
+    } catch (error) {
+
+        console.error(
+            "NeuroShield AI: Could not request video analysis:",
+            error
+        );
+
+    }
+
+}
+// ============================================================
+// UPDATE REAL RISK RESULT
+// ============================================================
+
+function updateRealRiskResult(data) {
+
+    if (!data) {
+
+        console.warn(
+            "NeuroShield AI: No analysis data received."
+        );
+
+        return;
+
+    }
+
+
+    const riskLevel =
+        data.risk_level || "Unknown Risk";
+
+
+    const confidence =
+        typeof data.confidence === "number"
+            ? Math.round(data.confidence * 100)
+            : 0;
+
+
+    console.log(
+        "NeuroShield AI: Updating UI with real result:",
+        riskLevel,
+        confidence + "%"
+    );
+
+
+    // ========================================================
+    // GET MAIN RESULT ELEMENTS
+    // ========================================================
+
+    const mainCard =
+        document.getElementById(
+            "mainScoreCard"
+        );
+
+    const overallScore =
+        document.getElementById(
+            "overallScore"
+        );
+
+    const overallScoreLabel =
+        document.getElementById(
+            "overallScoreLabel"
+        );
+
+    const statusText =
+        document.getElementById(
+            "analysisStatusText"
+        );
+
+    const liveBadge =
+        document.getElementById(
+            "analysisLiveBadge"
+        );
+
+
+    // ========================================================
+    // DISPLAY REAL MODEL CONFIDENCE
+    // ========================================================
+
+    if (overallScore) {
+
+        overallScore.textContent =
+            confidence + "%";
+
+    }
+
+
+    // ========================================================
+    // DISPLAY REAL RISK LEVEL
+    // ========================================================
+
+    if (overallScoreLabel) {
+
+        overallScoreLabel.textContent =
+            riskLevel;
+
+    }
+
+
+    // ========================================================
+    // UPDATE CARD COLOUR FROM MODEL CLASS
+    // ========================================================
+
+    if (mainCard) {
+
+        mainCard.classList.remove(
+            "low",
+            "moderate",
+            "high"
+        );
+
+
+        if (riskLevel === "High Risk") {
+
+            mainCard.classList.add(
+                "high"
+            );
+
+        } else if (
+            riskLevel === "Medium Risk"
+        ) {
+
+            mainCard.classList.add(
+                "moderate"
+            );
+
+        } else if (
+            riskLevel === "Low Risk"
+        ) {
+
+            mainCard.classList.add(
+                "low"
+            );
+
+        }
+
+    }
+
+
+    // ========================================================
+    // ANALYSIS STATUS
+    // ========================================================
+
+    if (statusText) {
+
+        statusText.textContent =
+            "Analysis complete";
+
+    }
+
+
+    if (liveBadge) {
+
+        liveBadge.textContent =
+            "RESULT";
+
+    }
+
+
+    // ========================================================
+    // HIGH RISK NOTIFICATION
+    // ========================================================
+
+    if (riskLevel === "High Risk") {
+
+        triggerHighRiskAlert();
 
     }
 

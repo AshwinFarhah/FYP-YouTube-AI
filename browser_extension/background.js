@@ -69,6 +69,39 @@ chrome.runtime.onMessage.addListener(
 
             return true;
         }
+        // ==========================================
+        // ANALYZE YOUTUBE VIDEO
+        // ==========================================
+
+        if (message.action === "ANALYZE_VIDEO") {
+
+            analyzeYouTubeVideo(
+                message.youtubeUrl
+            )
+                .then(function(result) {
+
+                    sendResponse({
+                        success: true,
+                        data: result
+                    });
+
+                })
+                .catch(function(error) {
+
+                    console.error(
+                        "NeuroShield AI: Video analysis failed:",
+                        error
+                    );
+
+                    sendResponse({
+                        success: false,
+                        error: error.message
+                    });
+
+                });
+
+            return true;
+        }
 
     }
 );
@@ -146,4 +179,57 @@ async function checkBackendStatus() {
 
     }
 
+}
+
+// ==========================================
+// ANALYZE YOUTUBE VIDEO
+// ==========================================
+
+async function analyzeYouTubeVideo(
+    youtubeUrl
+) {
+
+    console.log(
+        "NeuroShield AI: Sending video for analysis:",
+        youtubeUrl
+    );
+
+    const response =
+        await fetch(
+            `${BACKEND_URL}/analyze-video`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    youtube_url: youtubeUrl
+                })
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Analysis returned HTTP ${response.status}`
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    console.log(
+        "NeuroShield AI: Analysis result:",
+        data
+    );
+
+
+    return data;
 }
