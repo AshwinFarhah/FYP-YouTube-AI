@@ -15,7 +15,8 @@
 
     "host_permissions": [
         "*://www.youtube.com/*",
-        "*://youtube.com/*"
+        "*://youtube.com/*",
+        "http://127.0.0.1:8000/*"
     ],
 
     "action": {

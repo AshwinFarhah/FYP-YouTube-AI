@@ -843,6 +843,8 @@ function showAnalysisTemplate() {
 
     setMonitoringStatus(false);
 
+    checkBackendConnection();
+
 }
 
 
@@ -1543,7 +1545,71 @@ chrome.runtime.onMessage.addListener(
 
     }
 );
+// ============================================================
+// CHECK BACKEND CONNECTION
+// ============================================================
 
+async function checkBackendConnection() {
+
+    console.log(
+        "NeuroShield AI: Checking backend connection..."
+    );
+
+
+    try {
+
+        const response =
+            await chrome.runtime.sendMessage({
+
+                action: "CHECK_BACKEND"
+
+            });
+
+
+        if (
+            response &&
+            response.connected === true &&
+            response.modelLoaded === true
+        ) {
+
+            console.log(
+                "NeuroShield AI: Backend connected.",
+                response
+            );
+
+
+            setMonitoringStatus(true);
+
+            return true;
+
+        }
+
+
+        console.warn(
+            "NeuroShield AI: Backend is not ready."
+        );
+
+
+        setMonitoringStatus(false);
+
+        return false;
+
+
+    } catch (error) {
+
+        console.error(
+            "NeuroShield AI: Backend connection check failed:",
+            error
+        );
+
+
+        setMonitoringStatus(false);
+
+        return false;
+
+    }
+
+}
 // ============================================================
 // MONITORING STATUS
 // ============================================================

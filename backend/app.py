@@ -5,13 +5,14 @@
 
 from pathlib import Path
 import json
-
 import joblib
 import pandas as pd
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+from backend.youtube_downloader import download_youtube_video
+from backend.video_analyzer import analyze_video_features
 
 # ============================================================
 # PATH CONFIGURATION
@@ -102,6 +103,10 @@ app = FastAPI(
 
 class PredictionRequest(BaseModel):
     features: dict[str, float]
+
+
+class VideoAnalysisRequest(BaseModel):
+    youtube_url: str
 
 
 # ============================================================
@@ -211,3 +216,242 @@ def predict(request: PredictionRequest):
         "risk_level": risk_level,
         "confidence": confidence
     }
+
+# ============================================================
+# YOUTUBE VIDEO ANALYSIS ENDPOINT
+# ============================================================
+
+@app.post("/analyze-video")
+def analyze_video(request: VideoAnalysisRequest):
+
+    try:
+
+        print()
+        print("=" * 65)
+        print("NeuroShield AI - Video Analysis Request")
+        print("=" * 65)
+
+        print(
+            "Received URL:",
+            request.youtube_url
+        )
+
+
+        # ====================================================
+        # 1. DOWNLOAD YOUTUBE VIDEO
+        # ====================================================
+
+        download_result = (
+            download_youtube_video(
+                request.youtube_url
+            )
+        )
+
+
+        video_id = (
+            download_result["video_id"]
+        )
+
+        video_path = (
+            download_result["video_path"]
+        )
+
+
+        # ====================================================
+        # 2. MULTIMODAL FEATURE EXTRACTION
+        # ====================================================
+
+        analysis = (
+            analyze_video_features(
+                video_path
+            )
+        )
+
+
+        features = (
+            analysis["features"]
+        )
+
+
+        # ====================================================
+        # 3. CREATE RANDOM FOREST INPUT
+        # ====================================================
+
+        X = pd.DataFrame(
+            [features],
+            columns=feature_names
+        )
+
+
+        # ====================================================
+        # 4. RANDOM FOREST PREDICTION
+        # ====================================================
+
+        prediction = (
+            model.predict(
+                X
+            )[0]
+        )
+
+
+        probabilities = (
+            model.predict_proba(
+                X
+            )[0]
+        )
+
+
+        predicted_class_index = (
+            list(
+                model.classes_
+            ).index(
+                prediction
+            )
+        )
+
+
+        confidence = float(
+            probabilities[
+                predicted_class_index
+            ]
+        )
+
+
+        risk_level = (
+            LABEL_MAPPING.get(
+                int(prediction),
+                str(prediction)
+            )
+        )
+
+
+        # ====================================================
+        # 5. CLASS PROBABILITIES
+        # ====================================================
+
+        class_probabilities = {}
+
+
+        for class_id, probability in zip(
+            model.classes_,
+            probabilities
+        ):
+
+            label = LABEL_MAPPING.get(
+                int(class_id),
+                str(class_id)
+            )
+
+
+            class_probabilities[
+                label
+            ] = float(
+                probability
+            )
+
+
+        # ====================================================
+        # 6. RESPONSE
+        # ====================================================
+
+        print()
+        print("=" * 65)
+        print("NeuroShield AI - Analysis Complete")
+        print("=" * 65)
+
+        print(
+            "Video ID:",
+            video_id
+        )
+
+        print(
+            "Risk level:",
+            risk_level
+        )
+
+        print(
+            "Confidence:",
+            round(
+                confidence,
+                4
+            )
+        )
+
+        print("=" * 65)
+
+
+        return {
+
+            "status":
+                "analysis_complete",
+
+            "video_id":
+                video_id,
+
+            "prediction":
+                int(
+                    prediction
+                ),
+
+            "risk_level":
+                risk_level,
+
+            "confidence":
+                confidence,
+
+            "class_probabilities":
+                class_probabilities,
+
+            "feature_count":
+                len(
+                    features
+                ),
+
+            "video_duration_seconds":
+                analysis[
+                    "video_duration"
+                ],
+
+            "analysis_duration_seconds":
+                analysis[
+                    "analysis_duration"
+                ],
+
+            "audio_available":
+                analysis[
+                    "audio_available"
+                ],
+
+            "transcript_rejected":
+                analysis[
+                    "transcript_rejected"
+                ],
+
+            "transcript_quality_score":
+                analysis[
+                    "transcript_quality_score"
+                ],
+
+            "transcript_quality_label":
+                analysis[
+                    "transcript_quality_label"
+                ]
+
+        }
+
+
+    except Exception as error:
+
+        print()
+        print(
+            "NeuroShield AI - Analysis Error:",
+            error
+        )
+
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(
+                error
+            )
+        )
