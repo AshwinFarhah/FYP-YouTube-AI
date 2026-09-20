@@ -336,7 +336,7 @@ function showAnalysisTemplate() {
                     </div>
 
                     <div class="main-score-title">
-                        Overall Developmental Score
+                        AI Risk Assessment
                     </div>
 
                     <div
@@ -355,10 +355,8 @@ function showAnalysisTemplate() {
 
                     <div class="main-score-description">
 
-                        This video has not been analysed yet.
-                        Results will appear here only after
-                        the NeuroShield AI backend provides
-                        verified analysis data.
+                        Waiting for the NeuroShield AI backend
+                        to analyse this video.
 
                     </div>
 
@@ -1541,7 +1539,12 @@ chrome.runtime.onMessage.addListener(
                 "NeuroShield AI: Backend analysis received."
             );
 
-            applyBackendResults(
+            console.log(
+                "NeuroShield AI: REAL ANALYSIS RESULT:",
+                message.data
+            );
+
+            updateRealRiskResult(
                 message.data
             );
 
@@ -1662,24 +1665,21 @@ async function requestVideoAnalysis() {
 
         if (
             !response ||
-            response.success !== true
+            response.started !== true
         ) {
 
             console.error(
-                "NeuroShield AI: Analysis request failed:",
+                "NeuroShield AI: Analysis could not start:",
                 response
             );
 
             return;
-
         }
 
 
         console.log(
-            "NeuroShield AI: REAL ANALYSIS RESULT:",
-            response.data
+            "NeuroShield AI: Analysis started successfully."
         );
-        updateRealRiskResult(response.data);
 
 
     } catch (error) {
@@ -1752,7 +1752,7 @@ function updateRealRiskResult(data) {
 
     const liveBadge =
         document.getElementById(
-            "analysisLiveBadge"
+            "mainScoreDescription"
         );
 
 
@@ -1847,6 +1847,21 @@ function updateRealRiskResult(data) {
     if (riskLevel === "High Risk") {
 
         triggerHighRiskAlert();
+
+    }
+
+    // ========================================================
+    // RESULT DESCRIPTION
+    // ========================================================
+
+    if (description) {
+
+        description.textContent =
+            `Model confidence: ${confidence}%. ` +
+            `Analysis completed using ${data.feature_count || 42} ` +
+            `multimodal features from the first ` +
+            `${Math.round(data.analysis_duration_seconds || 300)} ` +
+            `seconds of this video.`;
 
     }
 
