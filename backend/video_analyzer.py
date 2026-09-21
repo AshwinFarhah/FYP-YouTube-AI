@@ -52,6 +52,10 @@ from utils.transcript_quality import (
     evaluate_transcript_quality
 )
 
+from backend.developmental_scoring import (
+    calculate_developmental_scores
+)
+
 
 # ============================================================
 # PATH CONFIGURATION
@@ -863,6 +867,38 @@ def analyze_video_features(
             )
         )
 
+    # ========================================================
+    # DEVELOPMENTAL IMPACT SCORING
+    # ========================================================
+
+    developmental_scores = (
+        calculate_developmental_scores(
+            clean_features
+        )
+    )
+
+    print()
+    print("Developmental impact scores:")
+
+    print(
+        "  Cognitive:",
+        developmental_scores["cognitive"]
+    )
+
+    print(
+        "  Behavioural:",
+        developmental_scores["behavioural"]
+    )
+
+    print(
+        "  Emotional:",
+        developmental_scores["emotional"]
+    )
+
+    print(
+        "  Overall:",
+        developmental_scores["overall"]
+    )
 
     # ========================================================
     # SUMMARY
@@ -921,6 +957,9 @@ def analyze_video_features(
 
         "raw_features":
             model_features,
+
+        "developmental_scores":
+            developmental_scores,
 
         "video_duration":
             video_duration,

@@ -1,0 +1,86 @@
+{
+    "motion_mean": {
+        "lower": 1.42938104,
+        "upper": 4.013481085,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "motion_spike_rate": {
+        "lower": 0.22318506003800118,
+        "upper": 0.9400996873914552,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "scene_rate": {
+        "lower": 0.01,
+        "upper": 0.289788731192628,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "loop_detection_score": {
+        "lower": 0.0254,
+        "upper": 0.04153640867299078,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "phrase_repetition": {
+        "lower": 0.007339904046724985,
+        "upper": 0.5147846617275907,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "avg_saturation": {
+        "lower": 0.2788211937479909,
+        "upper": 0.6426377719558264,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "flicker_rate": {
+        "lower": 0.0133333333333333,
+        "upper": 0.18568388696205196,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "sound_density": {
+        "lower": 1.2065611720085143,
+        "upper": 1.8598314225673673,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "reward_cue_frequency": {
+        "lower": 0.10147634408602148,
+        "upper": 0.4008047304911191,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "attention_reset_rate": {
+        "lower": 0.11843644478994156,
+        "upper": 0.35751751197320863,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "loudness": {
+        "lower": 0.03321805130690328,
+        "upper": 0.2097661934792995,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "pitch_variation": {
+        "lower": 881.9745513916016,
+        "upper": 1129.8125244140624,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "emotion_arousal": {
+        "lower": 0.3372524564173817,
+        "upper": 0.46839266117631506,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    },
+    "emotion_stability": {
+        "lower": 0.4350937377929687,
+        "upper": 0.5590127243041991,
+        "lower_percentile": 0.05,
+        "upper_percentile": 0.95
+    }
+}

@@ -675,6 +675,11 @@ def run_video_analysis_job(
             "class_probabilities":
                 class_probabilities,
 
+            "developmental_scores":
+                analysis[
+                    "developmental_scores"
+                ],
+
             "feature_count":
                 len(features),
 
