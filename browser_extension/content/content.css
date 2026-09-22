@@ -931,7 +931,166 @@
     color: #808897;
 
 }
+/* ============================================================
+   LIVE SHAP EXPLAINABILITY
+============================================================ */
 
+#insightContainer {
+
+    align-items: flex-start;
+
+}
+
+
+#insightContainer > div:last-child {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+
+#insightContainer > div:last-child > strong {
+
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    color: #303743;
+
+    line-height: 1.4;
+
+}
+
+
+#insightContainer > div:last-child > p {
+
+    margin: 7px 0 0 0;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+    color: #737c8c;
+
+}
+
+
+/* ============================================================
+   SHAP FACTOR GROUPS
+============================================================ */
+
+.shap-factor-group {
+
+    margin-top: 13px;
+
+    padding-top: 11px;
+
+    border-top: 1px solid #e5eaf2;
+
+}
+
+
+.shap-factor-group strong {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    color: #454d5b;
+
+}
+
+
+/* ============================================================
+   SHAP FACTOR LIST
+============================================================ */
+
+.shap-factor-group ul {
+
+    list-style: none;
+
+    padding: 0;
+
+    margin: 0;
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+}
+
+
+.shap-factor-group li {
+
+    padding: 6px 9px;
+
+    border-radius: 999px;
+
+    background: #ffffff;
+
+    border: 1px solid #dde4ef;
+
+    color: #626b79;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    line-height: 1.2;
+
+}
+/* ============================================================
+   SUPPORTING FACTORS
+============================================================ */
+
+.shap-factor-group.supporting strong {
+
+    color: #16803b;
+
+}
+
+
+.shap-factor-group.supporting li {
+
+    background: #eefaf2;
+
+    border-color: #ccebd6;
+
+    color: #287243;
+
+}
+
+
+/* ============================================================
+   OPPOSING FACTORS
+============================================================ */
+
+.shap-factor-group.opposing strong {
+
+    color: #b26a00;
+
+}
+
+
+.shap-factor-group.opposing li {
+
+    background: #fff8eb;
+
+    border-color: #f1dfb8;
+
+    color: #94620c;
+
+}
 
 /* ============================================================
    FEATURE STACK
@@ -1309,3 +1468,49 @@
     }
 
 }
+
+/* ============================================================
+   LIVE SHAP MULTIMEDIA CONTRIBUTION
+============================================================ */
+
+.feature-icon.emotional-feature {
+    background: #f4e7ff;
+}
+
+.feature-icon.metadata {
+    background: #e8f5e9;
+}
+
+#visualBar {
+    background: #ff9800;
+}
+
+#audioBar {
+    background: #ef5350;
+}
+
+#textBar {
+    background: #8b5cf6;
+}
+
+#engagementBar {
+    background: #3b82f6;
+}
+
+.emotional-feature-fill {
+    background: #ab47bc;
+}
+
+.metadata-fill {
+    background: #43a047;
+}
+
+.feature-not-significant {
+    opacity: 0.72;
+    font-style: italic;
+}
+
+.feature-level {
+    white-space: nowrap;
+}
+

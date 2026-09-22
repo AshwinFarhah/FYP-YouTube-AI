@@ -17,6 +17,9 @@ from pydantic import BaseModel
 from backend.youtube_downloader import download_youtube_video
 from backend.video_analyzer import analyze_video_features
 
+from backend.live_explainability import (
+    explain_prediction
+)
 
 # ============================================================
 # PATH CONFIGURATION
@@ -25,24 +28,24 @@ from backend.video_analyzer import analyze_video_features
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MODEL_PATH = (
-    BASE_DIR
-    / "models"
-    / "random_forest_neuroshield.joblib"
+        BASE_DIR
+        / "models"
+        / "random_forest_neuroshield.joblib"
 )
 
 FEATURES_PATH = (
-    BASE_DIR
-    / "models"
-    / "random_forest_features.json"
+        BASE_DIR
+        / "models"
+        / "random_forest_features.json"
 )
 # ============================================================
 # ANALYSIS CACHE CONFIGURATION
 # ============================================================
 
 CACHE_DIR = (
-    BASE_DIR
-    / "backend"
-    / "cache"
+        BASE_DIR
+        / "backend"
+        / "cache"
 )
 
 CACHE_DIR.mkdir(
@@ -66,7 +69,6 @@ print(
     "Random Forest model loaded successfully."
 )
 
-
 # ============================================================
 # LOAD FEATURE NAMES
 # ============================================================
@@ -74,13 +76,11 @@ print(
 print("Loading ML feature list...")
 
 with open(
-    FEATURES_PATH,
-    "r",
-    encoding="utf-8"
+        FEATURES_PATH,
+        "r",
+        encoding="utf-8"
 ) as file:
-
     feature_data = json.load(file)
-
 
 if isinstance(feature_data, list):
 
@@ -114,7 +114,6 @@ else:
         "random_forest_features.json"
     )
 
-
 print(
     "Feature list loaded successfully."
 )
@@ -123,7 +122,6 @@ print(
     f"Number of expected features: "
     f"{len(feature_names)}"
 )
-
 
 # ============================================================
 # LABEL MAPPING
@@ -134,14 +132,15 @@ LABEL_MAPPING = {
     1: "Low Risk",
     2: "Medium Risk"
 }
+
+
 # ============================================================
 # ANALYSIS CACHE HELPERS
 # ============================================================
 
 def extract_youtube_video_id(
-    youtube_url
+        youtube_url
 ):
-
     patterns = [
 
         r"(?:v=)([A-Za-z0-9_-]{11})",
@@ -152,7 +151,6 @@ def extract_youtube_video_id(
 
     ]
 
-
     for pattern in patterns:
 
         match = re.search(
@@ -160,33 +158,26 @@ def extract_youtube_video_id(
             youtube_url
         )
 
-
         if match:
-
             return match.group(1)
-
 
     return None
 
 
 def get_cache_path(
-    video_id
+        video_id
 ):
-
     return (
-        CACHE_DIR
-        / f"{video_id}.json"
+            CACHE_DIR
+            / f"{video_id}.json"
     )
 
 
 def load_cached_result(
-    video_id
+        video_id
 ):
-
     if not video_id:
-
         return None
-
 
     cache_path = (
         get_cache_path(
@@ -194,30 +185,25 @@ def load_cached_result(
         )
     )
 
-
     if not cache_path.exists():
-
         return None
-
 
     try:
 
         with open(
-            cache_path,
-            "r",
-            encoding="utf-8"
+                cache_path,
+                "r",
+                encoding="utf-8"
         ) as file:
 
             cached_result = (
                 json.load(file)
             )
 
-
         print(
             "NeuroShield AI: Cached result found:",
             video_id
         )
-
 
         return cached_result
 
@@ -229,19 +215,15 @@ def load_cached_result(
             error
         )
 
-
         return None
 
 
 def save_cached_result(
-    video_id,
-    result
+        video_id,
+        result
 ):
-
     if not video_id:
-
         return
-
 
     cache_path = (
         get_cache_path(
@@ -249,13 +231,12 @@ def save_cached_result(
         )
     )
 
-
     try:
 
         with open(
-            cache_path,
-            "w",
-            encoding="utf-8"
+                cache_path,
+                "w",
+                encoding="utf-8"
         ) as file:
 
             json.dump(
@@ -263,7 +244,6 @@ def save_cached_result(
                 file,
                 indent=4
             )
-
 
         print(
             "NeuroShield AI: Analysis result cached:",
@@ -277,6 +257,7 @@ def save_cached_result(
             "NeuroShield AI: Could not save analysis cache:",
             error
         )
+
 
 # ============================================================
 # ANALYSIS JOB STORAGE
@@ -295,7 +276,6 @@ def save_cached_result(
 analysis_jobs = {}
 
 analysis_jobs_lock = threading.Lock()
-
 
 # ============================================================
 # FASTAPI APPLICATION
@@ -316,12 +296,10 @@ app = FastAPI(
 # ============================================================
 
 class PredictionRequest(BaseModel):
-
     features: dict[str, float]
 
 
 class VideoAnalysisRequest(BaseModel):
-
     youtube_url: str
 
 
@@ -331,7 +309,6 @@ class VideoAnalysisRequest(BaseModel):
 
 @app.get("/")
 def root():
-
     return {
         "system": "NeuroShield AI",
         "status": "online",
@@ -346,7 +323,6 @@ def root():
 
 @app.get("/model-status")
 def model_status():
-
     return {
         "model_loaded": True,
         "model_type": type(model).__name__,
@@ -361,9 +337,8 @@ def model_status():
 
 @app.post("/predict")
 def predict(
-    request: PredictionRequest
+        request: PredictionRequest
 ):
-
     # --------------------------------------------------------
     # Check that all expected features are provided
     # --------------------------------------------------------
@@ -374,9 +349,7 @@ def predict(
         if feature not in request.features
     ]
 
-
     if missing_features:
-
         raise HTTPException(
             status_code=400,
             detail={
@@ -387,7 +360,6 @@ def predict(
                     missing_features
             }
         )
-
 
     # --------------------------------------------------------
     # Create feature row in exact training order
@@ -400,12 +372,10 @@ def predict(
         for feature in feature_names
     }
 
-
     X = pd.DataFrame(
         [feature_row],
         columns=feature_names
     )
-
 
     # --------------------------------------------------------
     # Make prediction
@@ -415,11 +385,9 @@ def predict(
         model.predict(X)[0]
     )
 
-
     probabilities = (
         model.predict_proba(X)[0]
     )
-
 
     predicted_class_index = (
         list(
@@ -429,13 +397,11 @@ def predict(
         )
     )
 
-
     confidence = float(
         probabilities[
             predicted_class_index
         ]
     )
-
 
     # --------------------------------------------------------
     # Convert numerical label
@@ -447,7 +413,6 @@ def predict(
             str(prediction)
         )
     )
-
 
     # --------------------------------------------------------
     # Return result
@@ -477,10 +442,9 @@ def predict(
 # ============================================================
 
 def run_video_analysis_job(
-    job_id,
-    youtube_url
+        job_id,
+        youtube_url
 ):
-
     try:
 
         # ----------------------------------------------------
@@ -492,7 +456,6 @@ def run_video_analysis_job(
             analysis_jobs[job_id][
                 "status"
             ] = "processing"
-
 
         print()
         print("=" * 65)
@@ -514,7 +477,6 @@ def run_video_analysis_job(
             youtube_url
         )
 
-
         # ====================================================
         # 1. DOWNLOAD YOUTUBE VIDEO
         # ====================================================
@@ -525,20 +487,17 @@ def run_video_analysis_job(
             )
         )
 
-
         video_id = (
             download_result[
                 "video_id"
             ]
         )
 
-
         video_path = (
             download_result[
                 "video_path"
             ]
         )
-
 
         # ----------------------------------------------------
         # SAVE VIDEO ID INTO JOB
@@ -550,7 +509,6 @@ def run_video_analysis_job(
                 "video_id"
             ] = video_id
 
-
         # ====================================================
         # 2. MULTIMODAL FEATURE EXTRACTION
         # ====================================================
@@ -561,13 +519,11 @@ def run_video_analysis_job(
             )
         )
 
-
         features = (
             analysis[
                 "features"
             ]
         )
-
 
         # ====================================================
         # 3. CREATE RANDOM FOREST INPUT
@@ -577,7 +533,6 @@ def run_video_analysis_job(
             [features],
             columns=feature_names
         )
-
 
         # ====================================================
         # 4. RANDOM FOREST PREDICTION
@@ -589,13 +544,11 @@ def run_video_analysis_job(
             )[0]
         )
 
-
         probabilities = (
             model.predict_proba(
                 X
             )[0]
         )
-
 
         predicted_class_index = (
             list(
@@ -605,13 +558,11 @@ def run_video_analysis_job(
             )
         )
 
-
         confidence = float(
             probabilities[
                 predicted_class_index
             ]
         )
-
 
         risk_level = (
             LABEL_MAPPING.get(
@@ -620,22 +571,19 @@ def run_video_analysis_job(
             )
         )
 
-
         # ====================================================
         # 5. CLASS PROBABILITIES
         # ====================================================
 
         class_probabilities = {}
 
-
         for (
-            class_id,
-            probability
+                class_id,
+                probability
         ) in zip(
             model.classes_,
             probabilities
         ):
-
             label = (
                 LABEL_MAPPING.get(
                     int(class_id),
@@ -643,13 +591,35 @@ def run_video_analysis_job(
                 )
             )
 
-
             class_probabilities[
                 label
             ] = float(
                 probability
             )
+        # ========================================================
+        # EXPLAINABLE AI - SHAP
+        # ========================================================
 
+        print()
+        print(
+            "Generating SHAP explanation..."
+        )
+
+        explainability = explain_prediction(
+            features,
+            int(prediction)
+        )
+
+        print(
+            "SHAP explanation generated."
+        )
+
+        print(
+            "Main explanation:",
+            explainability[
+                "parent_explanation"
+            ]
+        )
 
         # ====================================================
         # 6. BUILD RESULT
@@ -679,6 +649,75 @@ def run_video_analysis_job(
                 analysis[
                     "developmental_scores"
                 ],
+
+            "explainability":
+                explainability,
+
+            "multimedia_features": {
+
+                "visual": {
+                    "motion_mean":
+                        float(features["motion_mean"]),
+
+                    "scene_rate":
+                        float(features["scene_rate"]),
+
+                    "avg_brightness":
+                        float(features["avg_brightness"]),
+
+                    "avg_saturation":
+                        float(features["avg_saturation"]),
+
+                    "flicker_rate":
+                        float(features["flicker_rate"])
+                },
+
+                "audio": {
+                    "loudness":
+                        float(features["loudness"]),
+
+                    "pitch_variation":
+                        float(features["pitch_variation"]),
+
+                    "tempo":
+                        float(features["tempo"]),
+
+                    "sound_density":
+                        float(features["sound_density"])
+                },
+
+                "text": {
+                    "phrase_repetition":
+                        float(features["phrase_repetition"]),
+
+                    "sentence_complexity":
+                        float(features["sentence_complexity"]),
+
+                    "vocabulary_diversity":
+                        float(features["vocabulary_diversity"]),
+
+                    "educational_word_ratio":
+                        float(features["educational_word_ratio"])
+                },
+
+                "engagement": {
+                    "reward_cue_frequency":
+                        float(features["reward_cue_frequency"]),
+
+                    "attention_reset_rate":
+                        float(features["attention_reset_rate"]),
+
+                    "loop_detection_score":
+                        float(features["loop_detection_score"]),
+
+                    "motion_spike_rate":
+                        float(features["motion_spike_rate"]),
+
+                    "attention_score":
+                        float(features["attention_score"])
+                }
+
+            },
 
             "feature_count":
                 len(features),
@@ -723,12 +762,10 @@ def run_video_analysis_job(
             "analysis_source"
         ] = "live"
 
-
         save_cached_result(
             video_id,
             result
         )
-
 
         # ====================================================
         # 7. STORE COMPLETED RESULT
@@ -744,7 +781,6 @@ def run_video_analysis_job(
                 "result"
             ] = result
 
-
         # ====================================================
         # TERMINAL OUTPUT
         # ====================================================
@@ -759,24 +795,20 @@ def run_video_analysis_job(
 
         print("=" * 65)
 
-
         print(
             "Job ID:",
             job_id
         )
-
 
         print(
             "Video ID:",
             video_id
         )
 
-
         print(
             "Risk level:",
             risk_level
         )
-
 
         print(
             "Confidence:",
@@ -785,7 +817,6 @@ def run_video_analysis_job(
                 4
             )
         )
-
 
         print("=" * 65)
 
@@ -799,7 +830,6 @@ def run_video_analysis_job(
             error
         )
 
-
         # ====================================================
         # SAVE ERROR IN JOB
         # ====================================================
@@ -807,7 +837,6 @@ def run_video_analysis_job(
         with analysis_jobs_lock:
 
             if job_id in analysis_jobs:
-
                 analysis_jobs[job_id][
                     "status"
                 ] = "failed"
@@ -825,9 +854,8 @@ def run_video_analysis_job(
 
 @app.post("/analyze-video")
 def analyze_video(
-    request: VideoAnalysisRequest
+        request: VideoAnalysisRequest
 ):
-
     # --------------------------------------------------------
     # Validate URL
     # --------------------------------------------------------
@@ -836,9 +864,7 @@ def analyze_video(
         request.youtube_url.strip()
     )
 
-
     if not youtube_url:
-
         raise HTTPException(
             status_code=400,
             detail="YouTube URL is required."
@@ -854,28 +880,22 @@ def analyze_video(
         )
     )
 
-
     cached_result = (
         load_cached_result(
             video_id
         )
     )
 
-
     if cached_result is not None:
-
         job_id = str(
             uuid.uuid4()
         )
-
 
         cached_result[
             "analysis_source"
         ] = "cached"
 
-
         with analysis_jobs_lock:
-
             analysis_jobs[job_id] = {
 
                 "job_id":
@@ -897,7 +917,6 @@ def analyze_video(
                     None
 
             }
-
 
         print()
         print("=" * 65)
@@ -924,7 +943,6 @@ def analyze_video(
 
         print("=" * 65)
 
-
         return {
 
             "status":
@@ -938,7 +956,6 @@ def analyze_video(
 
         }
 
-
     # --------------------------------------------------------
     # Generate unique job ID
     # --------------------------------------------------------
@@ -946,7 +963,6 @@ def analyze_video(
     job_id = str(
         uuid.uuid4()
     )
-
 
     # --------------------------------------------------------
     # Create job record
@@ -976,7 +992,6 @@ def analyze_video(
 
         }
 
-
     # --------------------------------------------------------
     # Start background analysis thread
     # --------------------------------------------------------
@@ -990,9 +1005,7 @@ def analyze_video(
         daemon=True
     )
 
-
     worker.start()
-
 
     print()
     print("=" * 65)
@@ -1015,7 +1028,6 @@ def analyze_video(
     )
 
     print("=" * 65)
-
 
     # --------------------------------------------------------
     # IMPORTANT:
@@ -1044,9 +1056,8 @@ def analyze_video(
     "/analysis-status/{job_id}"
 )
 def analysis_status(
-    job_id: str
+        job_id: str
 ):
-
     # --------------------------------------------------------
     # Find job
     # --------------------------------------------------------
@@ -1059,9 +1070,7 @@ def analysis_status(
             )
         )
 
-
         if job is None:
-
             raise HTTPException(
                 status_code=404,
                 detail=(
@@ -1070,13 +1079,11 @@ def analysis_status(
                 )
             )
 
-
         status = (
             job[
                 "status"
             ]
         )
-
 
         video_id = (
             job.get(
@@ -1084,13 +1091,11 @@ def analysis_status(
             )
         )
 
-
         result = (
             job.get(
                 "result"
             )
         )
-
 
         error = (
             job.get(
@@ -1098,13 +1103,11 @@ def analysis_status(
             )
         )
 
-
     # --------------------------------------------------------
     # COMPLETED
     # --------------------------------------------------------
 
     if status == "complete":
-
         return {
 
             "status":
@@ -1121,13 +1124,11 @@ def analysis_status(
 
         }
 
-
     # --------------------------------------------------------
     # FAILED
     # --------------------------------------------------------
 
     if status == "failed":
-
         return {
 
             "status":
@@ -1143,7 +1144,6 @@ def analysis_status(
                 error
 
         }
-
 
     # --------------------------------------------------------
     # STILL RUNNING

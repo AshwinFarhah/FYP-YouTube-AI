@@ -163,6 +163,7 @@ function showAnalysisTemplate() {
 
     const logoURL =
         chrome.runtime.getURL("icons/logo.png");
+
     console.log(
         "NeuroShield AI: Logo URL =",
         logoURL
@@ -185,16 +186,16 @@ function showAnalysisTemplate() {
 
                     <div class="neuroshield-logo-container">
 
-                         <img
+                        <img
                             src="${logoURL}"
                             class="neuroshield-logo"
                             alt="NeuroShield AI Logo"
                             onerror="this.style.display='none'; console.error('NeuroShield AI: Logo failed to load:', this.src);"
-                         >
+                        >
 
                     </div>
 
-    <div class="neuroshield-brand-text">
+                    <div class="neuroshield-brand-text">
 
                         <div class="neuroshield-title">
                             NeuroShield AI
@@ -276,46 +277,47 @@ function showAnalysisTemplate() {
                 id="neuroshield-content"
             >
 
+
                 <!-- ================================================= -->
                 <!-- MONITORING STATUS -->
                 <!-- ================================================= -->
-                
+
                 <div
                     class="neuroshield-status-card waiting"
                     id="monitoringStatusCard"
                 >
-                
+
                     <div class="status-left">
-                
+
                         <span
                             class="status-dot waiting"
                             id="monitoringStatusDot"
                         ></span>
-                
+
                         <div>
-                
+
                             <div class="status-title">
                                 AI Monitoring
                             </div>
-                
+
                             <div
                                 class="status-text"
                                 id="analysisStatusText"
                             >
                                 Waiting for backend analysis
                             </div>
-                
+
                         </div>
-                
+
                     </div>
-                
+
                     <div
                         class="status-badge waiting"
                         id="monitoringStatusBadge"
                     >
                         Waiting
                     </div>
-                
+
                 </div>
 
 
@@ -353,7 +355,10 @@ function showAnalysisTemplate() {
                         Awaiting analysis
                     </div>
 
-                    <div class="main-score-description">
+                    <div
+                        class="main-score-description"
+                        id="mainScoreDescription"
+                    >
 
                         Waiting for the NeuroShield AI backend
                         to analyse this video.
@@ -547,7 +552,9 @@ function showAnalysisTemplate() {
                     <div class="feature-stack">
 
 
+                        <!-- ================================================= -->
                         <!-- VISUAL -->
+                        <!-- ================================================= -->
 
                         <div class="feature-card">
 
@@ -607,7 +614,9 @@ function showAnalysisTemplate() {
                         </div>
 
 
+                        <!-- ================================================= -->
                         <!-- AUDIO -->
+                        <!-- ================================================= -->
 
                         <div class="feature-card">
 
@@ -666,7 +675,9 @@ function showAnalysisTemplate() {
                         </div>
 
 
+                        <!-- ================================================= -->
                         <!-- TEXT -->
+                        <!-- ================================================= -->
 
                         <div class="feature-card">
 
@@ -724,7 +735,9 @@ function showAnalysisTemplate() {
                         </div>
 
 
+                        <!-- ================================================= -->
                         <!-- ENGAGEMENT -->
+                        <!-- ================================================= -->
 
                         <div class="feature-card">
 
@@ -782,6 +795,127 @@ function showAnalysisTemplate() {
 
                         </div>
 
+
+                        <!-- ================================================= -->
+                        <!-- EMOTIONAL FEATURES -->
+                        <!-- NEW -->
+                        <!-- ================================================= -->
+
+                        <div class="feature-card">
+
+                            <div class="feature-top">
+
+                                <div class="feature-heading">
+
+                                    <div class="feature-icon emotional-feature">
+                                        ♥
+                                    </div>
+
+                                    <div>
+
+                                        <div class="feature-name">
+                                            Emotional Features
+                                        </div>
+
+                                        <div class="feature-subtitle">
+                                            Emotional tone, arousal and stability
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="feature-level"
+                                    id="emotionalFeatureLevel"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div class="mini-progress">
+
+                                <div
+                                    class="mini-fill emotional-feature-fill"
+                                    id="emotionalFeatureBar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="feature-bubbles"
+                                id="emotionalFeatures"
+                            >
+
+                                <span>Emotional Arousal</span>
+                                <span>Emotional Tone</span>
+                                <span>Emotional Stability</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- VIDEO CONTEXT -->
+                        <!-- NEW -->
+                        <!-- ================================================= -->
+
+                        <div class="feature-card">
+
+                            <div class="feature-top">
+
+                                <div class="feature-heading">
+
+                                    <div class="feature-icon metadata">
+                                        ▶
+                                    </div>
+
+                                    <div>
+
+                                        <div class="feature-name">
+                                            Video Context
+                                        </div>
+
+                                        <div class="feature-subtitle">
+                                            Video and analysis context features
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="feature-level"
+                                    id="metadataLevel"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div class="mini-progress">
+
+                                <div
+                                    class="mini-fill metadata-fill"
+                                    id="metadataBar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="feature-bubbles"
+                                id="metadataFeatures"
+                            >
+
+                                <span>Video Duration</span>
+
+                            </div>
+
+                        </div>
+
+
                     </div>
 
                 </section>
@@ -817,7 +951,9 @@ function showAnalysisTemplate() {
                 </section>
 
 
+                <!-- ================================================= -->
                 <!-- FOOTER -->
+                <!-- ================================================= -->
 
                 <div class="neuroshield-footer">
 
@@ -833,25 +969,35 @@ function showAnalysisTemplate() {
 
     `;
 
-    document.body.appendChild(overlay);
+
+    document.body.appendChild(
+        overlay
+    );
+
 
     initialiseOverlayControls();
 
+
     loadOverlayPosition();
 
-    setMonitoringStatus(false);
+
+    setMonitoringStatus(
+        false
+    );
+
 
     checkBackendConnection()
-        .then(function(isReady) {
+        .then(
+            function (isReady) {
 
-            if (isReady) {
+                if (isReady) {
 
-                requestVideoAnalysis();
+                    requestVideoAnalysis();
+
+                }
 
             }
-
-        });
-
+        );
 
 }
 
@@ -867,25 +1013,30 @@ function initialiseOverlayControls() {
             ".neuroshield-window"
         );
 
+
     const dragHandle =
         document.getElementById(
             "neuroshield-drag-handle"
         );
+
 
     const closeButton =
         document.getElementById(
             "neuroshield-close"
         );
 
+
     const minimizeButton =
         document.getElementById(
             "neuroshield-minimize"
         );
 
+
     const notificationButton =
         document.getElementById(
             "neuroshield-notification"
         );
+
 
     const settingsButton =
         document.getElementById(
@@ -893,7 +1044,10 @@ function initialiseOverlayControls() {
         );
 
 
-    if (!windowElement || !dragHandle) {
+    if (
+        !windowElement ||
+        !dragHandle
+    ) {
 
         console.error(
             "NeuroShield AI: Overlay controls could not initialise."
@@ -914,12 +1068,15 @@ function initialiseOverlayControls() {
             notificationButton
         );
 
+
         notificationButton.addEventListener(
             "click",
             async function (event) {
 
                 event.preventDefault();
+
                 event.stopPropagation();
+
 
                 await toggleNotifications();
 
@@ -940,7 +1097,9 @@ function initialiseOverlayControls() {
             function (event) {
 
                 event.preventDefault();
+
                 event.stopPropagation();
+
 
                 chrome.runtime.sendMessage(
                     {
@@ -948,7 +1107,9 @@ function initialiseOverlayControls() {
                     },
                     function () {
 
-                        if (chrome.runtime.lastError) {
+                        if (
+                            chrome.runtime.lastError
+                        ) {
 
                             console.log(
                                 "NeuroShield AI: Settings request sent."
@@ -963,9 +1124,7 @@ function initialiseOverlayControls() {
         );
 
     }
-
-
-    // ========================================================
+        // ========================================================
     // CLOSE
     // ========================================================
 
@@ -976,7 +1135,9 @@ function initialiseOverlayControls() {
             function (event) {
 
                 event.preventDefault();
+
                 event.stopPropagation();
+
 
                 removeOverlay();
 
@@ -997,11 +1158,14 @@ function initialiseOverlayControls() {
             function (event) {
 
                 event.preventDefault();
+
                 event.stopPropagation();
+
 
                 windowElement.classList.toggle(
                     "minimized"
                 );
+
 
                 if (
                     windowElement.classList.contains(
@@ -1009,11 +1173,13 @@ function initialiseOverlayControls() {
                     )
                 ) {
 
-                    minimizeButton.textContent = "+";
+                    minimizeButton.textContent =
+                        "+";
 
                 } else {
 
-                    minimizeButton.textContent = "−";
+                    minimizeButton.textContent =
+                        "−";
 
                 }
 
@@ -1041,20 +1207,28 @@ function initialiseOverlayControls() {
 
             }
 
+
             isDragging = true;
+
 
             const rect =
                 windowElement.getBoundingClientRect();
 
+
             dragOffsetX =
-                event.clientX - rect.left;
+                event.clientX -
+                rect.left;
+
 
             dragOffsetY =
-                event.clientY - rect.top;
+                event.clientY -
+                rect.top;
+
 
             windowElement.classList.add(
                 "dragging"
             );
+
 
             event.preventDefault();
 
@@ -1072,7 +1246,11 @@ function initialiseOverlayControls() {
             new ResizeObserver(
                 function () {
 
-                    if (!windowElement.classList.contains("minimized")) {
+                    if (
+                        !windowElement.classList.contains(
+                            "minimized"
+                        )
+                    ) {
 
                         saveOverlayPosition();
 
@@ -1080,6 +1258,7 @@ function initialiseOverlayControls() {
 
                 }
             );
+
 
         resizeObserver.observe(
             windowElement
@@ -1099,12 +1278,13 @@ async function toggleNotifications() {
     notificationsEnabled =
         !notificationsEnabled;
 
+
     try {
 
         await chrome.storage.local.set({
 
             neuroshieldNotificationsEnabled:
-            notificationsEnabled
+                notificationsEnabled
 
         });
 
@@ -1117,10 +1297,12 @@ async function toggleNotifications() {
 
     }
 
+
     const button =
         document.getElementById(
             "neuroshield-notification"
         );
+
 
     if (button) {
 
@@ -1137,24 +1319,32 @@ async function toggleNotifications() {
 // UPDATE NOTIFICATION BUTTON
 // ============================================================
 
-function updateNotificationButton(button) {
+function updateNotificationButton(
+    button
+) {
 
     if (!button) {
+
         return;
+
     }
+
 
     if (notificationsEnabled) {
 
         button.textContent =
             "🔔";
 
+
         button.title =
             "Mute high-risk alerts";
+
 
         button.setAttribute(
             "aria-label",
             "Mute high-risk alerts"
         );
+
 
         button.classList.remove(
             "muted"
@@ -1165,13 +1355,16 @@ function updateNotificationButton(button) {
         button.textContent =
             "🔕";
 
+
         button.title =
             "Unmute high-risk alerts";
+
 
         button.setAttribute(
             "aria-label",
             "Unmute high-risk alerts"
         );
+
 
         button.classList.add(
             "muted"
@@ -1186,18 +1379,25 @@ function updateNotificationButton(button) {
 // HANDLE DRAG
 // ============================================================
 
-function handleDrag(event) {
+function handleDrag(
+    event
+) {
 
-    if (!isDragging || !overlay) {
+    if (
+        !isDragging ||
+        !overlay
+    ) {
 
         return;
 
     }
 
+
     const windowElement =
         document.querySelector(
             ".neuroshield-window"
         );
+
 
     if (!windowElement) {
 
@@ -1205,29 +1405,40 @@ function handleDrag(event) {
 
     }
 
+
     let x =
-        event.clientX - dragOffsetX;
+        event.clientX -
+        dragOffsetX;
+
 
     let y =
-        event.clientY - dragOffsetY;
+        event.clientY -
+        dragOffsetY;
+
 
     const width =
         windowElement.offsetWidth;
 
+
     const height =
         windowElement.offsetHeight;
+
 
     const maxX =
         Math.max(
             0,
-            window.innerWidth - width
+            window.innerWidth -
+            width
         );
+
 
     const maxY =
         Math.max(
             0,
-            window.innerHeight - height
+            window.innerHeight -
+            height
         );
+
 
     x =
         Math.max(
@@ -1238,6 +1449,7 @@ function handleDrag(event) {
             )
         );
 
+
     y =
         Math.max(
             0,
@@ -1247,11 +1459,14 @@ function handleDrag(event) {
             )
         );
 
+
     windowElement.style.left =
         `${x}px`;
 
+
     windowElement.style.top =
         `${y}px`;
+
 
     windowElement.style.right =
         "auto";
@@ -1271,12 +1486,16 @@ function stopDrag() {
 
     }
 
-    isDragging = false;
+
+    isDragging =
+        false;
+
 
     const windowElement =
         document.querySelector(
             ".neuroshield-window"
         );
+
 
     if (windowElement) {
 
@@ -1285,6 +1504,7 @@ function stopDrag() {
         );
 
     }
+
 
     saveOverlayPosition();
 
@@ -1302,23 +1522,33 @@ function saveOverlayPosition() {
             ".neuroshield-window"
         );
 
+
     if (!windowElement) {
 
         return;
 
     }
 
+
     const rect =
         windowElement.getBoundingClientRect();
+
 
     chrome.storage.local.set({
 
         neuroshieldWindowPosition: {
 
-            left: rect.left,
-            top: rect.top,
-            width: rect.width,
-            height: rect.height
+            left:
+                rect.left,
+
+            top:
+                rect.top,
+
+            width:
+                rect.width,
+
+            height:
+                rect.height
 
         }
 
@@ -1338,11 +1568,13 @@ async function loadOverlayPosition() {
             ".neuroshield-window"
         );
 
+
     if (!windowElement) {
 
         return;
 
     }
+
 
     try {
 
@@ -1351,8 +1583,10 @@ async function loadOverlayPosition() {
                 "neuroshieldWindowPosition"
             );
 
+
         const position =
             result.neuroshieldWindowPosition;
+
 
         if (!position) {
 
@@ -1360,8 +1594,10 @@ async function loadOverlayPosition() {
 
         }
 
+
         if (
-            typeof position.width === "number"
+            typeof position.width ===
+            "number"
         ) {
 
             windowElement.style.width =
@@ -1369,8 +1605,10 @@ async function loadOverlayPosition() {
 
         }
 
+
         if (
-            typeof position.height === "number"
+            typeof position.height ===
+            "number"
         ) {
 
             windowElement.style.height =
@@ -1378,8 +1616,10 @@ async function loadOverlayPosition() {
 
         }
 
+
         if (
-            typeof position.left === "number"
+            typeof position.left ===
+            "number"
         ) {
 
             const maxLeft =
@@ -1388,6 +1628,7 @@ async function loadOverlayPosition() {
                     window.innerWidth -
                     120
                 );
+
 
             windowElement.style.left =
                 `${Math.max(
@@ -1398,13 +1639,16 @@ async function loadOverlayPosition() {
                     )
                 )}px`;
 
+
             windowElement.style.right =
                 "auto";
 
         }
 
+
         if (
-            typeof position.top === "number"
+            typeof position.top ===
+            "number"
         ) {
 
             const maxTop =
@@ -1413,6 +1657,7 @@ async function loadOverlayPosition() {
                     window.innerHeight -
                     120
                 );
+
 
             windowElement.style.top =
                 `${Math.max(
@@ -1447,13 +1692,16 @@ function removeOverlay() {
             "neuroshield-overlay"
         );
 
+
     if (existing) {
 
         existing.remove();
 
     }
 
-    overlay = null;
+
+    overlay =
+        null;
 
 }
 
@@ -1463,7 +1711,11 @@ function removeOverlay() {
 // ============================================================
 
 chrome.runtime.onMessage.addListener(
-    function (message, sender, sendResponse) {
+    function (
+        message,
+        sender,
+        sendResponse
+    ) {
 
         if (!message) {
 
@@ -1484,15 +1736,25 @@ chrome.runtime.onMessage.addListener(
             protectionEnabled =
                 true;
 
+
             chrome.storage.local.set({
-                protectionEnabled: true
+
+                protectionEnabled:
+                    true
+
             });
+
 
             checkCurrentPage();
 
+
             sendResponse({
-                success: true
+
+                success:
+                    true
+
             });
+
 
             return true;
 
@@ -1511,15 +1773,25 @@ chrome.runtime.onMessage.addListener(
             protectionEnabled =
                 false;
 
+
             chrome.storage.local.set({
-                protectionEnabled: false
+
+                protectionEnabled:
+                    false
+
             });
+
 
             removeOverlay();
 
+
             sendResponse({
-                success: true
+
+                success:
+                    true
+
             });
+
 
             return true;
 
@@ -1539,18 +1811,25 @@ chrome.runtime.onMessage.addListener(
                 "NeuroShield AI: Backend analysis received."
             );
 
+
             console.log(
                 "NeuroShield AI: REAL ANALYSIS RESULT:",
                 message.data
             );
 
+
             updateRealRiskResult(
                 message.data
             );
 
+
             sendResponse({
-                success: true
+
+                success:
+                    true
+
             });
+
 
             return true;
 
@@ -1558,6 +1837,8 @@ chrome.runtime.onMessage.addListener(
 
     }
 );
+
+
 // ============================================================
 // CHECK BACKEND CONNECTION
 // ============================================================
@@ -1574,7 +1855,8 @@ async function checkBackendConnection() {
         const response =
             await chrome.runtime.sendMessage({
 
-                action: "CHECK_BACKEND"
+                action:
+                    "CHECK_BACKEND"
 
             });
 
@@ -1591,7 +1873,10 @@ async function checkBackendConnection() {
             );
 
 
-            setMonitoringStatus(true);
+            setMonitoringStatus(
+                true
+            );
+
 
             return true;
 
@@ -1603,10 +1888,12 @@ async function checkBackendConnection() {
         );
 
 
-        setMonitoringStatus(false);
+        setMonitoringStatus(
+            false
+        );
+
 
         return false;
-
 
     } catch (error) {
 
@@ -1616,13 +1903,18 @@ async function checkBackendConnection() {
         );
 
 
-        setMonitoringStatus(false);
+        setMonitoringStatus(
+            false
+        );
+
 
         return false;
 
     }
 
 }
+
+
 // ============================================================
 // REQUEST VIDEO ANALYSIS
 // ============================================================
@@ -1634,6 +1926,7 @@ async function requestVideoAnalysis() {
         console.warn(
             "NeuroShield AI: No YouTube video ID available."
         );
+
 
         return;
 
@@ -1655,7 +1948,8 @@ async function requestVideoAnalysis() {
         const response =
             await chrome.runtime.sendMessage({
 
-                action: "ANALYZE_VIDEO",
+                action:
+                    "ANALYZE_VIDEO",
 
                 youtubeUrl:
                     youtubeUrl
@@ -1673,14 +1967,15 @@ async function requestVideoAnalysis() {
                 response
             );
 
+
             return;
+
         }
 
 
         console.log(
             "NeuroShield AI: Analysis started successfully."
         );
-
 
     } catch (error) {
 
@@ -1692,11 +1987,15 @@ async function requestVideoAnalysis() {
     }
 
 }
+
+
 // ============================================================
 // UPDATE REAL RISK RESULT
 // ============================================================
 
-function updateRealRiskResult(data) {
+function updateRealRiskResult(
+    data
+) {
 
     if (!data) {
 
@@ -1704,18 +2003,24 @@ function updateRealRiskResult(data) {
             "NeuroShield AI: No analysis data received."
         );
 
+
         return;
 
     }
 
 
     const riskLevel =
-        data.risk_level || "Unknown Risk";
+        data.risk_level ||
+        "Unknown Risk";
 
 
     const confidence =
-        typeof data.confidence === "number"
-            ? Math.round(data.confidence * 100)
+        typeof data.confidence ===
+        "number"
+            ? Math.round(
+                data.confidence *
+                100
+            )
             : 0;
 
 
@@ -1735,22 +2040,32 @@ function updateRealRiskResult(data) {
             "mainScoreCard"
         );
 
+
     const overallScore =
         document.getElementById(
             "overallScore"
         );
+
 
     const overallScoreLabel =
         document.getElementById(
             "overallScoreLabel"
         );
 
+
     const statusText =
         document.getElementById(
             "analysisStatusText"
         );
 
+
     const liveBadge =
+        document.getElementById(
+            "analysisLiveBadge"
+        );
+
+
+    const description =
         document.getElementById(
             "mainScoreDescription"
         );
@@ -1793,14 +2108,18 @@ function updateRealRiskResult(data) {
         );
 
 
-        if (riskLevel === "High Risk") {
+        if (
+            riskLevel ===
+            "High Risk"
+        ) {
 
             mainCard.classList.add(
                 "high"
             );
 
         } else if (
-            riskLevel === "Medium Risk"
+            riskLevel ===
+            "Medium Risk"
         ) {
 
             mainCard.classList.add(
@@ -1808,7 +2127,8 @@ function updateRealRiskResult(data) {
             );
 
         } else if (
-            riskLevel === "Low Risk"
+            riskLevel ===
+            "Low Risk"
         ) {
 
             mainCard.classList.add(
@@ -1841,16 +2161,6 @@ function updateRealRiskResult(data) {
 
 
     // ========================================================
-    // HIGH RISK NOTIFICATION
-    // ========================================================
-
-    if (riskLevel === "High Risk") {
-
-        triggerHighRiskAlert();
-
-    }
-
-    // ========================================================
     // RESULT DESCRIPTION
     // ========================================================
 
@@ -1860,37 +2170,152 @@ function updateRealRiskResult(data) {
             `Model confidence: ${confidence}%. ` +
             `Analysis completed using ${data.feature_count || 42} ` +
             `multimodal features from the first ` +
-            `${Math.round(data.analysis_duration_seconds || 300)} ` +
-            `seconds of this video.`;
+            `${Math.round(
+                data.analysis_duration_seconds ||
+                300
+            )} seconds of this video.`;
+
+    }
+
+
+    // ========================================================
+    // DEVELOPMENTAL IMPACT SCORES
+    // ========================================================
+
+    const developmentalScores =
+        data.developmental_scores;
+
+
+    if (developmentalScores) {
+
+        updateScoreBar(
+            developmentalScores.cognitive,
+            "cognitiveScore",
+            "cognitiveBar"
+        );
+
+
+        updateScoreBar(
+            developmentalScores.behavioural,
+            "behaviouralScore",
+            "behaviouralBar"
+        );
+
+
+        updateScoreBar(
+            developmentalScores.emotional,
+            "emotionalScore",
+            "emotionalBar"
+        );
+
+
+        console.log(
+            "NeuroShield AI: Developmental scores updated:",
+            developmentalScores
+        );
+
+    }
+
+
+    // ========================================================
+    // EXPLAINABLE AI - SHAP
+    // ========================================================
+    //
+    // IMPORTANT:
+    // The old file rendered this section twice.
+    // The duplicate has now been removed.
+    // ========================================================
+
+    const explainability =
+        data.explainability;
+
+
+    if (explainability) {
+
+        renderExplainability(
+            explainability
+        );
+
+
+        console.log(
+            "NeuroShield AI: SHAP explanation updated:",
+            explainability
+        );
+
+    }
+
+
+    // ========================================================
+    // SHAP-BASED DETECTED MULTIMEDIA FEATURES
+    // ========================================================
+
+    if (
+        explainability &&
+        Array.isArray(
+            explainability.feature_contributions
+        )
+    ) {
+
+        renderContributingFeatures(
+            explainability.feature_contributions
+        );
+
+
+        console.log(
+            "NeuroShield AI: SHAP-based multimedia features updated:",
+            explainability.feature_contributions
+        );
+
+    }
+
+
+    // ========================================================
+    // HIGH RISK NOTIFICATION
+    // ========================================================
+
+    if (
+        riskLevel ===
+        "High Risk"
+    ) {
+
+        triggerHighRiskAlert();
 
     }
 
 }
+
+
 // ============================================================
 // MONITORING STATUS
 // ============================================================
 
-function setMonitoringStatus(isReady) {
+function setMonitoringStatus(
+    isReady
+) {
 
     const card =
         document.getElementById(
             "monitoringStatusCard"
         );
 
+
     const dot =
         document.getElementById(
             "monitoringStatusDot"
         );
+
 
     const badge =
         document.getElementById(
             "monitoringStatusBadge"
         );
 
+
     const text =
         document.getElementById(
             "analysisStatusText"
         );
+
 
     const liveBadge =
         document.getElementById(
@@ -1909,6 +2334,7 @@ function setMonitoringStatus(isReady) {
             "NeuroShield AI: Monitoring status elements not found."
         );
 
+
         return;
 
     }
@@ -1923,10 +2349,12 @@ function setMonitoringStatus(isReady) {
         "active"
     );
 
+
     dot.classList.remove(
         "waiting",
         "active"
     );
+
 
     badge.classList.remove(
         "waiting",
@@ -1944,16 +2372,20 @@ function setMonitoringStatus(isReady) {
             "active"
         );
 
+
         dot.classList.add(
             "active"
         );
+
 
         badge.classList.add(
             "active"
         );
 
+
         badge.textContent =
             "Active";
+
 
         text.textContent =
             "Analysis complete";
@@ -1979,16 +2411,20 @@ function setMonitoringStatus(isReady) {
             "waiting"
         );
 
+
         dot.classList.add(
             "waiting"
         );
+
 
         badge.classList.add(
             "waiting"
         );
 
+
         badge.textContent =
             "Waiting";
+
 
         text.textContent =
             "Waiting for backend analysis";
@@ -2003,10 +2439,12 @@ function setMonitoringStatus(isReady) {
                 "mainScoreCard"
             );
 
+
         const overallScore =
             document.getElementById(
                 "overallScore"
             );
+
 
         const overallScoreLabel =
             document.getElementById(
@@ -2052,11 +2490,14 @@ function setMonitoringStatus(isReady) {
 
 }
 
+
 // ============================================================
 // APPLY REAL BACKEND RESULTS
 // ============================================================
 
-function applyBackendResults(data) {
+function applyBackendResults(
+    data
+) {
 
     if (!data) {
 
@@ -2064,15 +2505,23 @@ function applyBackendResults(data) {
 
     }
 
+
     console.log(
         "NeuroShield AI: Applying verified backend data:",
         data
     );
 
-    // Backend has successfully returned analysis
-    if (typeof data.overall === "number") {
 
-        setMonitoringStatus(true);
+    // Backend has successfully returned analysis
+
+    if (
+        typeof data.overall ===
+        "number"
+    ) {
+
+        setMonitoringStatus(
+            true
+        );
 
     }
 
@@ -2082,7 +2531,8 @@ function applyBackendResults(data) {
     // ========================================================
 
     if (
-        typeof data.overall === "number"
+        typeof data.overall ===
+        "number"
     ) {
 
         updateScore(
@@ -2090,6 +2540,7 @@ function applyBackendResults(data) {
             "overallScore",
             "overallScoreLabel"
         );
+
 
         updateMainCardLevel(
             data.overall
@@ -2108,11 +2559,13 @@ function applyBackendResults(data) {
         "cognitiveBar"
     );
 
+
     updateScoreBar(
         data.behavioural,
         "behaviouralScore",
         "behaviouralBar"
     );
+
 
     updateScoreBar(
         data.emotional,
@@ -2131,17 +2584,20 @@ function applyBackendResults(data) {
         "visualLevel"
     );
 
+
     updateFeatureScore(
         data.audio,
         "audioBar",
         "audioLevel"
     );
 
+
     updateFeatureScore(
         data.text,
         "textBar",
         "textLevel"
     );
+
 
     updateFeatureScore(
         data.engagement,
@@ -2159,6 +2615,7 @@ function applyBackendResults(data) {
             "analysisStatusText"
         );
 
+
     if (status) {
 
         status.textContent =
@@ -2172,14 +2629,17 @@ function applyBackendResults(data) {
     // ========================================================
 
     if (
-        typeof data.recommendation === "string" &&
-        data.recommendation.trim() !== ""
+        typeof data.recommendation ===
+            "string" &&
+        data.recommendation.trim() !==
+            ""
     ) {
 
         const recommendation =
             document.getElementById(
                 "recommendation"
             );
+
 
         if (recommendation) {
 
@@ -2191,8 +2651,8 @@ function applyBackendResults(data) {
 
                 <p>
                     ${escapeHTML(
-                data.recommendation
-            )}
+                        data.recommendation
+                    )}
                 </p>
 
             `;
@@ -2207,8 +2667,11 @@ function applyBackendResults(data) {
     // ========================================================
 
     if (
-        Array.isArray(data.insights) &&
-        data.insights.length > 0
+        Array.isArray(
+            data.insights
+        ) &&
+        data.insights.length >
+            0
     ) {
 
         renderInsights(
@@ -2223,8 +2686,10 @@ function applyBackendResults(data) {
     // ========================================================
 
     if (
-        typeof data.overall === "number" &&
-        data.overall > 75
+        typeof data.overall ===
+            "number" &&
+        data.overall >
+            75
     ) {
 
         triggerHighRiskAlert();
@@ -2245,22 +2710,26 @@ function updateScore(
 ) {
 
     if (
-        typeof value !== "number"
+        typeof value !==
+        "number"
     ) {
 
         return;
 
     }
 
+
     const valueElement =
         document.getElementById(
             valueId
         );
 
+
     const labelElement =
         document.getElementById(
             labelId
         );
+
 
     const safeValue =
         Math.max(
@@ -2271,21 +2740,31 @@ function updateScore(
             )
         );
 
+
     if (valueElement) {
 
         valueElement.textContent =
-            `${Math.round(safeValue)}%`;
+            `${Math.round(
+                safeValue
+            )}%`;
 
     }
 
+
     if (labelElement) {
 
-        if (safeValue > 75) {
+        if (
+            safeValue >
+            75
+        ) {
 
             labelElement.textContent =
                 "High Stimulation";
 
-        } else if (safeValue < 40) {
+        } else if (
+            safeValue <
+            40
+        ) {
 
             labelElement.textContent =
                 "Low Stimulation";
@@ -2306,12 +2785,15 @@ function updateScore(
 // MAIN CARD COLOUR
 // ============================================================
 
-function updateMainCardLevel(score) {
+function updateMainCardLevel(
+    score
+) {
 
     const card =
         document.getElementById(
             "mainScoreCard"
         );
+
 
     if (!card) {
 
@@ -2319,19 +2801,27 @@ function updateMainCardLevel(score) {
 
     }
 
+
     card.classList.remove(
         "low",
         "moderate",
         "high"
     );
 
-    if (score > 75) {
+
+    if (
+        score >
+        75
+    ) {
 
         card.classList.add(
             "high"
         );
 
-    } else if (score < 40) {
+    } else if (
+        score <
+        40
+    ) {
 
         card.classList.add(
             "low"
@@ -2359,12 +2849,14 @@ function updateScoreBar(
 ) {
 
     if (
-        typeof value !== "number"
+        typeof value !==
+        "number"
     ) {
 
         return;
 
     }
+
 
     const safeValue =
         Math.max(
@@ -2375,22 +2867,28 @@ function updateScoreBar(
             )
         );
 
+
     const valueElement =
         document.getElementById(
             valueId
         );
+
 
     const barElement =
         document.getElementById(
             barId
         );
 
+
     if (valueElement) {
 
         valueElement.textContent =
-            `${Math.round(safeValue)}%`;
+            `${Math.round(
+                safeValue
+            )}%`;
 
     }
+
 
     if (barElement) {
 
@@ -2413,12 +2911,14 @@ function updateFeatureScore(
 ) {
 
     if (
-        typeof value !== "number"
+        typeof value !==
+        "number"
     ) {
 
         return;
 
     }
+
 
     const safeValue =
         Math.max(
@@ -2429,15 +2929,18 @@ function updateFeatureScore(
             )
         );
 
+
     const bar =
         document.getElementById(
             barId
         );
 
+
     const level =
         document.getElementById(
             levelId
         );
+
 
     if (bar) {
 
@@ -2446,14 +2949,21 @@ function updateFeatureScore(
 
     }
 
+
     if (level) {
 
-        if (safeValue > 75) {
+        if (
+            safeValue >
+            75
+        ) {
 
             level.textContent =
                 "High";
 
-        } else if (safeValue < 40) {
+        } else if (
+            safeValue <
+            40
+        ) {
 
             level.textContent =
                 "Low";
@@ -2471,15 +2981,1206 @@ function updateFeatureScore(
 
 
 // ============================================================
-// INSIGHTS
+// LIVE SHAP EXPLAINABILITY
 // ============================================================
 
-function renderInsights(insights) {
+function renderExplainability(
+    explainability
+) {
 
     const container =
         document.getElementById(
             "insightContainer"
         );
+
+
+    if (
+        !container ||
+        !explainability
+    ) {
+
+        return;
+
+    }
+
+
+    const predictedLabel =
+        explainability.predicted_label ||
+        "the predicted class";
+
+
+    const parentExplanation =
+        explainability.parent_explanation ||
+        "No explanation is available.";
+
+
+    const supportingFactors =
+        Array.isArray(
+            explainability.supporting_factors
+        )
+            ? explainability.supporting_factors
+            : [];
+
+
+    const opposingFactors =
+        Array.isArray(
+            explainability.opposing_factors
+        )
+            ? explainability.opposing_factors
+            : [];
+
+
+    // ========================================================
+    // BUILD SUPPORTING FACTORS
+    // ========================================================
+
+    const supportingHTML =
+        supportingFactors
+            .map(
+                function (factor) {
+
+                    return `
+                        <li>
+                            ${escapeHTML(
+                                factor.friendly_name ||
+                                factor.feature
+                            )}
+                        </li>
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    // ========================================================
+    // BUILD OPPOSING FACTORS
+    // ========================================================
+
+    const opposingHTML =
+        opposingFactors
+            .map(
+                function (factor) {
+
+                    return `
+                        <li>
+                            ${escapeHTML(
+                                factor.friendly_name ||
+                                factor.feature
+                            )}
+                        </li>
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    // ========================================================
+    // DISPLAY EXPLANATION
+    // ========================================================
+
+    container.innerHTML = `
+
+        <div class="empty-insight-icon">
+            ✦
+        </div>
+
+        <div>
+
+            <strong>
+                Why ${escapeHTML(
+                    predictedLabel
+                )}?
+            </strong>
+
+            <p>
+                ${escapeHTML(
+                    parentExplanation
+                )}
+            </p>
+
+            ${
+                supportingHTML
+                    ? `
+                        <div class="shap-factor-group supporting">
+
+                            <strong>
+                                Supporting the prediction
+                            </strong>
+
+                            <ul>
+                                ${supportingHTML}
+                            </ul>
+
+                        </div>
+                    `
+                    : ""
+            }
+
+            ${
+                opposingHTML
+                    ? `
+                        <div class="shap-factor-group opposing">
+
+                            <strong>
+                                Opposing the prediction
+                            </strong>
+
+                            <ul>
+                                ${opposingHTML}
+                            </ul>
+
+                        </div>
+                    `
+                    : ""
+            }
+
+        </div>
+
+    `;
+
+}
+// ============================================================
+// SHAP-BASED DETECTED MULTIMEDIA FEATURES
+// ============================================================
+
+function renderContributingFeatures(
+    featureContributions
+) {
+
+    if (
+        !Array.isArray(
+            featureContributions
+        ) ||
+        featureContributions.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // SORT ALL FEATURES BY ABSOLUTE SHAP CONTRIBUTION
+    // ========================================================
+    //
+    // The backend normally already sends these in descending
+    // order, but sorting again here makes the frontend robust.
+    //
+    // All 42 model features remain candidates.
+    // ========================================================
+
+    const sortedContributions =
+        [...featureContributions]
+            .filter(
+                function (feature) {
+
+                    return (
+                        feature &&
+                        typeof feature.absolute_shap ===
+                            "number" &&
+                        Number.isFinite(
+                            feature.absolute_shap
+                        )
+                    );
+
+                }
+            )
+            .sort(
+                function (a, b) {
+
+                    return (
+                        b.absolute_shap -
+                        a.absolute_shap
+                    );
+
+                }
+            );
+
+
+    if (
+        sortedContributions.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // STRONGEST CONTRIBUTION
+    // ========================================================
+
+    const strongestContribution =
+        sortedContributions[0]
+            .absolute_shap;
+
+
+    if (
+        typeof strongestContribution !==
+            "number" ||
+        strongestContribution <= 0
+    ) {
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // DISPLAY THRESHOLD
+    // ========================================================
+    //
+    // Individual feature bubbles are displayed when their
+    // absolute SHAP contribution is at least 20% as strong
+    // as the strongest feature for this prediction.
+    //
+    // This is only a UI display heuristic.
+    //
+    // It is NOT:
+    // - a statistical significance threshold
+    // - a developmental-risk threshold
+    // - a probability threshold
+    // ========================================================
+
+    const contributionThreshold =
+        strongestContribution *
+        0.20;
+
+
+    // ========================================================
+    // SELECT MAJOR INDIVIDUAL CONTRIBUTORS
+    // ========================================================
+
+    const selectedFeatures =
+        sortedContributions
+            .filter(
+                function (feature) {
+
+                    return (
+                        feature.absolute_shap >=
+                        contributionThreshold
+                    );
+
+                }
+            )
+            .slice(
+                0,
+                12
+            );
+
+
+    // ========================================================
+    // CREATE GROUPS
+    // ========================================================
+    //
+    // allGroups:
+    // Contains every one of the 42 RF features.
+    //
+    // selectedGroups:
+    // Contains only features that passed the UI display
+    // threshold above.
+    // ========================================================
+
+    const allGroups =
+        createEmptyFeatureGroups();
+
+
+    const selectedGroups =
+        createEmptyFeatureGroups();
+
+
+    // ========================================================
+    // GROUP ALL 42 FEATURES
+    // ========================================================
+
+    sortedContributions.forEach(
+        function (feature) {
+
+            const group =
+                getFeatureGroup(
+                    feature.feature
+                );
+
+
+            allGroups[group].push(
+                feature
+            );
+
+        }
+    );
+
+
+    // ========================================================
+    // GROUP SELECTED FEATURES
+    // ========================================================
+
+    selectedFeatures.forEach(
+        function (feature) {
+
+            const group =
+                getFeatureGroup(
+                    feature.feature
+                );
+
+
+            selectedGroups[group].push(
+                feature
+            );
+
+        }
+    );
+
+
+    // ========================================================
+    // TOTAL ABSOLUTE SHAP CONTRIBUTION
+    // ========================================================
+    //
+    // This value is used to calculate how much each modality
+    // contributes to the current Random Forest prediction.
+    //
+    // Example:
+    //
+    // Visual absolute SHAP total
+    // --------------------------
+    // All 42 absolute SHAP total
+    //
+    // gives the Visual contribution share.
+    //
+    // These percentages are NOT model confidence and are NOT
+    // developmental impact scores.
+    // ========================================================
+
+    const totalAbsoluteShap =
+        sortedContributions.reduce(
+            function (
+                total,
+                feature
+            ) {
+
+                return (
+                    total +
+                    feature.absolute_shap
+                );
+
+            },
+            0
+        );
+
+
+    // ========================================================
+    // VISUAL
+    // ========================================================
+
+    renderLiveContributionGroup(
+        "visualFeatures",
+        "visualBar",
+        "visualLevel",
+        selectedGroups.visual,
+        allGroups.visual,
+        totalAbsoluteShap
+    );
+
+
+    // ========================================================
+    // AUDIO
+    // ========================================================
+
+    renderLiveContributionGroup(
+        "audioFeatures",
+        "audioBar",
+        "audioLevel",
+        selectedGroups.audio,
+        allGroups.audio,
+        totalAbsoluteShap
+    );
+
+
+    // ========================================================
+    // TEXT
+    // ========================================================
+
+    renderLiveContributionGroup(
+        "textFeatures",
+        "textBar",
+        "textLevel",
+        selectedGroups.text,
+        allGroups.text,
+        totalAbsoluteShap
+    );
+
+
+    // ========================================================
+    // ENGAGEMENT
+    // ========================================================
+
+    renderLiveContributionGroup(
+        "engagementFeatures",
+        "engagementBar",
+        "engagementLevel",
+        selectedGroups.engagement,
+        allGroups.engagement,
+        totalAbsoluteShap
+    );
+
+
+    // ========================================================
+    // EMOTIONAL
+    // ========================================================
+
+    renderLiveContributionGroup(
+        "emotionalFeatures",
+        "emotionalFeatureBar",
+        "emotionalFeatureLevel",
+        selectedGroups.emotional,
+        allGroups.emotional,
+        totalAbsoluteShap
+    );
+
+
+    // ========================================================
+    // VIDEO CONTEXT / METADATA
+    // ========================================================
+
+    renderLiveContributionGroup(
+        "metadataFeatures",
+        "metadataBar",
+        "metadataLevel",
+        selectedGroups.metadata,
+        allGroups.metadata,
+        totalAbsoluteShap
+    );
+    // ========================================================
+    // SORT FEATURE CARDS BY LIVE SHAP CONTRIBUTION
+    // ========================================================
+    //
+    // Highest contribution appears first.
+    //
+    // The percentage for each group is calculated from:
+    //
+    // group absolute SHAP
+    // -------------------  × 100
+    // total absolute SHAP
+    //
+    // This only changes the DISPLAY ORDER of the six cards.
+    // It does not change the model, SHAP values, or prediction.
+    // ========================================================
+
+    sortFeatureCardsByContribution(
+        allGroups,
+        totalAbsoluteShap
+    );
+    // ============================================================
+    // SORT MULTIMEDIA CARDS BY LIVE SHAP CONTRIBUTION
+    // ============================================================
+
+    function sortFeatureCardsByContribution(
+        allGroups,
+        totalAbsoluteShap
+    ) {
+
+        if (
+            !allGroups ||
+            typeof totalAbsoluteShap !== "number" ||
+            totalAbsoluteShap <= 0
+        ) {
+
+            return;
+
+        }
+
+
+        // ========================================================
+        // GET FEATURE STACK
+        // ========================================================
+
+        const featureStack =
+            document.querySelector(
+                ".feature-stack"
+            );
+
+
+        if (!featureStack) {
+
+            return;
+
+        }
+
+
+        // ========================================================
+        // MAP EACH GROUP TO ONE OF THE SIX CARDS
+        // ========================================================
+
+        const groups = [
+
+            {
+                name: "visual",
+                containerId: "visualFeatures"
+            },
+
+            {
+                name: "audio",
+                containerId: "audioFeatures"
+            },
+
+            {
+                name: "text",
+                containerId: "textFeatures"
+            },
+
+            {
+                name: "engagement",
+                containerId: "engagementFeatures"
+            },
+
+            {
+                name: "emotional",
+                containerId: "emotionalFeatures"
+            },
+
+            {
+                name: "metadata",
+                containerId: "metadataFeatures"
+            }
+
+        ];
+
+
+        // ========================================================
+        // CALCULATE EACH GROUP'S LIVE CONTRIBUTION
+        // ========================================================
+
+        const rankedGroups =
+            groups.map(
+                function (group) {
+
+                    const features =
+                        Array.isArray(
+                            allGroups[group.name]
+                        )
+                            ? allGroups[group.name]
+                            : [];
+
+
+                    const groupAbsoluteShap =
+                        features.reduce(
+                            function (
+                                total,
+                                feature
+                            ) {
+
+                                if (
+                                    feature &&
+                                    typeof feature.absolute_shap ===
+                                        "number" &&
+                                    Number.isFinite(
+                                        feature.absolute_shap
+                                    )
+                                ) {
+
+                                    return (
+                                        total +
+                                        feature.absolute_shap
+                                    );
+
+                                }
+
+
+                                return total;
+
+                            },
+                            0
+                        );
+
+
+                    const contributionShare =
+                        (
+                            groupAbsoluteShap /
+                            totalAbsoluteShap
+                        ) * 100;
+
+
+                    const container =
+                        document.getElementById(
+                            group.containerId
+                        );
+
+
+                    const card =
+                        container
+                            ? container.closest(
+                                ".feature-card"
+                            )
+                            : null;
+
+
+                    return {
+
+                        name:
+                            group.name,
+
+                        contribution:
+                            contributionShare,
+
+                        card:
+                            card
+
+                    };
+
+                }
+            );
+
+
+        // ========================================================
+        // SORT HIGHEST → LOWEST
+        // ========================================================
+
+        rankedGroups.sort(
+            function (a, b) {
+
+                return (
+                    b.contribution -
+                    a.contribution
+                );
+
+            }
+        );
+
+
+        // ========================================================
+        // MOVE CARDS INTO THEIR NEW DISPLAY ORDER
+        // ========================================================
+        //
+        // appendChild() moves an existing DOM element.
+        // It does NOT duplicate the card.
+        // ========================================================
+
+        rankedGroups.forEach(
+            function (group) {
+
+                if (group.card) {
+
+                    featureStack.appendChild(
+                        group.card
+                    );
+
+                }
+
+            }
+        );
+
+
+        console.log(
+            "NeuroShield AI: Feature cards ranked by SHAP contribution:",
+            rankedGroups.map(
+                function (group) {
+
+                    return {
+
+                        group:
+                            group.name,
+
+                        contribution:
+                            group.contribution.toFixed(1) +
+                            "%"
+
+                    };
+
+                }
+            )
+        );
+
+    }
+
+
+    console.log(
+        "NeuroShield AI: Meaningful SHAP features:",
+        selectedFeatures
+    );
+
+
+    console.log(
+        "NeuroShield AI: SHAP feature groups:",
+        allGroups
+    );
+
+
+    console.log(
+        "NeuroShield AI: Total absolute SHAP:",
+        totalAbsoluteShap
+    );
+
+}
+
+
+// ============================================================
+// CREATE EMPTY FEATURE GROUPS
+// ============================================================
+
+function createEmptyFeatureGroups() {
+
+    return {
+
+        visual: [],
+
+        audio: [],
+
+        text: [],
+
+        engagement: [],
+
+        emotional: [],
+
+        metadata: []
+
+    };
+
+}
+
+
+// ============================================================
+// FEATURE → MODALITY GROUP
+// ============================================================
+//
+// IMPORTANT:
+//
+// These groups cover all 42 Random Forest input features.
+//
+// The grouping is used only for presenting the model's
+// SHAP contributions in the parent-facing interface.
+//
+// The Random Forest itself still receives all 42 features
+// independently.
+// ============================================================
+
+function getFeatureGroup(
+    featureName
+) {
+
+
+    // ========================================================
+    // VISUAL FEATURES
+    // 7 FEATURES
+    // ========================================================
+
+    const visualFeatures =
+        new Set([
+
+            "avg_saturation",
+
+            "avg_brightness",
+
+            "motion_mean",
+
+            "motion_std",
+
+            "scene_rate",
+
+            "flicker_rate",
+
+            "motion_spike_rate"
+
+        ]);
+
+
+    // ========================================================
+    // AUDIO FEATURES
+    // 13 FEATURES
+    // ========================================================
+
+    const audioFeatures =
+        new Set([
+
+            "loudness",
+
+            "sound_density",
+
+            "audio_variation",
+
+            "avg_pitch",
+
+            "pitch_variation",
+
+            "spectral_centroid",
+
+            "spectral_bandwidth",
+
+            "spectral_rolloff",
+
+            "spectral_contrast",
+
+            "zero_crossing_rate",
+
+            "harmonic_ratio",
+
+            "percussive_ratio",
+
+            "tempo"
+
+        ]);
+
+
+    // ========================================================
+    // TEXT FEATURES
+    // 14 FEATURES
+    // ========================================================
+
+    const textFeatures =
+        new Set([
+
+            "transcript_length",
+
+            "sentence_complexity",
+
+            "average_sentence_length",
+
+            "vocabulary_diversity",
+
+            "phrase_repetition",
+
+            "educational_word_ratio",
+
+            "reward_keyword_frequency",
+
+            "transcript_word_count",
+
+            "unique_word_ratio",
+
+            "repeated_word_ratio",
+
+            "hallucination_score",
+
+            "english_ratio",
+
+            "nonsense_ratio",
+
+            "transcript_length_normalized"
+
+        ]);
+
+
+    // ========================================================
+    // ENGAGEMENT FEATURES
+    // 4 FEATURES
+    // ========================================================
+
+    const engagementFeatures =
+        new Set([
+
+            "attention_score",
+
+            "loop_detection_score",
+
+            "reward_cue_frequency",
+
+            "attention_reset_rate"
+
+        ]);
+
+
+    // ========================================================
+    // EMOTIONAL FEATURES
+    // 3 FEATURES
+    // ========================================================
+
+    const emotionalFeatures =
+        new Set([
+
+            "emotion_arousal",
+
+            "emotion_valence",
+
+            "emotion_stability"
+
+        ]);
+
+
+    // ========================================================
+    // VIDEO CONTEXT / METADATA
+    // 1 FEATURE
+    // ========================================================
+
+    const metadataFeatures =
+        new Set([
+
+            "video_duration_seconds"
+
+        ]);
+
+
+    // ========================================================
+    // RETURN MATCHING GROUP
+    // ========================================================
+
+    if (
+        visualFeatures.has(
+            featureName
+        )
+    ) {
+
+        return "visual";
+
+    }
+
+
+    if (
+        audioFeatures.has(
+            featureName
+        )
+    ) {
+
+        return "audio";
+
+    }
+
+
+    if (
+        textFeatures.has(
+            featureName
+        )
+    ) {
+
+        return "text";
+
+    }
+
+
+    if (
+        engagementFeatures.has(
+            featureName
+        )
+    ) {
+
+        return "engagement";
+
+    }
+
+
+    if (
+        emotionalFeatures.has(
+            featureName
+        )
+    ) {
+
+        return "emotional";
+
+    }
+
+
+    if (
+        metadataFeatures.has(
+            featureName
+        )
+    ) {
+
+        return "metadata";
+
+    }
+
+
+    // ========================================================
+    // SAFETY FALLBACK
+    // ========================================================
+    //
+    // With the current NeuroShield model this should never
+    // happen because all 42 features are explicitly assigned.
+    // ========================================================
+
+    console.warn(
+        "NeuroShield AI: Unknown SHAP feature group:",
+        featureName
+    );
+
+
+    return "metadata";
+
+}
+
+
+// ============================================================
+// RENDER LIVE CONTRIBUTION GROUP
+// ============================================================
+//
+// This function does TWO separate things:
+//
+// 1. Calculates the LIVE contribution percentage/bar using
+//    ALL features belonging to the category.
+//
+// 2. Displays individual feature bubbles only for features
+//    that passed the 20%-of-strongest display threshold.
+//
+// Therefore a category can correctly show:
+//
+//     Audio Features
+//     5.2% contribution
+//     [small progress bar]
+//
+//     No feature above display threshold
+//
+// That does NOT mean audio contributed nothing.
+//
+// It means the combined audio features contributed 5.2% of
+// total absolute SHAP, but no single audio feature was large
+// enough to qualify as a major individual contributor.
+// ============================================================
+
+function renderLiveContributionGroup(
+    containerId,
+    barId,
+    levelId,
+    selectedFeatures,
+    allGroupFeatures,
+    totalAbsoluteShap
+) {
+
+
+    const container =
+        document.getElementById(
+            containerId
+        );
+
+
+    const bar =
+        document.getElementById(
+            barId
+        );
+
+
+    const level =
+        document.getElementById(
+            levelId
+        );
+
+
+    // ========================================================
+    // SUM ABSOLUTE SHAP FOR THIS GROUP
+    // ========================================================
+
+    const groupAbsoluteShap =
+        Array.isArray(
+            allGroupFeatures
+        )
+            ? allGroupFeatures.reduce(
+                function (
+                    total,
+                    feature
+                ) {
+
+                    if (
+                        typeof feature.absolute_shap ===
+                            "number" &&
+                        Number.isFinite(
+                            feature.absolute_shap
+                        )
+                    ) {
+
+                        return (
+                            total +
+                            feature.absolute_shap
+                        );
+
+                    }
+
+
+                    return total;
+
+                },
+                0
+            )
+            : 0;
+
+
+    // ========================================================
+    // CALCULATE LIVE CONTRIBUTION SHARE
+    // ========================================================
+
+    const contributionShare =
+        totalAbsoluteShap > 0
+            ? (
+                groupAbsoluteShap /
+                totalAbsoluteShap
+            ) * 100
+            : 0;
+
+
+    const safeShare =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                contributionShare
+            )
+        );
+
+
+    // ========================================================
+    // UPDATE LIVE CONTRIBUTION LABEL
+    // ========================================================
+
+    if (level) {
+
+        level.textContent =
+            `${safeShare.toFixed(
+                1
+            )}% contribution`;
+
+
+        level.title =
+            "Share of total absolute SHAP contribution across all 42 model features.";
+
+
+        level.setAttribute(
+            "aria-label",
+            `${safeShare.toFixed(
+                1
+            )}% contribution to the current model prediction`
+        );
+
+    }
+
+
+    // ========================================================
+    // UPDATE LIVE PROGRESS BAR
+    // ========================================================
+
+    if (bar) {
+
+        bar.style.width =
+            `${safeShare}%`;
+
+
+        bar.setAttribute(
+            "aria-valuemin",
+            "0"
+        );
+
+
+        bar.setAttribute(
+            "aria-valuemax",
+            "100"
+        );
+
+
+        bar.setAttribute(
+            "aria-valuenow",
+            safeShare.toFixed(
+                1
+            )
+        );
+
+
+        bar.title =
+            `${safeShare.toFixed(
+                1
+            )}% of total absolute SHAP contribution`;
+
+    }
+
+
+    // ========================================================
+    // NO CONTAINER
+    // ========================================================
 
     if (!container) {
 
@@ -2487,16 +4188,227 @@ function renderInsights(insights) {
 
     }
 
-    container.innerHTML = "";
+
+    // ========================================================
+    // NO INDIVIDUAL FEATURE ABOVE DISPLAY THRESHOLD
+    // ========================================================
+    //
+    // The progress bar and percentage above remain live.
+    //
+    // We therefore no longer say:
+    //
+    // "No major contributors"
+    //
+    // because the category may still have a genuine combined
+    // contribution to the model prediction.
+    // ========================================================
+
+    if (
+        !Array.isArray(
+            selectedFeatures
+        ) ||
+        selectedFeatures.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <span class="feature-not-significant">
+                No feature above display threshold
+            </span>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // DISPLAY SELECTED INDIVIDUAL FEATURES
+    // ========================================================
+
+    container.innerHTML =
+        selectedFeatures
+            .map(
+                function (feature) {
+
+
+                    const featureName =
+                        feature.friendly_name ||
+                        feature.feature;
+
+
+                    const value =
+                        formatFeatureValue(
+                            feature.feature_value
+                        );
+
+
+                    const shapValue =
+                        typeof feature.shap_value ===
+                            "number"
+                            ? feature.shap_value
+                            : 0;
+
+
+                    const absoluteShap =
+                        typeof feature.absolute_shap ===
+                            "number"
+                            ? feature.absolute_shap
+                            : Math.abs(
+                                shapValue
+                            );
+
+
+                    const direction =
+                        feature.direction ||
+                        (
+                            shapValue >= 0
+                                ? "supports"
+                                : "opposes"
+                        );
+
+
+                    return `
+
+                        <span
+                            class="detected-feature"
+                            title="${escapeHTML(
+                                direction
+                            )} prediction | Absolute SHAP: ${escapeHTML(
+                                absoluteShap.toFixed(
+                                    4
+                                )
+                            )}"
+                        >
+
+                            ${escapeHTML(
+                                featureName
+                            )}
+
+                            <strong>
+                                ${escapeHTML(
+                                    value
+                                )}
+                            </strong>
+
+                        </span>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+}
+
+
+// ============================================================
+// FORMAT FEATURE VALUE
+// ============================================================
+
+function formatFeatureValue(
+    value
+) {
+
+    if (
+        typeof value !==
+            "number" ||
+        !Number.isFinite(
+            value
+        )
+    ) {
+
+        return "—";
+
+    }
+
+
+    const absoluteValue =
+        Math.abs(
+            value
+        );
+
+
+    if (
+        absoluteValue >=
+        100
+    ) {
+
+        return value.toFixed(
+            1
+        );
+
+    }
+
+
+    if (
+        absoluteValue >=
+        10
+    ) {
+
+        return value.toFixed(
+            2
+        );
+
+    }
+
+
+    if (
+        absoluteValue >=
+        1
+    ) {
+
+        return value.toFixed(
+            2
+        );
+
+    }
+
+
+    return value.toFixed(
+        3
+    );
+
+}
+// ============================================================
+// INSIGHTS
+// ============================================================
+
+function renderInsights(
+    insights
+) {
+
+    const container =
+        document.getElementById(
+            "insightContainer"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        "";
+
 
     insights.forEach(
         function (insight) {
 
             const box =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             box.className =
                 "empty-insight";
+
 
             box.innerHTML = `
 
@@ -2511,12 +4423,15 @@ function renderInsights(insights) {
                     </strong>
 
                     <p>
-                        ${escapeHTML(insight)}
+                        ${escapeHTML(
+                            insight
+                        )}
                     </p>
 
                 </div>
 
             `;
+
 
             container.appendChild(
                 box
@@ -2540,30 +4455,37 @@ function triggerHighRiskAlert() {
 
     }
 
+
     if (
         !currentVideoId ||
-        lastAlertedVideoId === currentVideoId
+        lastAlertedVideoId ===
+            currentVideoId
     ) {
 
         return;
 
     }
 
+
     lastAlertedVideoId =
         currentVideoId;
 
+
     playAlertSound();
+
 
     const mainCard =
         document.getElementById(
             "mainScoreCard"
         );
 
+
     if (mainCard) {
 
         mainCard.classList.add(
             "alert-pulse"
         );
+
 
         setTimeout(
             function () {
@@ -2593,59 +4515,79 @@ function playAlertSound() {
             window.AudioContext ||
             window.webkitAudioContext;
 
+
         if (!AudioContext) {
 
             return;
 
         }
 
+
         const audioContext =
             new AudioContext();
+
 
         const oscillator =
             audioContext.createOscillator();
 
+
         const gain =
             audioContext.createGain();
 
+
         oscillator.type =
             "sine";
+
 
         oscillator.frequency.setValueAtTime(
             660,
             audioContext.currentTime
         );
 
+
         oscillator.frequency.setValueAtTime(
             880,
-            audioContext.currentTime + 0.15
+            audioContext.currentTime +
+                0.15
         );
+
 
         gain.gain.setValueAtTime(
             0.0001,
             audioContext.currentTime
         );
 
+
         gain.gain.exponentialRampToValueAtTime(
             0.18,
-            audioContext.currentTime + 0.03
+            audioContext.currentTime +
+                0.03
         );
+
 
         gain.gain.exponentialRampToValueAtTime(
             0.0001,
-            audioContext.currentTime + 0.35
+            audioContext.currentTime +
+                0.35
         );
 
-        oscillator.connect(gain);
+
+        oscillator.connect(
+            gain
+        );
+
 
         gain.connect(
             audioContext.destination
         );
 
+
         oscillator.start();
 
+
         oscillator.stop(
-            audioContext.currentTime + 0.4
+            audioContext.currentTime +
+                0.4
         );
 
     } catch (error) {
@@ -2663,13 +4605,21 @@ function playAlertSound() {
 // ESCAPE HTML
 // ============================================================
 
-function escapeHTML(value) {
+function escapeHTML(
+    value
+) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     div.textContent =
-        String(value);
+        String(
+            value
+        );
+
 
     return div.innerHTML;
 
@@ -2683,18 +4633,22 @@ function escapeHTML(value) {
 let lastUrl =
     window.location.href;
 
+
 setInterval(
     function () {
 
         const currentUrl =
             window.location.href;
 
+
         if (
-            currentUrl !== lastUrl
+            currentUrl !==
+            lastUrl
         ) {
 
             lastUrl =
                 currentUrl;
+
 
             checkCurrentPage();
 
@@ -2714,6 +4668,7 @@ document.addEventListener(
     handleDrag
 );
 
+
 document.addEventListener(
     "mouseup",
     stopDrag
@@ -2725,10 +4680,14 @@ document.addEventListener(
 // ============================================================
 
 chrome.storage.onChanged.addListener(
-    function (changes, areaName) {
+    function (
+        changes,
+        areaName
+    ) {
 
         if (
-            areaName !== "local"
+            areaName !==
+            "local"
         ) {
 
             return;
@@ -2736,31 +4695,47 @@ chrome.storage.onChanged.addListener(
         }
 
 
+        // ====================================================
+        // PROTECTION ENABLED / DISABLED
+        // ====================================================
+
         if (
             changes.protectionEnabled
         ) {
 
             protectionEnabled =
-                changes.protectionEnabled.newValue === true;
+                changes
+                    .protectionEnabled
+                    .newValue ===
+                true;
+
 
             checkCurrentPage();
 
         }
 
 
+        // ====================================================
+        // NOTIFICATION SETTING
+        // ====================================================
+
         if (
-            changes.neuroshieldNotificationsEnabled
+            changes
+                .neuroshieldNotificationsEnabled
         ) {
 
             notificationsEnabled =
                 changes
                     .neuroshieldNotificationsEnabled
-                    .newValue !== false;
+                    .newValue !==
+                false;
+
 
             const button =
                 document.getElementById(
                     "neuroshield-notification"
                 );
+
 
             if (button) {
 

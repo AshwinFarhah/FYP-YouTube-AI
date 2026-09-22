@@ -11,7 +11,9 @@ import pandas as pd
 from backend.video_analyzer import (
     analyze_video_features
 )
-
+from backend.live_explainability import (
+    explain_prediction
+)
 
 # ============================================================
 # PATHS
@@ -253,6 +255,106 @@ print(
         "transcript_rejected"
     ]
 )
+# ============================================================
+# LIVE SHAP EXPLANATION
+# ============================================================
+
+print()
+print("=" * 65)
+print("LIVE SHAP EXPLANATION")
+print("=" * 65)
+
+explanation = explain_prediction(
+    features,
+    int(prediction)
+)
+
+print()
+print(
+    "Predicted class:",
+    explanation[
+        "predicted_label"
+    ]
+)
+
+print()
+print(
+    "Parent explanation:"
+)
+
+print(
+    explanation[
+        "parent_explanation"
+    ]
+)
+
+
+# ============================================================
+# TOP SHAP CONTRIBUTORS
+# ============================================================
+
+print()
+print("Top contributors:")
+
+for contributor in explanation[
+    "top_contributors"
+]:
+
+    print(
+        f"   "
+        f"{contributor['friendly_name']:30s} "
+        f"| value: "
+        f"{contributor['feature_value']:.4f} "
+        f"| SHAP: "
+        f"{contributor['shap_value']:.6f} "
+        f"| {contributor['direction']}"
+    )
+
+
+# ============================================================
+# SUPPORTING FACTORS
+# ============================================================
+
+print()
+print(
+    "Top factors supporting "
+    + explanation["predicted_label"]
+    + ":"
+)
+
+for contributor in explanation[
+    "supporting_factors"
+]:
+
+    print(
+        "   - "
+        + contributor[
+            "friendly_name"
+        ]
+    )
+
+
+# ============================================================
+# OPPOSING FACTORS
+# ============================================================
+
+print()
+print(
+    "Top factors opposing "
+    + explanation["predicted_label"]
+    + ":"
+)
+
+for contributor in explanation[
+    "opposing_factors"
+]:
+
+    print(
+        "   - "
+        + contributor[
+            "friendly_name"
+        ]
+    )
 
 print()
 print("=" * 65)
