@@ -21,6 +21,11 @@ let dragOffsetY = 0;
 let notificationsEnabled = true;
 let lastAlertedVideoId = null;
 
+let activeAnalysisJobId = null;
+let analysisPolling = false;
+
+const ANALYSIS_POLL_INTERVAL_MS = 5000;
+const MAX_ANALYSIS_POLL_ATTEMPTS = 180;
 
 // ============================================================
 // INITIALISE
@@ -322,11 +327,56 @@ function showAnalysisTemplate() {
 
 
                 <!-- ================================================= -->
-                <!-- MAIN SCORE -->
+                <!-- HYBRID DEVELOPMENTAL ASSESSMENT -->
                 <!-- ================================================= -->
 
                 <section
-                    class="neuroshield-main-card"
+                    class="neuroshield-main-card hybrid-assessment-card"
+                    id="hybridAssessmentCard"
+                >
+
+                    <div
+                        class="live-badge"
+                        id="hybridAssessmentBadge"
+                    >
+                        WAITING
+                    </div>
+
+                    <div class="main-score-title">
+                        Hybrid Developmental Assessment
+                    </div>
+
+                    <div
+                        class="main-score-empty"
+                        id="hybridAssessmentScore"
+                    >
+                        —
+                    </div>
+
+                    <div
+                        class="main-score-label"
+                        id="hybridAssessmentCategory"
+                    >
+                        Awaiting analysis
+                    </div>
+
+                    <div
+                        class="main-score-description"
+                        id="hybridAssessmentDescription"
+                    >
+                        Combines AI risk evidence with the
+                        developmental impact assessment.
+                    </div>
+
+                </section>
+
+
+                <!-- ================================================= -->
+                <!-- AI RISK ASSESSMENT -->
+                <!-- ================================================= -->
+
+                <section
+                    class="neuroshield-main-card ai-risk-card"
                     id="mainScoreCard"
                 >
 
@@ -359,10 +409,8 @@ function showAnalysisTemplate() {
                         class="main-score-description"
                         id="mainScoreDescription"
                     >
-
-                        Waiting for the NeuroShield AI backend
-                        to analyse this video.
-
+                        The AI risk classification and model
+                        confidence will appear after analysis.
                     </div>
 
                 </section>
@@ -384,7 +432,10 @@ function showAnalysisTemplate() {
                     <div class="score-row">
 
                         <div class="score-icon cognitive-icon">
-                            🧠
+                            <img
+                                src="${chrome.runtime.getURL('icons/cognitive.png')}"
+                                alt=""
+                            >
                         </div>
 
                         <div class="score-content">
@@ -424,7 +475,10 @@ function showAnalysisTemplate() {
                     <div class="score-row">
 
                         <div class="score-icon behavioural-icon">
-                            ⚠
+                            <img
+                                src="${chrome.runtime.getURL('icons/behavioural.png')}"
+                                alt=""
+                            >
                         </div>
 
                         <div class="score-content">
@@ -463,9 +517,12 @@ function showAnalysisTemplate() {
 
                     <div class="score-row">
 
-                        <div class="score-icon emotional-icon">
-                            ♥
-                        </div>
+                    <div class="score-icon emotional-icon">
+                        <img
+                            src="${chrome.runtime.getURL('icons/emotional.png')}"
+                            alt=""
+                        >
+                    </div>
 
                         <div class="score-content">
 
@@ -497,6 +554,47 @@ function showAnalysisTemplate() {
                         </div>
 
                     </div>
+                    <!-- OVERALL DEVELOPMENTAL IMPACT -->
+
+                    <div class="score-row overall-developmental-row">
+                    
+                    <div class="score-icon overall-icon">
+                        <img
+                            src="${chrome.runtime.getURL('icons/overall.png')}"
+                            alt=""
+                        >
+                    </div>
+                    
+                        <div class="score-content">
+                    
+                            <div class="score-header">
+                    
+                                <span>
+                                    Overall Developmental Impact
+                                </span>
+                    
+                                <strong id="overallDevelopmentalScore">
+                                    —
+                                </strong>
+                    
+                            </div>
+                    
+                            <div class="progress-track">
+                    
+                                <div
+                                    class="progress-fill overall-developmental-fill"
+                                    id="overallDevelopmentalBar"
+                                ></div>
+                    
+                            </div>
+                    
+                            <div class="score-description">
+                                Combined cognitive, behavioural and emotional impact
+                            </div>
+                    
+                        </div>
+                    
+                    </div>
 
                 </section>
 
@@ -517,7 +615,10 @@ function showAnalysisTemplate() {
                     >
 
                         <div class="empty-insight-icon">
-                            ✦
+                            <img
+                                src="${chrome.runtime.getURL('icons/explainability.png')}"
+                                alt=""
+                            >
                         </div>
 
                         <div>
@@ -563,7 +664,10 @@ function showAnalysisTemplate() {
                                 <div class="feature-heading">
 
                                     <div class="feature-icon visual">
-                                        👁
+                                        <img
+                                            src="${chrome.runtime.getURL('icons/visual.png')}"
+                                            alt=""
+                                        >
                                     </div>
 
                                     <div>
@@ -625,7 +729,10 @@ function showAnalysisTemplate() {
                                 <div class="feature-heading">
 
                                     <div class="feature-icon audio">
-                                        🔊
+                                        <img
+                                            src="${chrome.runtime.getURL('icons/audio.png')}"
+                                            alt=""
+                                        >
                                     </div>
 
                                     <div>
@@ -686,7 +793,10 @@ function showAnalysisTemplate() {
                                 <div class="feature-heading">
 
                                     <div class="feature-icon text">
-                                        💬
+                                        <img
+                                            src="${chrome.runtime.getURL('icons/textual.png')}"
+                                            alt=""
+                                        >
                                     </div>
 
                                     <div>
@@ -746,7 +856,10 @@ function showAnalysisTemplate() {
                                 <div class="feature-heading">
 
                                     <div class="feature-icon engagement">
-                                        🎯
+                                        <img
+                                            src="${chrome.runtime.getURL('icons/engagement.png')}"
+                                            alt=""
+                                        >
                                     </div>
 
                                     <div>
@@ -808,7 +921,10 @@ function showAnalysisTemplate() {
                                 <div class="feature-heading">
 
                                     <div class="feature-icon emotional-feature">
-                                        ♥
+                                        <img
+                                            src="${chrome.runtime.getURL('icons/emotion-feature.png')}"
+                                            alt=""
+                                        >
                                     </div>
 
                                     <div>
@@ -869,7 +985,10 @@ function showAnalysisTemplate() {
                                 <div class="feature-heading">
 
                                     <div class="feature-icon metadata">
-                                        ▶
+                                        <img
+                                            src="${chrome.runtime.getURL('icons/metadata.png')}"
+                                            alt=""
+                                        >
                                     </div>
 
                                     <div>
@@ -1927,14 +2046,16 @@ async function requestVideoAnalysis() {
             "NeuroShield AI: No YouTube video ID available."
         );
 
-
         return;
-
     }
 
 
+    const requestedVideoId =
+        currentVideoId;
+
+
     const youtubeUrl =
-        `https://www.youtube.com/watch?v=${currentVideoId}`;
+        `https://www.youtube.com/watch?v=${requestedVideoId}`;
 
 
     console.log(
@@ -1959,7 +2080,8 @@ async function requestVideoAnalysis() {
 
         if (
             !response ||
-            response.started !== true
+            response.started !== true ||
+            !response.job_id
         ) {
 
             console.error(
@@ -1967,14 +2089,28 @@ async function requestVideoAnalysis() {
                 response
             );
 
-
             return;
-
         }
+
+
+        activeAnalysisJobId =
+            response.job_id;
 
 
         console.log(
             "NeuroShield AI: Analysis started successfully."
+        );
+
+
+        console.log(
+            "NeuroShield AI: Job ID:",
+            activeAnalysisJobId
+        );
+
+
+        pollAnalysisFromContentScript(
+            activeAnalysisJobId,
+            requestedVideoId
         );
 
     } catch (error) {
@@ -1987,7 +2123,265 @@ async function requestVideoAnalysis() {
     }
 
 }
+// ============================================================
+// POLL ANALYSIS FROM CONTENT SCRIPT
+// ============================================================
 
+async function pollAnalysisFromContentScript(
+    jobId,
+    requestedVideoId
+) {
+
+    if (!jobId) {
+
+        console.error(
+            "NeuroShield AI: Cannot poll without a job ID."
+        );
+
+        return;
+    }
+
+
+    analysisPolling =
+        true;
+
+
+    for (
+        let attempt = 1;
+        attempt <= MAX_ANALYSIS_POLL_ATTEMPTS;
+        attempt++
+    ) {
+
+        // --------------------------------------------------------
+        // STOP IF USER NAVIGATED TO ANOTHER VIDEO
+        // --------------------------------------------------------
+
+        if (
+            currentVideoId !==
+            requestedVideoId
+        ) {
+
+            console.log(
+                "NeuroShield AI: Video changed. Stopping old analysis polling."
+            );
+
+            analysisPolling =
+                false;
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // WAIT 5 SECONDS
+        // --------------------------------------------------------
+
+        await sleepInContentScript(
+            ANALYSIS_POLL_INTERVAL_MS
+        );
+
+
+        try {
+
+            console.log(
+                `NeuroShield AI: Checking analysis status (${attempt}/${MAX_ANALYSIS_POLL_ATTEMPTS})...`
+            );
+
+
+            const response =
+                await chrome.runtime.sendMessage({
+
+                    action:
+                        "CHECK_ANALYSIS_STATUS",
+
+                    jobId:
+                        jobId
+
+                });
+
+
+            if (
+                !response ||
+                response.success !== true ||
+                !response.data
+            ) {
+
+                console.warn(
+                    "NeuroShield AI: Status check failed:",
+                    response
+                );
+
+                continue;
+            }
+
+
+            const data =
+                response.data;
+
+
+            console.log(
+                "NeuroShield AI: Analysis status:",
+                data.status
+            );
+
+
+            // ----------------------------------------------------
+            // ANALYSIS COMPLETE
+            // ----------------------------------------------------
+
+            if (
+                data.status ===
+                "complete"
+            ) {
+
+                if (!data.result) {
+
+                    console.error(
+                        "NeuroShield AI: Analysis completed but no result was returned."
+                    );
+
+                    analysisPolling =
+                        false;
+
+                    return;
+                }
+
+
+                // Make absolutely sure the user is still
+                // viewing the video that requested this job.
+
+                if (
+                    currentVideoId !==
+                    requestedVideoId
+                ) {
+
+                    console.log(
+                        "NeuroShield AI: Ignoring result because the video changed."
+                    );
+
+                    analysisPolling =
+                        false;
+
+                    return;
+                }
+
+
+                console.log(
+                    "NeuroShield AI: Backend analysis received."
+                );
+
+
+                console.log(
+                    "NeuroShield AI: REAL ANALYSIS RESULT:",
+                    data.result
+                );
+
+
+                updateRealRiskResult(
+                    data.result
+                );
+
+
+                activeAnalysisJobId =
+                    null;
+
+
+                analysisPolling =
+                    false;
+
+
+                console.log(
+                    "NeuroShield AI: UI updated successfully."
+                );
+
+
+                return;
+            }
+
+
+            // ----------------------------------------------------
+            // ANALYSIS FAILED
+            // ----------------------------------------------------
+
+            if (
+                data.status ===
+                "failed"
+            ) {
+
+                console.error(
+                    "NeuroShield AI: Analysis failed:",
+                    data.error ||
+                    "Unknown backend error."
+                );
+
+
+                activeAnalysisJobId =
+                    null;
+
+
+                analysisPolling =
+                    false;
+
+
+                return;
+            }
+
+
+            // queued / processing
+            console.log(
+                "NeuroShield AI: Analysis still processing..."
+            );
+
+
+        } catch (error) {
+
+            console.warn(
+                "NeuroShield AI: Analysis status request failed:",
+                error
+            );
+
+            // Do NOT stop immediately.
+            // A temporary service-worker restart or request
+            // failure should not destroy the analysis session.
+
+        }
+
+    }
+
+
+    activeAnalysisJobId =
+        null;
+
+
+    analysisPolling =
+        false;
+
+
+    console.error(
+        "NeuroShield AI: Analysis polling timed out."
+    );
+
+}
+// ============================================================
+// CONTENT SCRIPT SLEEP
+// ============================================================
+
+function sleepInContentScript(
+    milliseconds
+) {
+
+    return new Promise(
+        function(resolve) {
+
+            setTimeout(
+                resolve,
+                milliseconds
+            );
+
+        }
+    );
+
+}
 
 // ============================================================
 // UPDATE REAL RISK RESULT
@@ -2030,6 +2424,13 @@ function updateRealRiskResult(
         confidence + "%"
     );
 
+    // ========================================================
+    // HYBRID DEVELOPMENTAL ASSESSMENT
+    // ========================================================
+
+    updateHybridAssessment(
+        data.hybrid_assessment
+    );
 
     // ========================================================
     // GET MAIN RESULT ELEMENTS
@@ -2094,42 +2495,66 @@ function updateRealRiskResult(
 
     }
 
-
     // ========================================================
-    // UPDATE CARD COLOUR FROM MODEL CLASS
+    // UPDATE AI RISK CARD FROM MODEL CLASS
     // ========================================================
 
     if (mainCard) {
 
+        // Remove any colour left from a previous video.
         mainCard.classList.remove(
             "low",
             "moderate",
             "high"
         );
 
+    }
 
-        if (
-            riskLevel ===
-            "High Risk"
-        ) {
+
+    if (riskLevel === "High Risk") {
+
+        if (overallScoreLabel) {
+
+            overallScoreLabel.textContent =
+                "High Developmental Impact";
+
+        }
+
+        if (mainCard) {
 
             mainCard.classList.add(
                 "high"
             );
 
-        } else if (
-            riskLevel ===
-            "Medium Risk"
-        ) {
+        }
+
+    } else if (riskLevel === "Medium Risk") {
+
+        if (overallScoreLabel) {
+
+            overallScoreLabel.textContent =
+                "Moderate Developmental Impact";
+
+        }
+
+        if (mainCard) {
 
             mainCard.classList.add(
                 "moderate"
             );
 
-        } else if (
-            riskLevel ===
-            "Low Risk"
-        ) {
+        }
+
+    } else if (riskLevel === "Low Risk") {
+
+        if (overallScoreLabel) {
+
+            overallScoreLabel.textContent =
+                "Low Developmental Impact";
+
+        }
+
+        if (mainCard) {
 
             mainCard.classList.add(
                 "low"
@@ -2137,8 +2562,16 @@ function updateRealRiskResult(
 
         }
 
-    }
+    } else {
 
+        if (overallScoreLabel) {
+
+            overallScoreLabel.textContent =
+                "Developmental Impact Unavailable";
+
+        }
+
+    }
 
     // ========================================================
     // ANALYSIS STATUS
@@ -2155,7 +2588,7 @@ function updateRealRiskResult(
     if (liveBadge) {
 
         liveBadge.textContent =
-            "RESULT";
+            "MODEL PREDICTION";
 
     }
 
@@ -2208,6 +2641,11 @@ function updateRealRiskResult(
             "emotionalBar"
         );
 
+        updateScoreBar(
+            developmentalScores.overall,
+            "overallDevelopmentalScore",
+            "overallDevelopmentalBar"
+        );
 
         console.log(
             "NeuroShield AI: Developmental scores updated:",
@@ -2273,17 +2711,235 @@ function updateRealRiskResult(
     // HIGH RISK NOTIFICATION
     // ========================================================
 
+    const hybridCategory =
+        data.hybrid_assessment &&
+        data.hybrid_assessment.category;
+
+
     if (
-        riskLevel ===
-        "High Risk"
+        riskLevel === "High Risk" ||
+        hybridCategory === "High"
     ) {
 
-        triggerHighRiskAlert();
+        triggerHighRiskAlert(
+            riskLevel === "High Risk",
+            hybridCategory === "High"
+        );
+
+    }
+
+}
+// ============================================================
+// HYBRID DEVELOPMENTAL ASSESSMENT
+// ============================================================
+
+function updateHybridAssessment(
+    hybridAssessment
+) {
+
+    const card =
+        document.getElementById(
+            "hybridAssessmentCard"
+        );
+
+
+    const scoreElement =
+        document.getElementById(
+            "hybridAssessmentScore"
+        );
+
+
+    const categoryElement =
+        document.getElementById(
+            "hybridAssessmentCategory"
+        );
+
+
+    const badge =
+        document.getElementById(
+            "hybridAssessmentBadge"
+        );
+
+
+    const description =
+        document.getElementById(
+            "hybridAssessmentDescription"
+        );
+
+
+    // ========================================================
+    // SAFETY CHECK
+    // ========================================================
+
+    if (
+        !hybridAssessment ||
+        typeof hybridAssessment.score !== "number"
+    ) {
+
+        console.warn(
+            "NeuroShield AI: Hybrid assessment unavailable."
+        );
+
+
+        if (scoreElement) {
+
+            scoreElement.textContent =
+                "—";
+
+        }
+
+
+        if (categoryElement) {
+
+            categoryElement.textContent =
+                "Assessment unavailable";
+
+        }
+
+
+        if (badge) {
+
+            badge.textContent =
+                "UNAVAILABLE";
+
+        }
+
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // READ LIVE BACKEND RESULT
+    // ========================================================
+
+    const safeScore =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                hybridAssessment.score
+            )
+        );
+
+
+    const category =
+        hybridAssessment.category ||
+        "Unknown";
+
+
+    // ========================================================
+    // DISPLAY SCORE
+    // ========================================================
+
+    if (scoreElement) {
+
+        scoreElement.textContent =
+            `${safeScore.toFixed(2)} / 100`;
+
+    }
+
+
+    // ========================================================
+    // DISPLAY CATEGORY
+    // ========================================================
+
+    if (categoryElement) {
+
+    if (category === "High") {
+
+        categoryElement.textContent =
+            "High Developmental Impact";
+
+    } else if (category === "Medium") {
+
+        categoryElement.textContent =
+            "Moderate Developmental Impact";
+
+    } else if (category === "Low") {
+
+        categoryElement.textContent =
+            "Low Developmental Impact";
+
+    } else {
+
+        categoryElement.textContent =
+            "Developmental Impact Unavailable";
 
     }
 
 }
 
+
+    // ========================================================
+    // RESULT BADGE
+    // ========================================================
+
+    if (badge) {
+
+        badge.textContent =
+            "HYBRID RESULT";
+
+    }
+
+
+    // ========================================================
+    // CARD COLOUR
+    // ========================================================
+
+    if (card) {
+
+        card.classList.remove(
+            "low",
+            "moderate",
+            "high"
+        );
+
+
+        if (category === "High") {
+
+            card.classList.add(
+                "high"
+            );
+
+        } else if (category === "Medium") {
+
+            card.classList.add(
+                "moderate"
+            );
+
+        } else if (category === "Low") {
+
+            card.classList.add(
+                "low"
+            );
+
+        }
+
+    }
+
+
+    // ========================================================
+    // DESCRIPTION
+    // ========================================================
+
+    if (description) {
+
+        description.textContent =
+            "Combined assessment using Random Forest " +
+            "risk evidence and developmental impact scoring.";
+
+    }
+
+
+    console.log(
+        "NeuroShield AI: Hybrid assessment updated:",
+        `${safeScore.toFixed(2)} / 100`,
+        category
+    );
+
+}
 
 // ============================================================
 // MONITORING STATUS
@@ -2387,14 +3043,18 @@ function setMonitoringStatus(
             "Active";
 
 
+        // Backend is connected, but analysis is
+        // still running / waiting for a result.
         text.textContent =
-            "Analysis complete";
+            "Analysis in progress";
 
 
+        // Keep AI Risk Assessment waiting until
+        // the real backend result is received.
         if (liveBadge) {
 
             liveBadge.textContent =
-                "LIVE";
+                "ANALYSING";
 
         }
 
@@ -2882,10 +3542,10 @@ function updateScoreBar(
 
     if (valueElement) {
 
-        valueElement.textContent =
-            `${Math.round(
-                safeValue
-            )}%`;
+    valueElement.textContent =
+        `${Math.round(
+            safeValue
+        )} / 100`;
 
     }
 
@@ -3082,8 +3742,11 @@ function renderExplainability(
 
     container.innerHTML = `
 
-        <div class="empty-insight-icon">
-            ✦
+       <div class="empty-insight-icon">
+            <img
+                src="${chrome.runtime.getURL('icons/explainability.png')}"
+                alt=""
+            >
         </div>
 
         <div>
@@ -4413,7 +5076,10 @@ function renderInsights(
             box.innerHTML = `
 
                 <div class="empty-insight-icon">
-                    ✦
+                    <img
+                        src="${chrome.runtime.getURL('icons/explainability.png')}"
+                        alt=""
+                    >
                 </div>
 
                 <div>
@@ -4447,7 +5113,10 @@ function renderInsights(
 // HIGH RISK ALERT
 // ============================================================
 
-function triggerHighRiskAlert() {
+function triggerHighRiskAlert(
+    pulseAiCard = true,
+    pulseHybridCard = false
+) {
 
     if (!notificationsEnabled) {
 
@@ -4480,7 +5149,16 @@ function triggerHighRiskAlert() {
         );
 
 
-    if (mainCard) {
+    const hybridCard =
+        document.getElementById(
+            "hybridAssessmentCard"
+        );
+
+
+    if (
+        pulseAiCard &&
+        mainCard
+    ) {
 
         mainCard.classList.add(
             "alert-pulse"
@@ -4491,6 +5169,30 @@ function triggerHighRiskAlert() {
             function () {
 
                 mainCard.classList.remove(
+                    "alert-pulse"
+                );
+
+            },
+            2500
+        );
+
+    }
+
+
+    if (
+        pulseHybridCard &&
+        hybridCard
+    ) {
+
+        hybridCard.classList.add(
+            "alert-pulse"
+        );
+
+
+        setTimeout(
+            function () {
+
+                hybridCard.classList.remove(
                     "alert-pulse"
                 );
 

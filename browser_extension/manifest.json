@@ -39,7 +39,18 @@
     "web_accessible_resources": [
     {
         "resources": [
-            "icons/logo.png"
+            "icons/logo.png",
+            "icons/cognitive.png",
+            "icons/behavioural.png",
+            "icons/emotional.png",
+            "icons/overall.png",
+            "icons/explainability.png",
+            "icons/engagement.png",
+            "icons/visual.png",
+            "icons/textual.png",
+            "icons/audio.png",
+            "icons/emotion-feature.png",
+            "icons/metadata.png"
         ],
         "matches": [
             "https://www.youtube.com/*"

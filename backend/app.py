@@ -20,6 +20,9 @@ from backend.video_analyzer import analyze_video_features
 from backend.live_explainability import (
     explain_prediction
 )
+from backend.hybrid_assessment import (
+    calculate_hybrid_assessment
+)
 
 # ============================================================
 # PATH CONFIGURATION
@@ -596,6 +599,62 @@ def run_video_analysis_job(
             ] = float(
                 probability
             )
+        # ====================================================
+        # HYBRID DEVELOPMENTAL ASSESSMENT
+        # ====================================================
+
+        print()
+        print(
+            "Calculating Hybrid Developmental Assessment..."
+        )
+
+        developmental_scores = (
+            analysis[
+                "developmental_scores"
+            ]
+        )
+
+        hybrid_assessment = (
+            calculate_hybrid_assessment(
+
+                probability_low=(
+                    class_probabilities[
+                        "Low Risk"
+                    ]
+                ),
+
+                probability_medium=(
+                    class_probabilities[
+                        "Medium Risk"
+                    ]
+                ),
+
+                probability_high=(
+                    class_probabilities[
+                        "High Risk"
+                    ]
+                ),
+
+                overall_developmental_impact=(
+                    developmental_scores[
+                        "overall"
+                    ]
+                )
+
+            )
+        )
+
+        print(
+            "Hybrid Developmental Assessment:",
+            hybrid_assessment[
+                "score"
+            ],
+            "/ 100 -",
+            hybrid_assessment[
+                "category"
+            ]
+        )
+
         # ========================================================
         # EXPLAINABLE AI - SHAP
         # ========================================================
@@ -645,10 +704,11 @@ def run_video_analysis_job(
             "class_probabilities":
                 class_probabilities,
 
+            "hybrid_assessment":
+                hybrid_assessment,
+
             "developmental_scores":
-                analysis[
-                    "developmental_scores"
-                ],
+                developmental_scores,
 
             "explainability":
                 explainability,
