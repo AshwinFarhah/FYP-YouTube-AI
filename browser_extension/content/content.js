@@ -303,6 +303,58 @@ async function showAnalysisTemplate() {
 
 }
 
+const hybridWhyButton =
+    document.getElementById(
+        "hybridWhyButton"
+    );
+
+const hybridWhyContent =
+    document.getElementById(
+        "hybridWhyContent"
+    );
+
+if (
+    hybridWhyButton &&
+    hybridWhyContent
+) {
+
+    hybridWhyButton.addEventListener(
+        "click",
+        function () {
+
+            const isOpen =
+                hybridWhyButton.getAttribute(
+                    "aria-expanded"
+                ) === "true";
+
+            hybridWhyButton.setAttribute(
+                "aria-expanded",
+                String(!isOpen)
+            );
+
+            hybridWhyContent.style.display =
+                isOpen
+                    ? "none"
+                    : "block";
+
+            const arrow =
+                hybridWhyButton.querySelector(
+                    ".hybrid-accordion-arrow"
+                );
+
+            if (arrow) {
+
+                arrow.textContent =
+                    isOpen
+                        ? "▸"
+                        : "▾";
+
+            }
+
+        }
+    );
+
+}
 
 // ============================================================
 // OVERLAY CONTROLS
@@ -1864,6 +1916,8 @@ function updateRealRiskResult(
     const explainability =
         data.explainability;
 
+    const featureInterpretations =
+        data.feature_interpretations || {};
 
     // ========================================================
     // HYBRID DEVELOPMENTAL ASSESSMENT
@@ -1872,7 +1926,8 @@ function updateRealRiskResult(
     updateHybridAssessment(
         data.hybrid_assessment,
         developmentalScores,
-        explainability
+        explainability,
+        featureInterpretations
     );
 
 
@@ -1945,7 +2000,8 @@ function updateRealRiskResult(
 function updateHybridAssessment(
     hybridAssessment,
     developmentalScores = null,
-    explainability = null
+    explainability = null,
+    featureInterpretations = {}
 ) {
 
     const card =
@@ -2070,7 +2126,7 @@ function updateHybridAssessment(
     if (categoryElement) {
 
         categoryElement.textContent =
-            "Combined Developmental Assessment";
+            "Overall Developmental Assessment";
 
     }
 
@@ -2337,11 +2393,20 @@ function updateHybridAssessment(
     }
 
 
-    // --------------------------------------------------------
-    // RANDOM FOREST / SHAP EXPLANATION
-    // --------------------------------------------------------
+        // --------------------------------------------------------
+        // RANDOM FOREST / SHAP FEATURE EXPLANATION
+        // --------------------------------------------------------
 
-    if (rfExplanation) {
+        const supportingContainer =
+            document.getElementById(
+                "hybridSupportingFeatures"
+            );
+
+        const opposingContainer =
+            document.getElementById(
+                "hybridOpposingFeatures"
+            );
+
 
         const contributions =
             explainability &&
@@ -2352,58 +2417,226 @@ function updateHybridAssessment(
                 : [];
 
 
-        const supporting =
-            contributions
-                .filter(
-                    item =>
-                        typeof item.shap_value === "number" &&
-                        item.shap_value > 0
-                )
-                .sort(
-                    (a, b) =>
-                        Math.abs(b.shap_value) -
-                        Math.abs(a.shap_value)
-                )
-                .slice(0, 2);
+        // --------------------------------------------------------
+        // FEATURE INTERPRETATION LOOKUP
+        // --------------------------------------------------------
+
+        function getFeatureInterpretation(
+            featureName
+        ) {
+
+            if (
+                !featureInterpretations ||
+                !featureName
+            ) {
+                return "";
+            }
 
 
-        if (supporting.length > 0) {
-
-            const readableNames =
-                supporting.map(
-                    item =>
-                        formatHybridFeatureName(
-                            item.feature
-                        )
-                );
+            const interpretation =
+                featureInterpretations[
+                    featureName
+                ];
 
 
-            if (readableNames.length === 1) {
+            if (!interpretation) {
+                return "";
+            }
 
-                rfExplanation.textContent =
-                    `${readableNames[0]} was among the ` +
-                    `strongest factors supporting the ` +
-                    `Random Forest prediction.`;
 
-            } else {
+            if (
+                typeof interpretation.reference_label ===
+                    "string"
+            ) {
 
-                rfExplanation.textContent =
-                    `${readableNames[0]} and ` +
-                    `${readableNames[1]} were among the ` +
-                    `strongest factors supporting the ` +
-                    `Random Forest prediction.`;
+                return interpretation.reference_label;
 
             }
 
-        } else {
 
-            rfExplanation.textContent =
-                "Detailed Random Forest feature influence " +
-                "is available in the Explainability section.";
+            return "";
 
         }
 
-    }
+
+        // --------------------------------------------------------
+        // CREATE PARENT-FRIENDLY FEATURE ROW
+        // --------------------------------------------------------
+
+        function createHybridFeatureRow(
+            item,
+            direction
+        ) {
+
+            const row =
+                document.createElement("div");
+
+            row.className =
+                "hybrid-feature-row";
+
+
+            const name =
+                document.createElement("div");
+
+            name.className =
+                "hybrid-feature-name";
+
+            name.textContent =
+                item.friendly_name ||
+                formatHybridFeatureName(
+                    item.feature
+                );
+
+
+            const interpretation =
+                document.createElement("div");
+
+            interpretation.className =
+                "hybrid-feature-interpretation";
+
+
+            const interpretationText =
+                getFeatureInterpretation(
+                    item.feature
+                );
+
+
+            interpretation.textContent =
+                interpretationText ||
+                "Reference range unavailable";
+
+
+            const influence =
+                document.createElement("div");
+
+            influence.className =
+                "hybrid-feature-influence";
+
+
+            if (direction === "supporting") {
+
+                influence.textContent =
+                    "Supported the Random Forest prediction";
+
+            } else {
+
+                influence.textContent =
+                    "Opposed the Random Forest prediction";
+
+            }
+
+
+            row.appendChild(name);
+            row.appendChild(interpretation);
+            row.appendChild(influence);
+
+            return row;
+
+        }
+
+
+        // --------------------------------------------------------
+        // SUPPORTING FEATURES
+        // --------------------------------------------------------
+
+        const supporting =
+            explainability &&
+            Array.isArray(
+                explainability.supporting_factors
+            )
+                ? explainability.supporting_factors
+                : [];
+
+
+        if (supportingContainer) {
+
+            supportingContainer.innerHTML = "";
+
+            if (supporting.length > 0) {
+
+                supporting.forEach(
+                    item => {
+
+                        supportingContainer.appendChild(
+                            createHybridFeatureRow(
+                                item,
+                                "supporting"
+                            )
+                        );
+
+                    }
+                );
+
+            } else {
+
+                const empty =
+                    document.createElement("div");
+
+                empty.className =
+                    "hybrid-feature-empty";
+
+                empty.textContent =
+                    "No supporting feature details available.";
+
+                supportingContainer.appendChild(
+                    empty
+                );
+
+            }
+
+        }
+
+
+        // --------------------------------------------------------
+        // OPPOSING FEATURES
+        // --------------------------------------------------------
+
+        const opposing =
+            explainability &&
+            Array.isArray(
+                explainability.opposing_factors
+            )
+                ? explainability.opposing_factors
+                : [];
+
+
+        if (opposingContainer) {
+
+            opposingContainer.innerHTML = "";
+
+            if (opposing.length > 0) {
+
+                opposing.forEach(
+                    item => {
+
+                        opposingContainer.appendChild(
+                            createHybridFeatureRow(
+                                item,
+                                "opposing"
+                            )
+                        );
+
+                    }
+                );
+
+            } else {
+
+                const empty =
+                    document.createElement("div");
+
+                empty.className =
+                    "hybrid-feature-empty";
+
+                empty.textContent =
+                    "No opposing feature details available.";
+
+                opposingContainer.appendChild(
+                    empty
+                );
+
+            }
+
+        }
 
 
     // ========================================================
