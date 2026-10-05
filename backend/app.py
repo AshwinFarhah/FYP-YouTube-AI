@@ -713,6 +713,11 @@ def run_video_analysis_job(
             "explainability":
                 explainability,
 
+            "feature_interpretations":
+                analysis[
+                    "feature_interpretations"
+                ],
+
             "multimedia_features": {
 
                 "visual": {

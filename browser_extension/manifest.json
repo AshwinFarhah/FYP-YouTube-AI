@@ -1,35 +1,26 @@
 {
     "manifest_version": 3,
-
     "name": "NeuroShield AI",
-
     "version": "1.0.0",
-
     "description": "Explainable Multimodal AI Browser Extension for Developmental Impact Analysis of Children's YouTube Content.",
-
     "permissions": [
         "storage",
         "activeTab",
         "tabs"
     ],
-
     "host_permissions": [
         "*://www.youtube.com/*",
         "*://youtube.com/*",
         "http://127.0.0.1:8000/*"
     ],
-
     "action": {
         "default_title": "NeuroShield AI",
         "default_popup": "popup/popup.html"
     },
-
     "background": {
         "service_worker": "background.js"
     },
-
     "options_page": "settings/settings.html",
-
     "icons": {
         "16": "icons/logo1.png",
         "32": "icons/logo1.png",
@@ -37,27 +28,27 @@
         "128": "icons/logo1.png"
     },
     "web_accessible_resources": [
-    {
-        "resources": [
-            "icons/logo.png",
-            "icons/cognitive.png",
-            "icons/behavioural.png",
-            "icons/emotional.png",
-            "icons/overall.png",
-            "icons/explainability.png",
-            "icons/engagement.png",
-            "icons/visual.png",
-            "icons/textual.png",
-            "icons/audio.png",
-            "icons/emotion-feature.png",
-            "icons/metadata.png"
-        ],
-        "matches": [
-            "https://www.youtube.com/*"
-        ]
-    }
-],
-
+        {
+            "resources": [
+                "icons/logo.png",
+                "icons/cognitive.png",
+                "icons/behavioural.png",
+                "icons/emotional.png",
+                "icons/overall.png",
+                "icons/explainability.png",
+                "icons/engagement.png",
+                "icons/visual.png",
+                "icons/textual.png",
+                "icons/audio.png",
+                "icons/emotion-feature.png",
+                "icons/metadata.png",
+                "content/overlay.html"
+            ],
+            "matches": [
+                "https://www.youtube.com/*"
+            ]
+        }
+    ],
     "content_scripts": [
         {
             "matches": [
@@ -73,5 +64,4 @@
             "run_at": "document_idle"
         }
     ]
-
 }

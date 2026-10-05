@@ -10,7 +10,7 @@ import math
 import cv2
 import numpy as np
 import pandas as pd
-
+from backend.feature_interpretation import interpret_features
 
 # ============================================================
 # EXISTING NEUROSHIELD MODULES
@@ -866,6 +866,9 @@ def analyze_video_features(
                 missing_after_imputation
             )
         )
+    feature_interpretations = interpret_features(
+        clean_features
+    )
 
     # ========================================================
     # DEVELOPMENTAL IMPACT SCORING
@@ -954,6 +957,9 @@ def analyze_video_features(
 
         "features":
             clean_features,
+
+        "feature_interpretations":
+            feature_interpretations,
 
         "raw_features":
             model_features,

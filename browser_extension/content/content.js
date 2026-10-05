@@ -156,7 +156,7 @@ function getCurrentVideoId() {
 // CREATE OVERLAY
 // ============================================================
 
-function showAnalysisTemplate() {
+async function showAnalysisTemplate() {
 
     removeOverlay();
 
@@ -174,919 +174,102 @@ function showAnalysisTemplate() {
         logoURL
     );
 
-    overlay.innerHTML = `
+    try {
 
-        <div class="neuroshield-window">
+        const templateURL =
+            chrome.runtime.getURL(
+                "content/overlay.html"
+            );
 
-            <!-- ================================================= -->
-            <!-- HEADER -->
-            <!-- ================================================= -->
+        const templateResponse =
+            await fetch(templateURL);
 
-            <div
-                class="neuroshield-header"
-                id="neuroshield-drag-handle"
-            >
+        if (!templateResponse.ok) {
 
-                <div class="neuroshield-brand">
+            throw new Error(
+                `Could not load overlay template: HTTP ${templateResponse.status}`
+            );
 
-                    <div class="neuroshield-logo-container">
+        }
 
-                        <img
-                            src="${logoURL}"
-                            class="neuroshield-logo"
-                            alt="NeuroShield AI Logo"
-                            onerror="this.style.display='none'; console.error('NeuroShield AI: Logo failed to load:', this.src);"
-                        >
+        overlay.innerHTML =
+            await templateResponse.text();
 
-                    </div>
+        const logoImage =
+            overlay.querySelector(
+                "#neuroshield-logo-image"
+            );
 
-                    <div class="neuroshield-brand-text">
+        if (logoImage) {
 
-                        <div class="neuroshield-title">
-                            NeuroShield AI
-                        </div>
+            logoImage.src =
+                logoURL;
 
-                        <div class="neuroshield-subtitle">
-                            Explainable Developmental Analysis
-                        </div>
+            logoImage.addEventListener(
+                "error",
+                function () {
 
-                    </div>
+                    logoImage.style.display =
+                        "none";
 
-                </div>
+                    console.error(
+                        "NeuroShield AI: Logo failed to load:",
+                        logoImage.src
+                    );
 
+                }
+            );
 
-                <div class="neuroshield-actions">
+        }
 
-                    <!-- NOTIFICATION -->
+        // Set extension icon URLs after loading external HTML.
+        // JavaScript template expressions do not execute inside overlay.html.
+        const overlayIconPaths = {
+            cognitiveIcon: "icons/cognitive.png",
+            behaviouralIcon: "icons/behavioural.png",
+            emotionalIcon: "icons/emotional.png",
+            overallIcon: "icons/overall.png",
+            explainabilityIcon: "icons/explainability.png",
+            visualIcon: "icons/visual.png",
+            audioIcon: "icons/audio.png",
+            textualIcon: "icons/textual.png",
+            engagementIcon: "icons/engagement.png",
+            emotionFeatureIcon: "icons/emotion-feature.png",
+            metadataIcon: "icons/metadata.png"
+        };
 
-                    <button
-                        id="neuroshield-notification"
-                        class="neuroshield-action"
-                        title="Mute high-risk alerts"
-                        aria-label="Mute high-risk alerts"
-                        type="button"
-                    >
-                        🔔
-                    </button>
+        Object.entries(
+            overlayIconPaths
+        ).forEach(
+            ([elementId, iconPath]) => {
 
+                const iconElement =
+                    overlay.querySelector(
+                        `#${elementId}`
+                    );
 
-                    <!-- SETTINGS -->
+                if (iconElement) {
 
-                    <button
-                        id="neuroshield-settings"
-                        class="neuroshield-action"
-                        title="Open settings"
-                        aria-label="Open settings"
-                        type="button"
-                    >
-                        ⚙
-                    </button>
+                    iconElement.src =
+                        chrome.runtime.getURL(
+                            iconPath
+                        );
 
+                }
 
-                    <!-- MINIMIZE -->
+            }
+        );
 
-                    <button
-                        id="neuroshield-minimize"
-                        class="neuroshield-action"
-                        title="Minimize"
-                        aria-label="Minimize"
-                        type="button"
-                    >
-                        −
-                    </button>
+    } catch (error) {
 
+        console.error(
+            "NeuroShield AI: Could not load overlay template:",
+            error
+        );
 
-                    <!-- CLOSE -->
+        return;
 
-                    <button
-                        id="neuroshield-close"
-                        class="neuroshield-action close"
-                        title="Close"
-                        aria-label="Close"
-                        type="button"
-                    >
-                        ×
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- ================================================= -->
-            <!-- CONTENT -->
-            <!-- ================================================= -->
-
-            <div
-                class="neuroshield-content"
-                id="neuroshield-content"
-            >
-
-
-                <!-- ================================================= -->
-                <!-- MONITORING STATUS -->
-                <!-- ================================================= -->
-
-                <div
-                    class="neuroshield-status-card waiting"
-                    id="monitoringStatusCard"
-                >
-
-                    <div class="status-left">
-
-                        <span
-                            class="status-dot waiting"
-                            id="monitoringStatusDot"
-                        ></span>
-
-                        <div>
-
-                            <div class="status-title">
-                                AI Monitoring
-                            </div>
-
-                            <div
-                                class="status-text"
-                                id="analysisStatusText"
-                            >
-                                Waiting for backend analysis
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div
-                        class="status-badge waiting"
-                        id="monitoringStatusBadge"
-                    >
-                        Waiting
-                    </div>
-
-                </div>
-
-
-                <!-- ================================================= -->
-                <!-- HYBRID DEVELOPMENTAL ASSESSMENT -->
-                <!-- ================================================= -->
-
-                <section
-                    class="neuroshield-main-card hybrid-assessment-card"
-                    id="hybridAssessmentCard"
-                >
-
-                    <div
-                        class="live-badge"
-                        id="hybridAssessmentBadge"
-                    >
-                        WAITING
-                    </div>
-
-                    <div class="main-score-title">
-                        Hybrid Developmental Assessment
-                    </div>
-
-                    <div
-                        class="main-score-empty"
-                        id="hybridAssessmentScore"
-                    >
-                        —
-                    </div>
-
-                    <div
-                        class="main-score-label"
-                        id="hybridAssessmentCategory"
-                    >
-                        Awaiting analysis
-                    </div>
-
-                    <div
-                        class="main-score-description"
-                        id="hybridAssessmentDescription"
-                    >
-                        Combines AI risk evidence with the
-                        developmental impact assessment.
-                    </div>
-
-                </section>
-
-
-                <!-- ================================================= -->
-                <!-- AI RISK ASSESSMENT -->
-                <!-- ================================================= -->
-
-                <section
-                    class="neuroshield-main-card ai-risk-card"
-                    id="mainScoreCard"
-                >
-
-                    <div
-                        class="live-badge"
-                        id="analysisLiveBadge"
-                    >
-                        WAITING
-                    </div>
-
-                    <div class="main-score-title">
-                        AI Risk Assessment
-                    </div>
-
-                    <div
-                        class="main-score-empty"
-                        id="overallScore"
-                    >
-                        —
-                    </div>
-
-                    <div
-                        class="main-score-label"
-                        id="overallScoreLabel"
-                    >
-                        Awaiting analysis
-                    </div>
-
-                    <div
-                        class="main-score-description"
-                        id="mainScoreDescription"
-                    >
-                        The AI risk classification and model
-                        confidence will appear after analysis.
-                    </div>
-
-                </section>
-
-
-                <!-- ================================================= -->
-                <!-- DEVELOPMENTAL IMPACT -->
-                <!-- ================================================= -->
-
-                <section class="neuroshield-card">
-
-                    <div class="card-title">
-                        Developmental Impact Scores
-                    </div>
-
-
-                    <!-- COGNITIVE -->
-
-                    <div class="score-row">
-
-                        <div class="score-icon cognitive-icon">
-                            <img
-                                src="${chrome.runtime.getURL('icons/cognitive.png')}"
-                                alt=""
-                            >
-                        </div>
-
-                        <div class="score-content">
-
-                            <div class="score-header">
-
-                                <span>
-                                    Cognitive Impact
-                                </span>
-
-                                <strong id="cognitiveScore">
-                                    —
-                                </strong>
-
-                            </div>
-
-                            <div class="progress-track">
-
-                                <div
-                                    class="progress-fill cognitive-fill"
-                                    id="cognitiveBar"
-                                ></div>
-
-                            </div>
-
-                            <div class="score-description">
-                                Learning and language-related stimulation
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- BEHAVIOURAL -->
-
-                    <div class="score-row">
-
-                        <div class="score-icon behavioural-icon">
-                            <img
-                                src="${chrome.runtime.getURL('icons/behavioural.png')}"
-                                alt=""
-                            >
-                        </div>
-
-                        <div class="score-content">
-
-                            <div class="score-header">
-
-                                <span>
-                                    Behavioural Risk
-                                </span>
-
-                                <strong id="behaviouralScore">
-                                    —
-                                </strong>
-
-                            </div>
-
-                            <div class="progress-track">
-
-                                <div
-                                    class="progress-fill behavioural-fill"
-                                    id="behaviouralBar"
-                                ></div>
-
-                            </div>
-
-                            <div class="score-description">
-                                Attention and repetitive stimulation risk
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- EMOTIONAL -->
-
-                    <div class="score-row">
-
-                    <div class="score-icon emotional-icon">
-                        <img
-                            src="${chrome.runtime.getURL('icons/emotional.png')}"
-                            alt=""
-                        >
-                    </div>
-
-                        <div class="score-content">
-
-                            <div class="score-header">
-
-                                <span>
-                                    Emotional Stimulation
-                                </span>
-
-                                <strong id="emotionalScore">
-                                    —
-                                </strong>
-
-                            </div>
-
-                            <div class="progress-track">
-
-                                <div
-                                    class="progress-fill emotional-fill"
-                                    id="emotionalBar"
-                                ></div>
-
-                            </div>
-
-                            <div class="score-description">
-                                Emotional intensity and tone
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <!-- OVERALL DEVELOPMENTAL IMPACT -->
-
-                    <div class="score-row overall-developmental-row">
-                    
-                    <div class="score-icon overall-icon">
-                        <img
-                            src="${chrome.runtime.getURL('icons/overall.png')}"
-                            alt=""
-                        >
-                    </div>
-                    
-                        <div class="score-content">
-                    
-                            <div class="score-header">
-                    
-                                <span>
-                                    Overall Developmental Impact
-                                </span>
-                    
-                                <strong id="overallDevelopmentalScore">
-                                    —
-                                </strong>
-                    
-                            </div>
-                    
-                            <div class="progress-track">
-                    
-                                <div
-                                    class="progress-fill overall-developmental-fill"
-                                    id="overallDevelopmentalBar"
-                                ></div>
-                    
-                            </div>
-                    
-                            <div class="score-description">
-                                Combined cognitive, behavioural and emotional impact
-                            </div>
-                    
-                        </div>
-                    
-                    </div>
-
-                </section>
-
-
-                <!-- ================================================= -->
-                <!-- EXPLAINABILITY -->
-                <!-- ================================================= -->
-
-                <section class="neuroshield-card">
-
-                    <div class="card-title">
-                        Explainability Insights
-                    </div>
-
-                    <div
-                        class="empty-insight"
-                        id="insightContainer"
-                    >
-
-                        <div class="empty-insight-icon">
-                            <img
-                                src="${chrome.runtime.getURL('icons/explainability.png')}"
-                                alt=""
-                            >
-                        </div>
-
-                        <div>
-
-                            <strong>
-                                No analysis available yet
-                            </strong>
-
-                            <p>
-                                Explainable AI insights will appear
-                                here after the backend completes
-                                analysis of this video.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- ================================================= -->
-                <!-- MULTIMEDIA FEATURES -->
-                <!-- ================================================= -->
-
-                <section class="neuroshield-card">
-
-                    <div class="card-title">
-                        Detected Multimedia Features
-                    </div>
-
-                    <div class="feature-stack">
-
-
-                        <!-- ================================================= -->
-                        <!-- VISUAL -->
-                        <!-- ================================================= -->
-
-                        <div class="feature-card">
-
-                            <div class="feature-top">
-
-                                <div class="feature-heading">
-
-                                    <div class="feature-icon visual">
-                                        <img
-                                            src="${chrome.runtime.getURL('icons/visual.png')}"
-                                            alt=""
-                                        >
-                                    </div>
-
-                                    <div>
-
-                                        <div class="feature-name">
-                                            Visual Features
-                                        </div>
-
-                                        <div class="feature-subtitle">
-                                            Motion and scene-based stimulation
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <span
-                                    class="feature-level"
-                                    id="visualLevel"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-                            <div class="mini-progress">
-
-                                <div
-                                    class="mini-fill"
-                                    id="visualBar"
-                                ></div>
-
-                            </div>
-
-                            <div
-                                class="feature-bubbles"
-                                id="visualFeatures"
-                            >
-
-                                <span>Motion Intensity</span>
-                                <span>Scene Changes</span>
-                                <span>Brightness</span>
-                                <span>Saturation</span>
-                                <span>Flicker Rate</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- ================================================= -->
-                        <!-- AUDIO -->
-                        <!-- ================================================= -->
-
-                        <div class="feature-card">
-
-                            <div class="feature-top">
-
-                                <div class="feature-heading">
-
-                                    <div class="feature-icon audio">
-                                        <img
-                                            src="${chrome.runtime.getURL('icons/audio.png')}"
-                                            alt=""
-                                        >
-                                    </div>
-
-                                    <div>
-
-                                        <div class="feature-name">
-                                            Audio Features
-                                        </div>
-
-                                        <div class="feature-subtitle">
-                                            Sound and auditory stimulation
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <span
-                                    class="feature-level"
-                                    id="audioLevel"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-                            <div class="mini-progress">
-
-                                <div
-                                    class="mini-fill"
-                                    id="audioBar"
-                                ></div>
-
-                            </div>
-
-                            <div
-                                class="feature-bubbles"
-                                id="audioFeatures"
-                            >
-
-                                <span>Loudness</span>
-                                <span>Pitch Variation</span>
-                                <span>Tempo</span>
-                                <span>Spectral Density</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- ================================================= -->
-                        <!-- TEXT -->
-                        <!-- ================================================= -->
-
-                        <div class="feature-card">
-
-                            <div class="feature-top">
-
-                                <div class="feature-heading">
-
-                                    <div class="feature-icon text">
-                                        <img
-                                            src="${chrome.runtime.getURL('icons/textual.png')}"
-                                            alt=""
-                                        >
-                                    </div>
-
-                                    <div>
-
-                                        <div class="feature-name">
-                                            Textual Features
-                                        </div>
-
-                                        <div class="feature-subtitle">
-                                            Language and textual characteristics
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <span
-                                    class="feature-level"
-                                    id="textLevel"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-                            <div class="mini-progress">
-
-                                <div
-                                    class="mini-fill"
-                                    id="textBar"
-                                ></div>
-
-                            </div>
-
-                            <div
-                                class="feature-bubbles"
-                                id="textFeatures"
-                            >
-
-                                <span>Phrase Repetition</span>
-                                <span>Sentence Complexity</span>
-                                <span>Vocabulary Diversity</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- ================================================= -->
-                        <!-- ENGAGEMENT -->
-                        <!-- ================================================= -->
-
-                        <div class="feature-card">
-
-                            <div class="feature-top">
-
-                                <div class="feature-heading">
-
-                                    <div class="feature-icon engagement">
-                                        <img
-                                            src="${chrome.runtime.getURL('icons/engagement.png')}"
-                                            alt=""
-                                        >
-                                    </div>
-
-                                    <div>
-
-                                        <div class="feature-name">
-                                            Engagement Patterns
-                                        </div>
-
-                                        <div class="feature-subtitle">
-                                            Attention and reward mechanisms
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <span
-                                    class="feature-level"
-                                    id="engagementLevel"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-                            <div class="mini-progress">
-
-                                <div
-                                    class="mini-fill"
-                                    id="engagementBar"
-                                ></div>
-
-                            </div>
-
-                            <div
-                                class="feature-bubbles"
-                                id="engagementFeatures"
-                            >
-
-                                <span>Reward Cues</span>
-                                <span>Attention Resets</span>
-                                <span>Loop Detection</span>
-                                <span>Motion Spikes</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- ================================================= -->
-                        <!-- EMOTIONAL FEATURES -->
-                        <!-- NEW -->
-                        <!-- ================================================= -->
-
-                        <div class="feature-card">
-
-                            <div class="feature-top">
-
-                                <div class="feature-heading">
-
-                                    <div class="feature-icon emotional-feature">
-                                        <img
-                                            src="${chrome.runtime.getURL('icons/emotion-feature.png')}"
-                                            alt=""
-                                        >
-                                    </div>
-
-                                    <div>
-
-                                        <div class="feature-name">
-                                            Emotional Features
-                                        </div>
-
-                                        <div class="feature-subtitle">
-                                            Emotional tone, arousal and stability
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <span
-                                    class="feature-level"
-                                    id="emotionalFeatureLevel"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-                            <div class="mini-progress">
-
-                                <div
-                                    class="mini-fill emotional-feature-fill"
-                                    id="emotionalFeatureBar"
-                                ></div>
-
-                            </div>
-
-                            <div
-                                class="feature-bubbles"
-                                id="emotionalFeatures"
-                            >
-
-                                <span>Emotional Arousal</span>
-                                <span>Emotional Tone</span>
-                                <span>Emotional Stability</span>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- ================================================= -->
-                        <!-- VIDEO CONTEXT -->
-                        <!-- NEW -->
-                        <!-- ================================================= -->
-
-                        <div class="feature-card">
-
-                            <div class="feature-top">
-
-                                <div class="feature-heading">
-
-                                    <div class="feature-icon metadata">
-                                        <img
-                                            src="${chrome.runtime.getURL('icons/metadata.png')}"
-                                            alt=""
-                                        >
-                                    </div>
-
-                                    <div>
-
-                                        <div class="feature-name">
-                                            Video Context
-                                        </div>
-
-                                        <div class="feature-subtitle">
-                                            Video and analysis context features
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <span
-                                    class="feature-level"
-                                    id="metadataLevel"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-                            <div class="mini-progress">
-
-                                <div
-                                    class="mini-fill metadata-fill"
-                                    id="metadataBar"
-                                ></div>
-
-                            </div>
-
-                            <div
-                                class="feature-bubbles"
-                                id="metadataFeatures"
-                            >
-
-                                <span>Video Duration</span>
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-                </section>
-
-
-                <!-- ================================================= -->
-                <!-- RECOMMENDATION -->
-                <!-- ================================================= -->
-
-                <section class="neuroshield-card">
-
-                    <div class="card-title">
-                        Recommendation
-                    </div>
-
-                    <div
-                        class="empty-recommendation"
-                        id="recommendation"
-                    >
-
-                        <span>
-                            💡
-                        </span>
-
-                        <p>
-                            No recommendation is available.
-                            A recommendation will appear only
-                            after verified backend analysis.
-                        </p>
-
-                    </div>
-
-                </section>
-
-
-                <!-- ================================================= -->
-                <!-- FOOTER -->
-                <!-- ================================================= -->
-
-                <div class="neuroshield-footer">
-
-                    Explainable Multimodal AI
-                    <span>•</span>
-                    NeuroShield AI
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
+    }
 
 
     document.body.appendChild(
@@ -1243,7 +426,7 @@ function initialiseOverlayControls() {
         );
 
     }
-        // ========================================================
+    // ========================================================
     // CLOSE
     // ========================================================
 
@@ -1403,7 +586,7 @@ async function toggleNotifications() {
         await chrome.storage.local.set({
 
             neuroshieldNotificationsEnabled:
-                notificationsEnabled
+            notificationsEnabled
 
         });
 
@@ -1658,16 +841,16 @@ function saveOverlayPosition() {
         neuroshieldWindowPosition: {
 
             left:
-                rect.left,
+            rect.left,
 
             top:
-                rect.top,
+            rect.top,
 
             width:
-                rect.width,
+            rect.width,
 
             height:
-                rect.height
+            rect.height
 
         }
 
@@ -2073,7 +1256,7 @@ async function requestVideoAnalysis() {
                     "ANALYZE_VIDEO",
 
                 youtubeUrl:
-                    youtubeUrl
+                youtubeUrl
 
             });
 
@@ -2123,6 +1306,7 @@ async function requestVideoAnalysis() {
     }
 
 }
+
 // ============================================================
 // POLL ANALYSIS FROM CONTENT SCRIPT
 // ============================================================
@@ -2195,7 +1379,7 @@ async function pollAnalysisFromContentScript(
                         "CHECK_ANALYSIS_STATUS",
 
                     jobId:
-                        jobId
+                    jobId
 
                 });
 
@@ -2362,6 +1546,7 @@ async function pollAnalysisFromContentScript(
     );
 
 }
+
 // ============================================================
 // CONTENT SCRIPT SLEEP
 // ============================================================
@@ -2371,7 +1556,7 @@ function sleepInContentScript(
 ) {
 
     return new Promise(
-        function(resolve) {
+        function (resolve) {
 
             setTimeout(
                 resolve,
@@ -2428,9 +1613,7 @@ function updateRealRiskResult(
     // HYBRID DEVELOPMENTAL ASSESSMENT
     // ========================================================
 
-    updateHybridAssessment(
-        data.hybrid_assessment
-    );
+
 
     // ========================================================
     // GET MAIN RESULT ELEMENTS
@@ -2641,14 +1824,28 @@ function updateRealRiskResult(
             "emotionalBar"
         );
 
-        updateScoreBar(
-            developmentalScores.overall,
-            "overallDevelopmentalScore",
-            "overallDevelopmentalBar"
+        updateOverallDevelopmentalDonut(
+            developmentalScores.overall
         );
 
         console.log(
             "NeuroShield AI: Developmental scores updated:",
+            developmentalScores
+        );
+
+    }
+
+    // ========================================================
+    // PARENT GUIDANCE
+    // ========================================================
+
+    if (
+        data.hybrid_assessment &&
+        developmentalScores
+    ) {
+
+        updateParentGuidance(
+            data.hybrid_assessment,
             developmentalScores
         );
 
@@ -2666,6 +1863,17 @@ function updateRealRiskResult(
 
     const explainability =
         data.explainability;
+
+
+    // ========================================================
+    // HYBRID DEVELOPMENTAL ASSESSMENT
+    // ========================================================
+
+    updateHybridAssessment(
+        data.hybrid_assessment,
+        developmentalScores,
+        explainability
+    );
 
 
     if (explainability) {
@@ -2729,12 +1937,15 @@ function updateRealRiskResult(
     }
 
 }
-// ============================================================
+
+/// ============================================================
 // HYBRID DEVELOPMENTAL ASSESSMENT
 // ============================================================
 
 function updateHybridAssessment(
-    hybridAssessment
+    hybridAssessment,
+    developmentalScores = null,
+    explainability = null
 ) {
 
     const card =
@@ -2742,28 +1953,29 @@ function updateHybridAssessment(
             "hybridAssessmentCard"
         );
 
-
     const scoreElement =
         document.getElementById(
             "hybridAssessmentScore"
         );
-
 
     const categoryElement =
         document.getElementById(
             "hybridAssessmentCategory"
         );
 
-
     const badge =
         document.getElementById(
             "hybridAssessmentBadge"
         );
 
-
     const description =
         document.getElementById(
             "hybridAssessmentDescription"
+        );
+
+    const explanationContainer =
+        document.getElementById(
+            "hybridExplanation"
         );
 
 
@@ -2780,38 +1992,31 @@ function updateHybridAssessment(
             "NeuroShield AI: Hybrid assessment unavailable."
         );
 
-
         if (scoreElement) {
-
-            scoreElement.textContent =
-                "—";
-
+            scoreElement.textContent = "—";
         }
-
 
         if (categoryElement) {
-
             categoryElement.textContent =
                 "Assessment unavailable";
-
         }
-
 
         if (badge) {
-
             badge.textContent =
                 "UNAVAILABLE";
-
         }
 
+        if (explanationContainer) {
+            explanationContainer.style.display =
+                "none";
+        }
 
         return;
-
     }
 
 
     // ========================================================
-    // READ LIVE BACKEND RESULT
+    // READ BACKEND VALUES
     // ========================================================
 
     const safeScore =
@@ -2823,63 +2028,66 @@ function updateHybridAssessment(
             )
         );
 
-
     const category =
         hybridAssessment.category ||
         "Unknown";
 
+    const rfEvidence =
+        typeof hybridAssessment.rf_risk_evidence === "number"
+            ? Math.max(
+                0,
+                Math.min(
+                    100,
+                    hybridAssessment.rf_risk_evidence
+                )
+            )
+            : null;
+
+    const developmentalImpact =
+        typeof hybridAssessment.developmental_impact === "number"
+            ? Math.max(
+                0,
+                Math.min(
+                    100,
+                    hybridAssessment.developmental_impact
+                )
+            )
+            : null;
+
 
     // ========================================================
-    // DISPLAY SCORE
+    // MAIN SCORE
     // ========================================================
 
     if (scoreElement) {
 
         scoreElement.textContent =
-            `${safeScore.toFixed(2)} / 100`;
+            `${Math.round(safeScore)} / 100`;
 
     }
 
-
-    // ========================================================
-    // DISPLAY CATEGORY
-    // ========================================================
 
     if (categoryElement) {
 
-    if (category === "High") {
-
         categoryElement.textContent =
-            "High Developmental Impact";
-
-    } else if (category === "Medium") {
-
-        categoryElement.textContent =
-            "Moderate Developmental Impact";
-
-    } else if (category === "Low") {
-
-        categoryElement.textContent =
-            "Low Developmental Impact";
-
-    } else {
-
-        categoryElement.textContent =
-            "Developmental Impact Unavailable";
+            "Combined Developmental Assessment";
 
     }
 
-}
-
-
-    // ========================================================
-    // RESULT BADGE
-    // ========================================================
 
     if (badge) {
 
         badge.textContent =
-            "HYBRID RESULT";
+            "HYBRID RESULT (RF & DS)";
+
+    }
+
+
+    if (description) {
+
+        description.textContent =
+            "Combined assessment using Random Forest " +
+            "risk evidence and developmental scoring.";
 
     }
 
@@ -2896,24 +2104,17 @@ function updateHybridAssessment(
             "high"
         );
 
-
         if (category === "High") {
 
-            card.classList.add(
-                "high"
-            );
+            card.classList.add("high");
 
         } else if (category === "Medium") {
 
-            card.classList.add(
-                "moderate"
-            );
+            card.classList.add("moderate");
 
         } else if (category === "Low") {
 
-            card.classList.add(
-                "low"
-            );
+            card.classList.add("low");
 
         }
 
@@ -2921,14 +2122,300 @@ function updateHybridAssessment(
 
 
     // ========================================================
-    // DESCRIPTION
+    // CALCULATION BREAKDOWN
     // ========================================================
 
-    if (description) {
+    const rfValueElement =
+        document.getElementById(
+            "hybridRfEvidence"
+        );
 
-        description.textContent =
-            "Combined assessment using Random Forest " +
-            "risk evidence and developmental impact scoring.";
+    const rfBar =
+        document.getElementById(
+            "hybridRfEvidenceBar"
+        );
+
+    const developmentalValueElement =
+        document.getElementById(
+            "hybridDevelopmentalImpact"
+        );
+
+    const developmentalBar =
+        document.getElementById(
+            "hybridDevelopmentalImpactBar"
+        );
+
+    const combinedResult =
+        document.getElementById(
+            "hybridCombinedResult"
+        );
+
+
+    if (rfEvidence !== null) {
+
+        if (rfValueElement) {
+
+            rfValueElement.textContent =
+                `${Math.round(rfEvidence)} / 100`;
+
+        }
+
+        if (rfBar) {
+
+            rfBar.style.width =
+                `${rfEvidence}%`;
+
+        }
+
+    }
+
+
+    if (developmentalImpact !== null) {
+
+        if (developmentalValueElement) {
+
+            developmentalValueElement.textContent =
+                `${Math.round(developmentalImpact)} / 100`;
+
+        }
+
+        if (developmentalBar) {
+
+            developmentalBar.style.width =
+                `${developmentalImpact}%`;
+
+        }
+
+    }
+
+
+    if (combinedResult) {
+
+        combinedResult.textContent =
+            `${Math.round(safeScore)} / 100`;
+
+    }
+
+
+    // ========================================================
+    // WHY THIS RESULT?
+    // ========================================================
+
+    const summaryElement =
+        document.getElementById(
+            "hybridWhySummary"
+        );
+
+    const developmentalExplanation =
+        document.getElementById(
+            "hybridDevelopmentalExplanation"
+        );
+
+    const rfExplanation =
+        document.getElementById(
+            "hybridRfExplanation"
+        );
+
+
+    // --------------------------------------------------------
+    // HYBRID COMPONENT EXPLANATION
+    // --------------------------------------------------------
+
+    if (
+        summaryElement &&
+        rfEvidence !== null &&
+        developmentalImpact !== null
+    ) {
+
+        const difference =
+            rfEvidence -
+            developmentalImpact;
+
+        if (
+            rfEvidence >= 68.5 &&
+            developmentalImpact >= 68.5
+        ) {
+
+            summaryElement.textContent =
+                "The combined assessment is higher because " +
+                "both the Random Forest risk evidence and " +
+                "developmental impact produced relatively " +
+                "higher scores.";
+
+        } else if (difference >= 15) {
+
+            summaryElement.textContent =
+                "The Random Forest risk evidence was higher " +
+                "than the developmental impact score and " +
+                "contributed more strongly to the combined result.";
+
+        } else if (difference <= -15) {
+
+            summaryElement.textContent =
+                "The developmental impact score was higher " +
+                "than the Random Forest risk evidence and " +
+                "contributed more strongly to the combined result.";
+
+        } else if (
+            rfEvidence < 28 &&
+            developmentalImpact < 28
+        ) {
+
+            summaryElement.textContent =
+                "The combined assessment is lower because " +
+                "both components produced relatively lower scores.";
+
+        } else {
+
+            summaryElement.textContent =
+                "The Random Forest risk evidence and " +
+                "developmental impact produced similar scores, " +
+                "so both contributed comparably to the " +
+                "combined assessment.";
+
+        }
+
+    }
+
+
+    // --------------------------------------------------------
+    // DEVELOPMENTAL EXPLANATION
+    // --------------------------------------------------------
+
+    if (
+        developmentalExplanation &&
+        developmentalScores
+    ) {
+
+        const dimensions = [
+            {
+                name: "Cognitive",
+                value: Number(
+                    developmentalScores.cognitive
+                )
+            },
+            {
+                name: "Behavioural",
+                value: Number(
+                    developmentalScores.behavioural
+                )
+            },
+            {
+                name: "Emotional",
+                value: Number(
+                    developmentalScores.emotional
+                )
+            }
+        ].filter(
+            item => Number.isFinite(item.value)
+        );
+
+
+        if (dimensions.length > 0) {
+
+            dimensions.sort(
+                (a, b) =>
+                    b.value - a.value
+            );
+
+            const strongest =
+                dimensions[0];
+
+            developmentalExplanation.textContent =
+                `${strongest.name} was the strongest ` +
+                `measured developmental dimension ` +
+                `(${Math.round(strongest.value)} / 100).`;
+
+        } else {
+
+            developmentalExplanation.textContent =
+                "Developmental dimension details " +
+                "were unavailable.";
+
+        }
+
+    }
+
+
+    // --------------------------------------------------------
+    // RANDOM FOREST / SHAP EXPLANATION
+    // --------------------------------------------------------
+
+    if (rfExplanation) {
+
+        const contributions =
+            explainability &&
+            Array.isArray(
+                explainability.feature_contributions
+            )
+                ? explainability.feature_contributions
+                : [];
+
+
+        const supporting =
+            contributions
+                .filter(
+                    item =>
+                        typeof item.shap_value === "number" &&
+                        item.shap_value > 0
+                )
+                .sort(
+                    (a, b) =>
+                        Math.abs(b.shap_value) -
+                        Math.abs(a.shap_value)
+                )
+                .slice(0, 2);
+
+
+        if (supporting.length > 0) {
+
+            const readableNames =
+                supporting.map(
+                    item =>
+                        formatHybridFeatureName(
+                            item.feature
+                        )
+                );
+
+
+            if (readableNames.length === 1) {
+
+                rfExplanation.textContent =
+                    `${readableNames[0]} was among the ` +
+                    `strongest factors supporting the ` +
+                    `Random Forest prediction.`;
+
+            } else {
+
+                rfExplanation.textContent =
+                    `${readableNames[0]} and ` +
+                    `${readableNames[1]} were among the ` +
+                    `strongest factors supporting the ` +
+                    `Random Forest prediction.`;
+
+            }
+
+        } else {
+
+            rfExplanation.textContent =
+                "Detailed Random Forest feature influence " +
+                "is available in the Explainability section.";
+
+        }
+
+    }
+
+
+    // ========================================================
+    // SHOW EXPLANATION
+    // ========================================================
+
+    if (explanationContainer) {
+
+        explanationContainer.style.display =
+            "block";
+
+        initialiseHybridAccordions();
 
     }
 
@@ -2938,6 +2425,550 @@ function updateHybridAssessment(
         `${safeScore.toFixed(2)} / 100`,
         category
     );
+
+}
+
+// ============================================================
+// HYBRID EXPLANATION ACCORDIONS
+// ============================================================
+
+function initialiseHybridAccordions() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".hybrid-accordion-button"
+        );
+
+
+    buttons.forEach(button => {
+
+        if (
+            button.dataset.hybridAccordionReady === "true"
+        ) {
+            return;
+        }
+
+
+        button.dataset.hybridAccordionReady =
+            "true";
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const targetId =
+                    button.dataset.hybridTarget;
+
+                const content =
+                    document.getElementById(
+                        targetId
+                    );
+
+                const arrow =
+                    button.querySelector(
+                        ".hybrid-accordion-arrow"
+                    );
+
+
+                if (!content) {
+                    return;
+                }
+
+
+                const isOpen =
+                    content.classList.contains(
+                        "open"
+                    );
+
+
+                // CLOSE
+                if (isOpen) {
+
+                    content.classList.remove(
+                        "open"
+                    );
+
+                    button.classList.remove(
+                        "open"
+                    );
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                    if (arrow) {
+                        arrow.textContent = "▸";
+                    }
+
+                }
+
+                // OPEN
+                else {
+
+                    content.classList.add(
+                        "open"
+                    );
+
+                    button.classList.add(
+                        "open"
+                    );
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "true"
+                    );
+
+                    if (arrow) {
+                        arrow.textContent = "⌄";
+                    }
+
+                }
+
+            }
+        );
+
+    });
+
+}
+// ============================================================
+// HYBRID FEATURE NAME FORMATTER
+// ============================================================
+
+function formatHybridFeatureName(
+    featureName
+) {
+
+    const readableNames = {
+
+        attention_score:
+            "Attention score",
+
+        attention_reset_rate:
+            "Attention reset rate",
+
+        reward_cue_frequency:
+            "Reward cue frequency",
+
+        motion_spike_rate:
+            "Motion spike rate",
+
+        motion_mean:
+            "Average motion",
+
+        motion_std:
+            "Motion variation",
+
+        scene_rate:
+            "Scene change rate",
+
+        flicker_rate:
+            "Visual flicker rate",
+
+        avg_saturation:
+            "Colour saturation",
+
+        avg_brightness:
+            "Visual brightness",
+
+        loudness:
+            "Audio loudness",
+
+        sound_density:
+            "Sound density",
+
+        audio_variation:
+            "Audio variation",
+
+        avg_pitch:
+            "Average pitch",
+
+        pitch_variation:
+            "Pitch variation",
+
+        emotion_arousal:
+            "Emotional arousal",
+
+        emotion_valence:
+            "Emotional valence",
+
+        emotion_stability:
+            "Emotional stability",
+
+        loop_detection_score:
+            "Repetitive content patterns",
+
+        phrase_repetition:
+            "Phrase repetition",
+
+        vocabulary_diversity:
+            "Vocabulary diversity",
+
+        sentence_complexity:
+            "Sentence complexity"
+
+    };
+
+
+    if (readableNames[featureName]) {
+
+        return readableNames[
+            featureName
+            ];
+
+    }
+
+
+    return String(featureName || "")
+        .replaceAll("_", " ")
+        .replace(
+            /\b\w/g,
+            letter =>
+                letter.toUpperCase()
+        );
+
+}
+
+// ============================================================
+// PARENT GUIDANCE
+// ============================================================
+
+function updateParentGuidance(
+    hybridAssessment,
+    developmentalScores
+) {
+
+    const container =
+        document.getElementById(
+            "recommendation"
+        );
+
+
+    if (
+        !container ||
+        !hybridAssessment ||
+        !developmentalScores ||
+        typeof hybridAssessment.score !== "number"
+    ) {
+
+        return;
+
+    }
+
+
+    const hybridScore =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                hybridAssessment.score
+            )
+        );
+
+
+    const dimensions = [
+
+        {
+            name: "Cognitive",
+            value:
+            developmentalScores.cognitive
+        },
+
+        {
+            name: "Behavioural",
+            value:
+            developmentalScores.behavioural
+        },
+
+        {
+            name: "Emotional",
+            value:
+            developmentalScores.emotional
+        }
+
+    ]
+        .filter(
+            function (dimension) {
+
+                return (
+                    typeof dimension.value ===
+                    "number"
+                );
+
+            }
+        )
+        .map(
+            function (dimension) {
+
+                return {
+
+                    name:
+                    dimension.name,
+
+                    value:
+                        Math.max(
+                            0,
+                            Math.min(
+                                100,
+                                dimension.value
+                            )
+                        )
+
+                };
+
+            }
+        );
+
+
+    if (dimensions.length === 0) {
+
+        return;
+
+    }
+
+
+    // Highest developmental dimension
+
+    const rankedDimensions =
+        [...dimensions].sort(
+            function (a, b) {
+
+                return (
+                    b.value -
+                    a.value
+                );
+
+            }
+        );
+
+
+    const strongestDimension =
+        rankedDimensions[0];
+
+
+    // ========================================================
+    // GUIDANCE LEVEL
+    // Uses existing HYBRID operational thresholds.
+    // ========================================================
+
+    let guidanceLevel =
+        "";
+
+    let guidanceClass =
+        "";
+
+    let guidanceText =
+        "";
+
+
+    if (hybridScore >= 68.5) {
+
+        guidanceLevel =
+            "Higher Attention Recommended";
+
+        guidanceClass =
+            "high";
+
+        guidanceText =
+            "This video produced a higher combined assessment. " +
+            "Consider the child's age, viewing duration and viewing " +
+            "context when deciding whether this content is appropriate.";
+
+    } else if (hybridScore >= 28) {
+
+        guidanceLevel =
+            "Consider Viewing Context";
+
+        guidanceClass =
+            "moderate";
+
+        guidanceText =
+            "This video produced a moderate combined assessment. " +
+            "Consider the strongest developmental indicator together " +
+            "with the child's age and viewing context.";
+
+    } else {
+
+        guidanceLevel =
+            "Lower Attention Indicated";
+
+        guidanceClass =
+            "low";
+
+        guidanceText =
+            "This video produced a lower combined assessment. " +
+            "The measured developmental indicators were generally " +
+            "lower, although parental judgement should still consider " +
+            "the child's age and viewing context.";
+
+    }
+
+
+    // ========================================================
+    // DIMENSION ROWS
+    // ========================================================
+
+    const dimensionHTML =
+        rankedDimensions
+            .map(
+                function (
+                    dimension,
+                    index
+                ) {
+
+                    return `
+
+                        <div class="guidance-result-row">
+
+                            <span class="guidance-result-name">
+
+                                ${escapeHTML(
+                        dimension.name
+                    )}
+
+                            </span>
+
+                            <div class="guidance-result-value">
+
+                                <strong>
+                                    ${Math.round(
+                        dimension.value
+                    )} / 100
+                                </strong>
+
+                                ${
+                        index === 0
+                            ? `
+                                            <span class="guidance-highest-badge">
+                                                Highest
+                                            </span>
+                                        `
+                            : ""
+                    }
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    // ========================================================
+    // DISPLAY
+    // ========================================================
+
+    container.innerHTML = `
+
+        <div class="parent-guidance-content">
+
+
+            <div
+                class="guidance-attention-badge ${guidanceClass}"
+            >
+
+                ${escapeHTML(
+        guidanceLevel
+    )}
+
+            </div>
+
+
+            <div class="guidance-main-result">
+
+                <div class="guidance-main-header">
+
+                    <span>
+                        Combined Assessment
+                    </span>
+
+                    <strong>
+                        ${Math.round(
+        hybridScore
+    )} / 100
+                    </strong>
+
+                </div>
+
+
+                <div class="guidance-combined-track">
+
+                    <div
+                        class="guidance-combined-fill"
+                        style="width: ${hybridScore}%"
+                    ></div>
+
+                </div>
+
+
+                <div class="guidance-score-note">
+
+                    Random Forest risk evidence +
+                    developmental scoring
+
+                </div>
+
+            </div>
+
+
+            <div class="guidance-highlight">
+
+                <div class="guidance-highlight-title">
+                    Why this needs attention
+                </div>
+
+                <p>
+
+                    ${escapeHTML(
+        strongestDimension.name
+    )}
+                    indicators were the strongest
+                    developmental area detected at
+
+                    <strong>
+                        ${Math.round(
+        strongestDimension.value
+    )} / 100.
+                    </strong>
+
+                </p>
+
+            </div>
+
+
+            <div class="guidance-results">
+
+                <div class="guidance-results-title">
+                    What the analysis found
+                </div>
+
+                ${dimensionHTML}
+
+            </div>
+
+
+            <div class="parent-guidance-message">
+
+                <strong>
+                    Parent Guidance
+                </strong>
+
+                <p>
+                    ${escapeHTML(
+        guidanceText
+    )}
+                </p>
+
+            </div>
+
+
+        </div>
+
+    `;
 
 }
 
@@ -3061,8 +3092,8 @@ function setMonitoringStatus(
     }
 
 
-    // ========================================================
-    // WAITING FOR BACKEND
+        // ========================================================
+        // WAITING FOR BACKEND
     // ========================================================
 
     else {
@@ -3290,9 +3321,9 @@ function applyBackendResults(
 
     if (
         typeof data.recommendation ===
-            "string" &&
+        "string" &&
         data.recommendation.trim() !==
-            ""
+        ""
     ) {
 
         const recommendation =
@@ -3311,8 +3342,8 @@ function applyBackendResults(
 
                 <p>
                     ${escapeHTML(
-                        data.recommendation
-                    )}
+                data.recommendation
+            )}
                 </p>
 
             `;
@@ -3331,7 +3362,7 @@ function applyBackendResults(
             data.insights
         ) &&
         data.insights.length >
-            0
+        0
     ) {
 
         renderInsights(
@@ -3347,9 +3378,9 @@ function applyBackendResults(
 
     if (
         typeof data.overall ===
-            "number" &&
+        "number" &&
         data.overall >
-            75
+        75
     ) {
 
         triggerHighRiskAlert();
@@ -3358,6 +3389,73 @@ function applyBackendResults(
 
 }
 
+// ============================================================
+// OVERALL DEVELOPMENTAL IMPACT DONUT
+// ============================================================
+
+function updateOverallDevelopmentalDonut(
+    value
+) {
+
+    if (
+        typeof value !== "number" ||
+        !Number.isFinite(value)
+    ) {
+
+        return;
+
+    }
+
+
+    const safeValue =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                value
+            )
+        );
+
+
+    const scoreElement =
+        document.getElementById(
+            "overallDevelopmentalScore"
+        );
+
+
+    const donut =
+        document.getElementById(
+            "overallDevelopmentalDonut"
+        );
+
+
+    if (scoreElement) {
+
+        scoreElement.textContent =
+            Math.round(
+                safeValue
+            );
+
+    }
+
+
+    if (donut) {
+
+        const degrees =
+            (
+                safeValue /
+                100
+            ) * 360;
+
+
+        donut.style.setProperty(
+            "--developmental-angle",
+            `${degrees}deg`
+        );
+
+    }
+
+}
 
 // ============================================================
 // UPDATE MAIN SCORE
@@ -3542,10 +3640,10 @@ function updateScoreBar(
 
     if (valueElement) {
 
-    valueElement.textContent =
-        `${Math.round(
-            safeValue
-        )} / 100`;
+        valueElement.textContent =
+            `${Math.round(
+                safeValue
+            )} / 100`;
 
     }
 
@@ -3702,9 +3800,9 @@ function renderExplainability(
                     return `
                         <li>
                             ${escapeHTML(
-                                factor.friendly_name ||
-                                factor.feature
-                            )}
+                        factor.friendly_name ||
+                        factor.feature
+                    )}
                         </li>
                     `;
 
@@ -3725,9 +3823,9 @@ function renderExplainability(
                     return `
                         <li>
                             ${escapeHTML(
-                                factor.friendly_name ||
-                                factor.feature
-                            )}
+                        factor.friendly_name ||
+                        factor.feature
+                    )}
                         </li>
                     `;
 
@@ -3753,19 +3851,19 @@ function renderExplainability(
 
             <strong>
                 Why ${escapeHTML(
-                    predictedLabel
-                )}?
+        predictedLabel
+    )}?
             </strong>
 
             <p>
                 ${escapeHTML(
-                    parentExplanation
-                )}
+        parentExplanation
+    )}
             </p>
 
             ${
-                supportingHTML
-                    ? `
+        supportingHTML
+            ? `
                         <div class="shap-factor-group supporting">
 
                             <strong>
@@ -3778,12 +3876,12 @@ function renderExplainability(
 
                         </div>
                     `
-                    : ""
-            }
+            : ""
+    }
 
             ${
-                opposingHTML
-                    ? `
+        opposingHTML
+            ? `
                         <div class="shap-factor-group opposing">
 
                             <strong>
@@ -3796,14 +3894,15 @@ function renderExplainability(
 
                         </div>
                     `
-                    : ""
-            }
+            : ""
+    }
 
         </div>
 
     `;
 
 }
+
 // ============================================================
 // SHAP-BASED DETECTED MULTIMEDIA FEATURES
 // ============================================================
@@ -3842,7 +3941,7 @@ function renderContributingFeatures(
                     return (
                         feature &&
                         typeof feature.absolute_shap ===
-                            "number" &&
+                        "number" &&
                         Number.isFinite(
                             feature.absolute_shap
                         )
@@ -3882,7 +3981,7 @@ function renderContributingFeatures(
 
     if (
         typeof strongestContribution !==
-            "number" ||
+        "number" ||
         strongestContribution <= 0
     ) {
 
@@ -4236,7 +4335,7 @@ function renderContributingFeatures(
                                 if (
                                     feature &&
                                     typeof feature.absolute_shap ===
-                                        "number" &&
+                                    "number" &&
                                     Number.isFinite(
                                         feature.absolute_shap
                                     )
@@ -4281,13 +4380,13 @@ function renderContributingFeatures(
                     return {
 
                         name:
-                            group.name,
+                        group.name,
 
                         contribution:
-                            contributionShare,
+                        contributionShare,
 
                         card:
-                            card
+                        card
 
                     };
 
@@ -4342,7 +4441,7 @@ function renderContributingFeatures(
                     return {
 
                         group:
-                            group.name,
+                        group.name,
 
                         contribution:
                             group.contribution.toFixed(1) +
@@ -4732,7 +4831,7 @@ function renderLiveContributionGroup(
 
                     if (
                         typeof feature.absolute_shap ===
-                            "number" &&
+                        "number" &&
                         Number.isFinite(
                             feature.absolute_shap
                         )
@@ -4761,9 +4860,9 @@ function renderLiveContributionGroup(
     const contributionShare =
         totalAbsoluteShap > 0
             ? (
-                groupAbsoluteShap /
-                totalAbsoluteShap
-            ) * 100
+            groupAbsoluteShap /
+            totalAbsoluteShap
+        ) * 100
             : 0;
 
 
@@ -4910,14 +5009,14 @@ function renderLiveContributionGroup(
 
                     const shapValue =
                         typeof feature.shap_value ===
-                            "number"
+                        "number"
                             ? feature.shap_value
                             : 0;
 
 
                     const absoluteShap =
                         typeof feature.absolute_shap ===
-                            "number"
+                        "number"
                             ? feature.absolute_shap
                             : Math.abs(
                                 shapValue
@@ -4938,22 +5037,22 @@ function renderLiveContributionGroup(
                         <span
                             class="detected-feature"
                             title="${escapeHTML(
-                                direction
-                            )} prediction | Absolute SHAP: ${escapeHTML(
-                                absoluteShap.toFixed(
-                                    4
-                                )
-                            )}"
+                        direction
+                    )} prediction | Absolute SHAP: ${escapeHTML(
+                        absoluteShap.toFixed(
+                            4
+                        )
+                    )}"
                         >
 
                             ${escapeHTML(
-                                featureName
-                            )}
+                        featureName
+                    )}
 
                             <strong>
                                 ${escapeHTML(
-                                    value
-                                )}
+                        value
+                    )}
                             </strong>
 
                         </span>
@@ -4977,7 +5076,7 @@ function formatFeatureValue(
 
     if (
         typeof value !==
-            "number" ||
+        "number" ||
         !Number.isFinite(
             value
         )
@@ -5035,6 +5134,7 @@ function formatFeatureValue(
     );
 
 }
+
 // ============================================================
 // INSIGHTS
 // ============================================================
@@ -5090,8 +5190,8 @@ function renderInsights(
 
                     <p>
                         ${escapeHTML(
-                            insight
-                        )}
+                insight
+            )}
                     </p>
 
                 </div>
@@ -5128,7 +5228,7 @@ function triggerHighRiskAlert(
     if (
         !currentVideoId ||
         lastAlertedVideoId ===
-            currentVideoId
+        currentVideoId
     ) {
 
         return;
@@ -5250,7 +5350,7 @@ function playAlertSound() {
         oscillator.frequency.setValueAtTime(
             880,
             audioContext.currentTime +
-                0.15
+            0.15
         );
 
 
@@ -5263,14 +5363,14 @@ function playAlertSound() {
         gain.gain.exponentialRampToValueAtTime(
             0.18,
             audioContext.currentTime +
-                0.03
+            0.03
         );
 
 
         gain.gain.exponentialRampToValueAtTime(
             0.0001,
             audioContext.currentTime +
-                0.35
+            0.35
         );
 
 
@@ -5289,7 +5389,7 @@ function playAlertSound() {
 
         oscillator.stop(
             audioContext.currentTime +
-                0.4
+            0.4
         );
 
     } catch (error) {

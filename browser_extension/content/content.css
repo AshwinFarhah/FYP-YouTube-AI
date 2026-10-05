@@ -964,6 +964,7 @@
     color: #808897;
 
 }
+
 /* ============================================================
    LIVE SHAP EXPLAINABILITY
 ============================================================ */
@@ -1082,6 +1083,7 @@
     line-height: 1.2;
 
 }
+
 /* ============================================================
    SUPPORTING FACTORS
 ============================================================ */
@@ -1635,7 +1637,7 @@
 
     font-weight: 600;
 
-    padding-right: 130px;
+    padding-right: 170px;
 
     margin-bottom: 24px;
 
@@ -1718,12 +1720,11 @@
 
 .hybrid-assessment-card.low {
 
-    background:
-        linear-gradient(
+    background: linear-gradient(
             135deg,
             #22b573,
             #45c98b
-        );
+    );
 
 }
 
@@ -1732,12 +1733,11 @@
 
 .hybrid-assessment-card.moderate {
 
-    background:
-        linear-gradient(
+    background: linear-gradient(
             135deg,
             #ff9f1c,
             #ffbd45
-        );
+    );
 
 }
 
@@ -1746,15 +1746,377 @@
 
 .hybrid-assessment-card.high {
 
-    background:
-        linear-gradient(
+    background: linear-gradient(
             135deg,
             #ef4444,
             #f87171
-        );
+    );
 
 }
 
+/* ============================================================
+   HYBRID EXPLANATION
+============================================================ */
+
+.hybrid-explanation {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin-top: 22px;
+
+    padding-top: 14px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.25);
+
+}
+
+
+/* ============================================================
+   HYBRID ACCORDION
+============================================================ */
+
+.hybrid-accordion {
+
+    margin-top: 10px;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+    border-radius: 14px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+}
+
+
+/* ============================================================
+   CLICKABLE ACCORDION BUTTON
+============================================================ */
+
+.hybrid-accordion-button {
+
+    width: 100%;
+
+    padding: 14px 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    border: 0;
+
+    outline: none;
+
+    background: transparent;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    text-align: left;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease;
+
+}
+
+
+.hybrid-accordion-button:hover {
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+}
+
+
+.hybrid-accordion-button.open {
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+}
+
+
+/* ============================================================
+   ACCORDION ARROW
+============================================================ */
+
+.hybrid-accordion-arrow {
+
+    width: 14px;
+
+    flex-shrink: 0;
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+}
+
+
+/* ============================================================
+   COLLAPSED CONTENT
+============================================================ */
+
+.hybrid-accordion-content {
+
+    display: none;
+
+    padding:
+        4px
+        15px
+        15px
+        15px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.12);
+
+}
+
+
+/* ============================================================
+   EXPANDED CONTENT
+============================================================ */
+
+.hybrid-accordion-content.open {
+
+    display: block;
+
+}
+
+
+/* ============================================================
+   COMPONENT BREAKDOWN
+============================================================ */
+
+.hybrid-component {
+
+    margin-top: 14px;
+
+    margin-bottom: 16px;
+
+}
+
+
+.hybrid-component-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.hybrid-component-header span {
+
+    color:
+        rgba(255, 255, 255, 0.92);
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+}
+
+
+.hybrid-component-header strong {
+
+    flex-shrink: 0;
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+}
+
+
+/* ============================================================
+   COMPONENT BARS
+============================================================ */
+
+.hybrid-component-track {
+
+    width: 100%;
+
+    height: 7px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.24);
+
+}
+
+
+.hybrid-component-fill {
+
+    width: 0;
+
+    height: 100%;
+
+    border-radius: 999px;
+
+    background: #ffffff;
+
+    transition:
+        width 0.5s ease;
+
+}
+
+
+.hybrid-component-weight {
+
+    margin-top: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.72);
+
+    font-size: 9px;
+
+}
+
+
+/* ============================================================
+   COMBINED RESULT
+============================================================ */
+
+.hybrid-calculation-result {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 4px;
+
+    padding-top: 13px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.20);
+
+}
+
+
+.hybrid-calculation-result span {
+
+    color:
+        rgba(255, 255, 255, 0.90);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.hybrid-calculation-result strong {
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+}
+
+
+/* ============================================================
+   WHY THIS RESULT
+============================================================ */
+
+.hybrid-why-summary {
+
+    margin:
+        14px 0 15px 0;
+
+    color:
+        rgba(255, 255, 255, 0.92);
+
+    font-size: 11px;
+
+    line-height: 1.6;
+
+}
+
+
+.hybrid-why-item {
+
+    padding: 11px 0;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.16);
+
+}
+
+
+.hybrid-why-item:last-child {
+
+    padding-bottom: 0;
+
+}
+
+
+.hybrid-why-label {
+
+    margin-bottom: 5px;
+
+    color: #ffffff;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+}
+
+
+.hybrid-why-text {
+
+    color:
+        rgba(255, 255, 255, 0.84);
+
+    font-size: 10px;
+
+    line-height: 1.55;
+
+}
 
 /* ============================================================
    AI RISK ASSESSMENT
@@ -1771,8 +2133,7 @@
 
     border-left: 6px solid #3b82f6;
 
-    box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 
 }
 
@@ -1910,4 +2271,479 @@
 
     color: #dc3d3d;
 
+}
+
+/* ============================================================
+   PARENT GUIDANCE
+============================================================ */
+
+.parent-guidance-content {
+
+    width: 100%;
+
+}
+
+
+/* ATTENTION BADGE */
+
+.guidance-attention-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 10px;
+
+    margin-bottom: 14px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.4px;
+
+}
+
+
+.guidance-attention-badge.high {
+
+    background: #fde8e8;
+
+    color: #c62828;
+
+}
+
+
+.guidance-attention-badge.moderate {
+
+    background: #fff3d6;
+
+    color: #a15c00;
+
+}
+
+
+.guidance-attention-badge.low {
+
+    background: #e8f5e9;
+
+    color: #2e7d32;
+
+}
+
+
+/* MAIN RESULT */
+
+.guidance-main-result {
+
+    padding: 14px;
+
+    margin-bottom: 14px;
+
+    border: 1px solid #e7e9f0;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+}
+
+
+.guidance-main-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 9px;
+
+}
+
+
+.guidance-main-header span {
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #4b5563;
+
+}
+
+
+.guidance-main-header strong {
+
+    font-size: 17px;
+
+    color: #222222;
+
+}
+
+
+.guidance-combined-track {
+
+    width: 100%;
+
+    height: 7px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #edf0f5;
+
+}
+
+
+.guidance-combined-fill {
+
+    height: 100%;
+
+    border-radius: 999px;
+
+    background: #6c7cff;
+
+}
+
+
+.guidance-score-note {
+
+    margin-top: 7px;
+
+    font-size: 9px;
+
+    color: #8a8f9c;
+
+}
+
+
+/* STRONGEST RESULT */
+
+.guidance-highlight {
+
+    padding: 14px;
+
+    margin-bottom: 14px;
+
+    border-radius: 14px;
+
+    background: #f5f6ff;
+
+    border-left: 4px solid #6c7cff;
+
+}
+
+
+.guidance-highlight-title {
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    color: #333333;
+
+}
+
+
+.guidance-highlight p {
+
+    margin: 0;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+    color: #555555;
+
+}
+
+
+/* ANALYSIS RESULTS */
+
+.guidance-results {
+
+    margin-bottom: 14px;
+
+}
+
+
+.guidance-results-title {
+
+    margin-bottom: 8px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    color: #747986;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.4px;
+
+}
+
+
+.guidance-result-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 9px 0;
+
+    border-bottom: 1px solid #eceef3;
+
+}
+
+
+.guidance-result-row:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.guidance-result-name {
+
+    font-size: 12px;
+
+    color: #4b5563;
+
+}
+
+
+.guidance-result-value {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.guidance-result-value strong {
+
+    font-size: 11px;
+
+    color: #222222;
+
+}
+
+
+.guidance-highest-badge {
+
+    padding: 3px 6px;
+
+    border-radius: 999px;
+
+    background: #eef0ff;
+
+    color: #5b67d8;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+/* GUIDANCE MESSAGE */
+
+.parent-guidance-message {
+
+    padding: 14px;
+
+    border-radius: 14px;
+
+    background: #f8f9fc;
+
+}
+
+
+.parent-guidance-message strong {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+
+    color: #333333;
+
+}
+
+
+.parent-guidance-message p {
+
+    margin: 0;
+
+    font-size: 11px;
+
+    line-height: 1.55;
+
+    color: #606572;
+
+}
+
+/* ============================================================
+   OVERALL DEVELOPMENTAL SUMMARY
+============================================================ */
+
+.developmental-overall-summary {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-top: 18px;
+
+    padding: 20px 12px;
+
+    background: #f8f9fc;
+
+    border: 1px solid #e7e9f0;
+
+    border-radius: 16px;
+
+}
+
+
+.developmental-overall-description {
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    line-height: 1.4;
+
+    text-align: center;
+
+    color: #8a8f9c;
+
+}
+
+/* ============================================================
+   OVERALL DEVELOPMENTAL IMPACT DONUT
+============================================================ */
+
+.developmental-overall-summary {
+    margin-top: 18px;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: #f7f8fc;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 16px;
+}
+
+
+/* ============================================================
+   DONUT RING
+============================================================ */
+
+.developmental-donut {
+    --developmental-angle: 0deg;
+
+    width: 110px;
+    height: 110px;
+
+    border-radius: 50%;
+
+    background: conic-gradient(
+            #6c7cff 0deg,
+            #6c7cff var(--developmental-angle),
+            #e3e7ef var(--developmental-angle),
+            #e3e7ef 360deg
+    );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 12px;
+}
+
+
+/* WHITE CENTRE CREATES THE RING */
+
+.developmental-donut-inner {
+    width: 82px;
+    height: 82px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* SCORE */
+
+.developmental-donut-inner strong {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    color: #222222;
+}
+
+
+.developmental-donut-inner span {
+    margin-top: 3px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    color: #6b7280;
+}
+
+
+/* LABEL */
+
+.developmental-donut-label {
+    margin-top: 2px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    color: #2f3542;
+
+    text-align: center;
+}
+
+
+/* DESCRIPTION */
+
+.developmental-overall-description {
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color: #7b8494;
+
+    text-align: center;
 }
