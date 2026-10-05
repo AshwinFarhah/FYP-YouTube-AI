@@ -1,0 +1,909 @@
+<div class="neuroshield-window">
+
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <div
+                class="neuroshield-header"
+                id="neuroshield-drag-handle"
+            >
+
+                <div class="neuroshield-brand">
+
+                    <div class="neuroshield-logo-container">
+
+                        <img
+                            src=""
+                            id="neuroshield-logo-image"
+                            class="neuroshield-logo"
+                            alt="NeuroShield AI Logo"
+                        >
+
+                    </div>
+
+                    <div class="neuroshield-brand-text">
+
+                        <div class="neuroshield-title">
+                            NeuroShield AI
+                        </div>
+
+                        <div class="neuroshield-subtitle">
+                            Explainable Developmental Analysis
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="neuroshield-actions">
+
+                    <!-- NOTIFICATION -->
+
+                    <button
+                        id="neuroshield-notification"
+                        class="neuroshield-action"
+                        title="Mute high-risk alerts"
+                        aria-label="Mute high-risk alerts"
+                        type="button"
+                    >
+                        🔔
+                    </button>
+
+
+                    <!-- SETTINGS -->
+
+                    <button
+                        id="neuroshield-settings"
+                        class="neuroshield-action"
+                        title="Open settings"
+                        aria-label="Open settings"
+                        type="button"
+                    >
+                        ⚙
+                    </button>
+
+
+                    <!-- MINIMIZE -->
+
+                    <button
+                        id="neuroshield-minimize"
+                        class="neuroshield-action"
+                        title="Minimize"
+                        aria-label="Minimize"
+                        type="button"
+                    >
+                        −
+                    </button>
+
+
+                    <!-- CLOSE -->
+
+                    <button
+                        id="neuroshield-close"
+                        class="neuroshield-action close"
+                        title="Close"
+                        aria-label="Close"
+                        type="button"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- CONTENT -->
+            <!-- ================================================= -->
+
+            <div
+                class="neuroshield-content"
+                id="neuroshield-content"
+            >
+
+
+                <!-- ================================================= -->
+                <!-- MONITORING STATUS -->
+                <!-- ================================================= -->
+
+                <div
+                    class="neuroshield-status-card waiting"
+                    id="monitoringStatusCard"
+                >
+
+                    <div class="status-left">
+
+                        <span
+                            class="status-dot waiting"
+                            id="monitoringStatusDot"
+                        ></span>
+
+                        <div>
+
+                            <div class="status-title">
+                                AI Monitoring
+                            </div>
+
+                            <div
+                                class="status-text"
+                                id="analysisStatusText"
+                            >
+                                Waiting for backend analysis
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="status-badge waiting"
+                        id="monitoringStatusBadge"
+                    >
+                        Waiting
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- HYBRID DEVELOPMENTAL ASSESSMENT -->
+                <!-- ================================================= -->
+
+                <section
+                    class="neuroshield-main-card hybrid-assessment-card"
+                    id="hybridAssessmentCard"
+                >
+                
+                    <div
+                        class="live-badge"
+                        id="hybridAssessmentBadge"
+                    >
+                        WAITING
+                    </div>
+                
+                    <div class="main-score-title">
+                        Hybrid Developmental Assessment
+                    </div>
+                
+                    <div
+                        class="main-score-empty"
+                        id="hybridAssessmentScore"
+                    >
+                        —
+                    </div>
+                
+                    <div
+                        class="main-score-label"
+                        id="hybridAssessmentCategory"
+                    >
+                        Awaiting analysis
+                    </div>
+                
+                    <div
+                        class="main-score-description"
+                        id="hybridAssessmentDescription"
+                    >
+                        Combined assessment using Random Forest risk
+                        evidence and developmental scoring.
+                    </div>
+                
+                
+                    <!-- HYBRID EXPLANATION -->
+                
+                    
+                
+                </section>
+
+
+                <!-- ================================================= -->
+                <!-- AI RISK ASSESSMENT -->
+                <!-- ================================================= -->
+
+                <section
+                    class="neuroshield-main-card ai-risk-card"
+                    id="mainScoreCard"
+                >
+
+                    <div
+                        class="live-badge"
+                        id="analysisLiveBadge"
+                    >
+                        WAITING
+                    </div>
+
+                    <div class="main-score-title">
+                        Random Forest Confidence
+                    </div>
+
+                    <div
+                        class="main-score-empty"
+                        id="overallScore"
+                    >
+                        —
+                    </div>
+
+                    <div
+                        class="main-score-label"
+                        id="overallScoreLabel"
+                    >
+                        Awaiting analysis
+                    </div>
+
+                    <div
+                        class="main-score-description"
+                        id="mainScoreDescription"
+                    >
+                        The AI risk classification and model
+                        confidence will appear after analysis.
+                    </div>
+
+                </section>
+
+
+                <!-- ================================================= -->
+                <!-- DEVELOPMENTAL IMPACT -->
+                <!-- ================================================= -->
+
+                <section class="neuroshield-card">
+
+                    <div class="card-title">
+                        Developmental Impact Scores
+                    </div>
+
+
+                    <!-- COGNITIVE -->
+
+                    <div class="score-row">
+
+                        <div class="score-icon cognitive-icon">
+                            <img
+                                src="" id="cognitiveIcon"
+                                alt=""
+                            >
+                        </div>
+
+                        <div class="score-content">
+
+                            <div class="score-header">
+
+                                <span>
+                                    Cognitive Impact
+                                </span>
+
+                                <strong id="cognitiveScore">
+                                    —
+                                </strong>
+
+                            </div>
+
+                            <div class="progress-track">
+
+                                <div
+                                    class="progress-fill cognitive-fill"
+                                    id="cognitiveBar"
+                                ></div>
+
+                            </div>
+
+                            <div class="score-description">
+                                Learning and language-related stimulation
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BEHAVIOURAL -->
+
+                    <div class="score-row">
+
+                        <div class="score-icon behavioural-icon">
+                            <img
+                                src="" id="behaviouralIcon"
+                                alt=""
+                            >
+                        </div>
+
+                        <div class="score-content">
+
+                            <div class="score-header">
+
+                                <span>
+                                    Behavioural Risk
+                                </span>
+
+                                <strong id="behaviouralScore">
+                                    —
+                                </strong>
+
+                            </div>
+
+                            <div class="progress-track">
+
+                                <div
+                                    class="progress-fill behavioural-fill"
+                                    id="behaviouralBar"
+                                ></div>
+
+                            </div>
+
+                            <div class="score-description">
+                                Attention and repetitive stimulation risk
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMOTIONAL -->
+
+                    <div class="score-row">
+
+                    <div class="score-icon emotional-icon">
+                        <img
+                            src="" id="emotionalIcon"
+                            alt=""
+                        >
+                    </div>
+
+                        <div class="score-content">
+
+                            <div class="score-header">
+
+                                <span>
+                                    Emotional Stimulation
+                                </span>
+
+                                <strong id="emotionalScore">
+                                    —
+                                </strong>
+
+                            </div>
+
+                            <div class="progress-track">
+
+                                <div
+                                    class="progress-fill emotional-fill"
+                                    id="emotionalBar"
+                                ></div>
+
+                            </div>
+
+                            <div class="score-description">
+                                Emotional intensity and tone
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- OVERALL DEVELOPMENTAL IMPACT -->
+
+                    <!-- OVERALL DEVELOPMENTAL IMPACT -->
+
+                    <div class="developmental-overall-summary">
+                    
+                        <div
+                            class="developmental-donut"
+                            id="overallDevelopmentalDonut"
+                            style="--developmental-angle: 0deg;"
+                        >
+                    
+                            <div class="developmental-donut-inner">
+                    
+                                <strong id="overallDevelopmentalScore">
+                                    —
+                                </strong>
+                    
+                                <span>
+                                    / 100
+                                </span>
+                    
+                            </div>
+                    
+                        </div>
+                    
+                        <div class="developmental-donut-label">
+                            Overall Developmental Impact
+                        </div>
+                    
+                        <div class="developmental-overall-description">
+                            Combined cognitive, behavioural and emotional impact
+                        </div>
+                    
+                    </div>
+
+                </section>
+
+
+                <!-- ================================================= -->
+                <!-- EXPLAINABILITY -->
+                <!-- ================================================= -->
+
+                <section class="neuroshield-card">
+
+                    <div class="card-title">
+                        Explainability Insights
+                    </div>
+
+                    <div
+                        class="empty-insight"
+                        id="insightContainer"
+                    >
+
+                        <div class="empty-insight-icon">
+                            <img
+                                src="" id="explainabilityIcon"
+                                alt=""
+                            >
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                No analysis available yet
+                            </strong>
+
+                            <p>
+                                Explainable AI insights will appear
+                                here after the backend completes
+                                analysis of this video.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================================================= -->
+                <!-- MULTIMEDIA FEATURES -->
+                <!-- ================================================= -->
+
+                <section class="neuroshield-card">
+
+                    <div class="card-title">
+                        Detected Multimedia Features
+                    </div>
+
+                    <div class="feature-stack">
+
+
+                        <!-- ================================================= -->
+                        <!-- VISUAL -->
+                        <!-- ================================================= -->
+
+                        <div class="feature-card">
+
+                            <div class="feature-top">
+
+                                <div class="feature-heading">
+
+                                    <div class="feature-icon visual">
+                                        <img
+                                            src="" id="visualIcon"
+                                            alt=""
+                                        >
+                                    </div>
+
+                                    <div>
+
+                                        <div class="feature-name">
+                                            Visual Features
+                                        </div>
+
+                                        <div class="feature-subtitle">
+                                            Motion and scene-based stimulation
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="feature-level"
+                                    id="visualLevel"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div class="mini-progress">
+
+                                <div
+                                    class="mini-fill"
+                                    id="visualBar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="feature-bubbles"
+                                id="visualFeatures"
+                            >
+
+                                <span>Motion Intensity</span>
+                                <span>Scene Changes</span>
+                                <span>Brightness</span>
+                                <span>Saturation</span>
+                                <span>Flicker Rate</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- AUDIO -->
+                        <!-- ================================================= -->
+
+                        <div class="feature-card">
+
+                            <div class="feature-top">
+
+                                <div class="feature-heading">
+
+                                    <div class="feature-icon audio">
+                                        <img
+                                            src="" id="audioIcon"
+                                            alt=""
+                                        >
+                                    </div>
+
+                                    <div>
+
+                                        <div class="feature-name">
+                                            Audio Features
+                                        </div>
+
+                                        <div class="feature-subtitle">
+                                            Sound and auditory stimulation
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="feature-level"
+                                    id="audioLevel"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div class="mini-progress">
+
+                                <div
+                                    class="mini-fill"
+                                    id="audioBar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="feature-bubbles"
+                                id="audioFeatures"
+                            >
+
+                                <span>Loudness</span>
+                                <span>Pitch Variation</span>
+                                <span>Tempo</span>
+                                <span>Spectral Density</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- TEXT -->
+                        <!-- ================================================= -->
+
+                        <div class="feature-card">
+
+                            <div class="feature-top">
+
+                                <div class="feature-heading">
+
+                                    <div class="feature-icon text">
+                                        <img
+                                            src="" id="textualIcon"
+                                            alt=""
+                                        >
+                                    </div>
+
+                                    <div>
+
+                                        <div class="feature-name">
+                                            Textual Features
+                                        </div>
+
+                                        <div class="feature-subtitle">
+                                            Language and textual characteristics
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="feature-level"
+                                    id="textLevel"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div class="mini-progress">
+
+                                <div
+                                    class="mini-fill"
+                                    id="textBar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="feature-bubbles"
+                                id="textFeatures"
+                            >
+
+                                <span>Phrase Repetition</span>
+                                <span>Sentence Complexity</span>
+                                <span>Vocabulary Diversity</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- ENGAGEMENT -->
+                        <!-- ================================================= -->
+
+                        <div class="feature-card">
+
+                            <div class="feature-top">
+
+                                <div class="feature-heading">
+
+                                    <div class="feature-icon engagement">
+                                        <img
+                                            src="" id="engagementIcon"
+                                            alt=""
+                                        >
+                                    </div>
+
+                                    <div>
+
+                                        <div class="feature-name">
+                                            Engagement Patterns
+                                        </div>
+
+                                        <div class="feature-subtitle">
+                                            Attention and reward mechanisms
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="feature-level"
+                                    id="engagementLevel"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div class="mini-progress">
+
+                                <div
+                                    class="mini-fill"
+                                    id="engagementBar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="feature-bubbles"
+                                id="engagementFeatures"
+                            >
+
+                                <span>Reward Cues</span>
+                                <span>Attention Resets</span>
+                                <span>Loop Detection</span>
+                                <span>Motion Spikes</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- EMOTIONAL FEATURES -->
+                        <!-- NEW -->
+                        <!-- ================================================= -->
+
+                        <div class="feature-card">
+
+                            <div class="feature-top">
+
+                                <div class="feature-heading">
+
+                                    <div class="feature-icon emotional-feature">
+                                        <img
+                                            src="" id="emotionFeatureIcon"
+                                            alt=""
+                                        >
+                                    </div>
+
+                                    <div>
+
+                                        <div class="feature-name">
+                                            Emotional Features
+                                        </div>
+
+                                        <div class="feature-subtitle">
+                                            Emotional tone, arousal and stability
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="feature-level"
+                                    id="emotionalFeatureLevel"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div class="mini-progress">
+
+                                <div
+                                    class="mini-fill emotional-feature-fill"
+                                    id="emotionalFeatureBar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="feature-bubbles"
+                                id="emotionalFeatures"
+                            >
+
+                                <span>Emotional Arousal</span>
+                                <span>Emotional Tone</span>
+                                <span>Emotional Stability</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- VIDEO CONTEXT -->
+                        <!-- NEW -->
+                        <!-- ================================================= -->
+
+                        <div class="feature-card">
+
+                            <div class="feature-top">
+
+                                <div class="feature-heading">
+
+                                    <div class="feature-icon metadata">
+                                        <img
+                                            src="" id="metadataIcon"
+                                            alt=""
+                                        >
+                                    </div>
+
+                                    <div>
+
+                                        <div class="feature-name">
+                                            Video Context
+                                        </div>
+
+                                        <div class="feature-subtitle">
+                                            Video and analysis context features
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="feature-level"
+                                    id="metadataLevel"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                            <div class="mini-progress">
+
+                                <div
+                                    class="mini-fill metadata-fill"
+                                    id="metadataBar"
+                                ></div>
+
+                            </div>
+
+                            <div
+                                class="feature-bubbles"
+                                id="metadataFeatures"
+                            >
+
+                                <span>Video Duration</span>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+                <!-- ================================================= -->
+                <!-- PARENT GUIDANCE -->
+                <!-- ================================================= -->
+                
+                <section class="neuroshield-card">
+                
+                    <div class="card-title">
+                        Parental Guidance
+                    </div>
+                
+                    <div
+                        class="empty-recommendation"
+                        id="recommendation"
+                    >
+                
+                        <span>
+                            💡
+                        </span>
+                
+                        <p>
+                            Parental guidance will appear after
+                            the video analysis is complete.
+                        </p>
+                
+                    </div>
+                
+                </section>
+
+
+                <!-- ================================================= -->
+                <!-- FOOTER -->
+                <!-- ================================================= -->
+
+                <div class="neuroshield-footer">
+
+                    Explainable Multimodal AI
+                    <span>•</span>
+                    NeuroShield AI
+                    <span>•</span>
+                    By AshwinFarhah
+
+                </div>
+
+            </div>
+
+        </div>
