@@ -3993,3 +3993,306 @@
 
     color: #667085;
 }
+/* ============================================================
+   HYBRID - WHY THIS RESULT
+   FINAL LIGHT EXPLANATION DESIGN
+============================================================ */
+
+
+/* ------------------------------------------------------------
+   MAIN EXPLANATION AREA
+------------------------------------------------------------ */
+
+.hybrid-accordion-content {
+    background: #f7f9fc !important;
+
+    color: #344054 !important;
+
+    border-radius: 0 0 14px 14px;
+}
+
+
+/* ------------------------------------------------------------
+   SUMMARY
+------------------------------------------------------------ */
+
+.hybrid-why-summary {
+    margin: 0 !important;
+
+    padding: 14px 15px !important;
+
+    background: #ffffff !important;
+
+    border-bottom: 1px solid #e4e8ef;
+
+    color: #475467 !important;
+
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+
+/* ------------------------------------------------------------
+   DETAIL SECTIONS
+------------------------------------------------------------ */
+
+.hybrid-detail-section {
+    margin: 10px 12px;
+
+    overflow: hidden;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 11px;
+
+    background: #ffffff;
+}
+
+
+/* ------------------------------------------------------------
+   DETAIL BUTTON
+------------------------------------------------------------ */
+
+.hybrid-detail-toggle {
+    width: 100%;
+
+    padding: 12px 13px;
+
+    border: none;
+    outline: none;
+
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+
+.hybrid-detail-toggle:hover {
+    background: #fafbfc;
+}
+
+
+.hybrid-detail-toggle:focus {
+    outline: none;
+}
+
+
+.hybrid-detail-toggle:focus-visible {
+    outline: 2px solid #98a2b3;
+    outline-offset: -2px;
+}
+
+
+.hybrid-detail-heading {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1.35;
+
+    color: #344054;
+}
+
+
+.hybrid-detail-count {
+    font-size: 10px;
+    font-weight: 500;
+
+    color: #98a2b3;
+}
+
+
+.hybrid-detail-arrow {
+    flex: 0 0 21px;
+
+    width: 21px;
+    height: 21px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    color: #667085;
+
+    font-size: 10px;
+}
+
+
+/* ------------------------------------------------------------
+   COLLAPSIBLE CONTENT
+------------------------------------------------------------ */
+
+.hybrid-detail-content {
+    display: none;
+
+    padding:
+        0
+        12px
+        12px;
+}
+
+
+.hybrid-detail-content.open {
+    display: block;
+}
+
+
+/* ------------------------------------------------------------
+   EXISTING FEATURE CONTAINERS
+------------------------------------------------------------ */
+
+#hybridSupportingFeatures,
+#hybridOpposingFeatures {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+/* ------------------------------------------------------------
+   EXISTING FEATURE ROWS
+------------------------------------------------------------ */
+
+.hybrid-feature-row {
+    margin: 0 !important;
+
+    padding: 10px 11px !important;
+
+    border: 1px solid #e4e8ef !important;
+    border-radius: 9px !important;
+
+    background: #f8fafc !important;
+
+    color: #344054 !important;
+}
+
+
+/* Feature name */
+
+.hybrid-feature-name {
+    color: #344054 !important;
+
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+
+/* Other feature text */
+
+.hybrid-feature-row,
+.hybrid-feature-row * {
+    text-shadow: none !important;
+}
+
+
+/* ------------------------------------------------------------
+   REFERENCE BADGES
+------------------------------------------------------------ */
+
+/*
+   These retain the same semantic colours used by the
+   Detected Multimedia Features section.
+
+   Red   = Higher than typical
+   Green = Typical range
+   Blue  = Lower than typical
+
+   They do NOT represent safe/unsafe.
+*/
+
+.hybrid-feature-reference.reference-higher {
+    background: #fff1f1 !important;
+    color: #b42318 !important;
+
+    border: 1px solid #f1bcbc;
+}
+
+
+.hybrid-feature-reference.reference-typical {
+    background: #f0faf3 !important;
+    color: #297a42 !important;
+
+    border: 1px solid #b9dfc3;
+}
+
+
+.hybrid-feature-reference.reference-lower {
+    background: #f1f6ff !important;
+    color: #3b5f91 !important;
+
+    border: 1px solid #bfd1ec;
+}
+
+
+/* ------------------------------------------------------------
+   DEVELOPMENTAL EXPLANATION
+------------------------------------------------------------ */
+
+.hybrid-why-text {
+    padding: 10px 11px;
+
+    border: 1px solid #e8ecf2;
+    border-radius: 9px;
+
+    background: #f8fafc !important;
+
+    color: #667085 !important;
+
+    font-size: 11.5px;
+    line-height: 1.55;
+}
+
+
+/* ------------------------------------------------------------
+   CAUSATION NOTE
+------------------------------------------------------------ */
+
+.hybrid-explanation-note {
+    margin: 12px !important;
+
+    padding: 10px 11px !important;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 7px;
+
+    border: 1px solid #e8ecf2 !important;
+    border-radius: 9px;
+
+    background: #f8fafc !important;
+
+    color: #667085 !important;
+
+    font-size: 10.5px;
+    line-height: 1.5;
+}
+
+
+.hybrid-note-icon {
+    flex-shrink: 0;
+
+    color: #667085;
+
+    font-size: 12px;
+}

@@ -225,57 +225,158 @@
                             id="hybridWhyContent"
                     >
 
+                        <!-- SUMMARY -->
+
                         <p
                                 class="hybrid-why-summary"
                                 id="hybridWhySummary"
                         ></p>
 
 
-                        <!-- SUPPORTING FEATURES -->
+                        <!-- SUPPORTING FACTORS -->
 
-                        <div class="hybrid-feature-explanation">
+                        <div class="hybrid-detail-section">
 
-                            <div class="hybrid-feature-section-title">
-                                Factors Supporting the Random Forest Prediction
-                            </div>
+                            <button
+                                    type="button"
+                                    class="hybrid-detail-toggle"
+                                    data-hybrid-detail-target="hybridSupportingContent"
+                                    aria-expanded="false"
+                            >
 
-                            <div id="hybridSupportingFeatures"></div>
+            <span class="hybrid-detail-heading">
 
-                        </div>
+                <span>
+                    Factors supporting the Random Forest prediction
+                </span>
 
+                <span
+                        class="hybrid-detail-count"
+                        id="hybridSupportingCount"
+                >
+                    0 features
+                </span>
 
-                        <!-- OPPOSING FEATURES -->
+            </span>
 
-                        <div class="hybrid-feature-explanation">
+                                <span class="hybrid-detail-arrow">
+                ⌄
+            </span>
 
-                            <div class="hybrid-feature-section-title">
-                                Factors Opposing the Random Forest Prediction
-                            </div>
+                            </button>
 
-                            <div id="hybridOpposingFeatures"></div>
-
-                        </div>
-
-
-                        <!-- DEVELOPMENTAL -->
-
-                        <div class="hybrid-why-item">
-
-                            <div class="hybrid-why-label">
-                                Developmental Analysis
-                            </div>
 
                             <div
-                                    class="hybrid-why-text"
-                                    id="hybridDevelopmentalExplanation"
-                            ></div>
+                                    class="hybrid-detail-content"
+                                    id="hybridSupportingContent"
+                            >
+
+                                <div id="hybridSupportingFeatures"></div>
+
+                            </div>
 
                         </div>
 
 
+                        <!-- OPPOSING FACTORS -->
+
+                        <div class="hybrid-detail-section">
+
+                            <button
+                                    type="button"
+                                    class="hybrid-detail-toggle"
+                                    data-hybrid-detail-target="hybridOpposingContent"
+                                    aria-expanded="false"
+                            >
+
+            <span class="hybrid-detail-heading">
+
+                <span>
+                    Factors opposing the Random Forest prediction
+                </span>
+
+                <span
+                        class="hybrid-detail-count"
+                        id="hybridOpposingCount"
+                >
+                    0 features
+                </span>
+
+            </span>
+
+                                <span class="hybrid-detail-arrow">
+                ⌄
+            </span>
+
+                            </button>
+
+
+                            <div
+                                    class="hybrid-detail-content"
+                                    id="hybridOpposingContent"
+                            >
+
+                                <div id="hybridOpposingFeatures"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DEVELOPMENTAL ANALYSIS -->
+
+                        <div class="hybrid-detail-section">
+
+                            <button
+                                    type="button"
+                                    class="hybrid-detail-toggle"
+                                    data-hybrid-detail-target="hybridDevelopmentalContent"
+                                    aria-expanded="false"
+                            >
+
+            <span class="hybrid-detail-heading">
+
+                <span>
+                    Developmental Analysis
+                </span>
+
+            </span>
+
+                                <span class="hybrid-detail-arrow">
+                ⌄
+            </span>
+
+                            </button>
+
+
+                            <div
+                                    class="hybrid-detail-content"
+                                    id="hybridDevelopmentalContent"
+                            >
+
+                                <div
+                                        class="hybrid-why-text"
+                                        id="hybridDevelopmentalExplanation"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- EXPLANATION NOTE -->
+
                         <div class="hybrid-explanation-note">
-                            Feature influence explains the Random Forest
-                            prediction and does not indicate causation.
+
+        <span class="hybrid-note-icon">
+            ⓘ
+        </span>
+
+                            <span>
+            Feature influence explains the Random Forest
+            prediction and does not indicate causation.
+        </span>
+
                         </div>
 
                     </div>

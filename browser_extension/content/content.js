@@ -2638,6 +2638,40 @@ function updateHybridAssessment(
 
     }
 
+    const supportingCount =
+        document.getElementById(
+            "hybridSupportingCount"
+        );
+
+    const opposingCount =
+        document.getElementById(
+            "hybridOpposingCount"
+        );
+
+
+    if (supportingCount) {
+
+        supportingCount.textContent =
+            `${supporting.length} ${
+                supporting.length === 1
+                    ? "feature"
+                    : "features"
+            }`;
+
+    }
+
+
+    if (opposingCount) {
+
+        opposingCount.textContent =
+            `${opposing.length} ${
+                opposing.length === 1
+                    ? "feature"
+                    : "features"
+            }`;
+
+    }
+
 
     // ========================================================
     // SHOW EXPLANATION
@@ -2649,6 +2683,7 @@ function updateHybridAssessment(
             "block";
 
         initialiseHybridAccordions();
+        initialiseHybridDetailAccordions();
         initialiseMultimediaSection();
         initialiseParentalGuidance();
         initialiseExplainabilitySection();
@@ -2759,6 +2794,85 @@ function initialiseHybridAccordions() {
                     if (arrow) {
                         arrow.textContent = "⌄";
                     }
+
+                }
+
+            }
+        );
+
+    });
+
+}
+
+// ============================================================
+// HYBRID DETAIL ACCORDIONS
+// ============================================================
+
+function initialiseHybridDetailAccordions() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".hybrid-detail-toggle"
+        );
+
+
+    buttons.forEach(button => {
+
+        if (
+            button.dataset.ready === "true"
+        ) {
+            return;
+        }
+
+
+        button.dataset.ready = "true";
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const targetId =
+                    button.dataset.hybridDetailTarget;
+
+
+                const content =
+                    document.getElementById(
+                        targetId
+                    );
+
+
+                const arrow =
+                    button.querySelector(
+                        ".hybrid-detail-arrow"
+                    );
+
+
+                if (!content) {
+                    return;
+                }
+
+
+                const isOpen =
+                    content.classList.toggle(
+                        "open"
+                    );
+
+
+                button.setAttribute(
+                    "aria-expanded",
+                    isOpen
+                        ? "true"
+                        : "false"
+                );
+
+
+                if (arrow) {
+
+                    arrow.textContent =
+                        isOpen
+                            ? "⌃"
+                            : "⌄";
 
                 }
 
@@ -4548,6 +4662,7 @@ function renderExplainability(explainability) {
     initialiseExplainabilityMethod();
 
 }
+
 // ============================================================
 // EXPLAINABILITY METHOD ACCORDION
 // ============================================================
