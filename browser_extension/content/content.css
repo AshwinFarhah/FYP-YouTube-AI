@@ -1768,9 +1768,7 @@
 
     padding-top: 14px;
 
-    border-top:
-        1px solid
-        rgba(255, 255, 255, 0.25);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
 
 }
 
@@ -1785,14 +1783,11 @@
 
     overflow: hidden;
 
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 
     border-radius: 14px;
 
-    background:
-        rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.12);
 
 }
 
@@ -1835,24 +1830,21 @@
 
     cursor: pointer;
 
-    transition:
-        background 0.2s ease;
+    transition: background 0.2s ease;
 
 }
 
 
 .hybrid-accordion-button:hover {
 
-    background:
-        rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08);
 
 }
 
 
 .hybrid-accordion-button.open {
 
-    background:
-        rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.06);
 
 }
 
@@ -1886,15 +1878,9 @@
 
     display: none;
 
-    padding:
-        4px
-        15px
-        15px
-        15px;
+    padding: 4px 15px 15px 15px;
 
-    border-top:
-        1px solid
-        rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
 
 }
 
@@ -1940,8 +1926,7 @@
 
 .hybrid-component-header span {
 
-    color:
-        rgba(255, 255, 255, 0.92);
+    color: rgba(255, 255, 255, 0.92);
 
     font-size: 11px;
 
@@ -1977,8 +1962,7 @@
 
     border-radius: 999px;
 
-    background:
-        rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.24);
 
 }
 
@@ -1993,8 +1977,7 @@
 
     background: #ffffff;
 
-    transition:
-        width 0.5s ease;
+    transition: width 0.5s ease;
 
 }
 
@@ -2003,8 +1986,7 @@
 
     margin-top: 5px;
 
-    color:
-        rgba(255, 255, 255, 0.72);
+    color: rgba(255, 255, 255, 0.72);
 
     font-size: 9px;
 
@@ -2027,17 +2009,14 @@
 
     padding-top: 13px;
 
-    border-top:
-        1px solid
-        rgba(255, 255, 255, 0.20);
+    border-top: 1px solid rgba(255, 255, 255, 0.20);
 
 }
 
 
 .hybrid-calculation-result span {
 
-    color:
-        rgba(255, 255, 255, 0.90);
+    color: rgba(255, 255, 255, 0.90);
 
     font-size: 11px;
 
@@ -2063,11 +2042,9 @@
 
 .hybrid-why-summary {
 
-    margin:
-        14px 0 15px 0;
+    margin: 14px 0 15px 0;
 
-    color:
-        rgba(255, 255, 255, 0.92);
+    color: rgba(255, 255, 255, 0.92);
 
     font-size: 11px;
 
@@ -2080,9 +2057,7 @@
 
     padding: 11px 0;
 
-    border-top:
-        1px solid
-        rgba(255, 255, 255, 0.16);
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
 
 }
 
@@ -2109,8 +2084,7 @@
 
 .hybrid-why-text {
 
-    color:
-        rgba(255, 255, 255, 0.84);
+    color: rgba(255, 255, 255, 0.84);
 
     font-size: 10px;
 
@@ -3261,18 +3235,16 @@
 .feature-card.feature-card-clickable {
     cursor: pointer;
 
-    transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease,
-        transform 0.15s ease;
+    transition: border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
 
 
 .feature-card.feature-card-clickable:hover {
     border-color: #d0d5dd;
 
-    box-shadow:
-        0 3px 10px rgba(16, 24, 40, 0.05);
+    box-shadow: 0 3px 10px rgba(16, 24, 40, 0.05);
 }
 
 
@@ -3354,4 +3326,268 @@
 .multimedia-section-content.open {
     display: block;
     margin-top: 14px;
+}
+
+/* ============================================================
+   PARENTAL GUIDANCE - COLLAPSIBLE SECTION
+============================================================ */
+
+.parental-guidance-toggle {
+    width: 100%;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 700;
+
+    color: #252b37;
+
+    cursor: pointer;
+    text-align: left;
+}
+
+
+.parental-guidance-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 22px;
+    height: 22px;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 50%;
+
+    background: #ffffff;
+    color: #667085;
+
+    font-size: 11px;
+}
+
+
+.parental-guidance-content {
+    display: none;
+}
+
+
+.parental-guidance-content.open {
+    display: block;
+    margin-top: 14px;
+}
+
+/* ============================================================
+   PARENTAL GUIDANCE
+============================================================ */
+
+.parental-guidance-intro {
+    margin-bottom: 14px;
+
+    font-size: 13px;
+    line-height: 1.5;
+
+    color: #667085;
+}
+
+
+/* ============================================================
+   RECOMMENDATION LIST
+============================================================ */
+
+.parental-guidance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+/* ============================================================
+   INDIVIDUAL RECOMMENDATION
+============================================================ */
+
+.parent-guidance-item {
+    overflow: hidden;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    transition: border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.parent-guidance-item:hover {
+    border-color: #d0d5dd;
+
+    box-shadow: 0 3px 10px rgba(16, 24, 40, 0.05);
+}
+
+
+/* ============================================================
+   RECOMMENDATION BUTTON
+============================================================ */
+
+.parent-guidance-item-toggle {
+    width: 100%;
+
+    padding: 13px 14px;
+
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+
+.parent-guidance-item-heading {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    color: #252b37;
+}
+
+
+.parent-guidance-item-icon {
+    flex-shrink: 0;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #f4f6f8;
+
+    font-size: 16px;
+}
+
+
+.parent-guidance-item-arrow {
+    flex-shrink: 0;
+
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    color: #667085;
+
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   EXPANDED RECOMMENDATION
+============================================================ */
+
+.parent-guidance-item-content {
+    display: none;
+
+    padding: 0 14px 14px 54px;
+}
+
+
+.parent-guidance-item-content.open {
+    display: block;
+}
+
+
+.parent-guidance-action {
+    margin: 0 0 12px 0;
+
+    font-size: 12.5px;
+    line-height: 1.55;
+
+    color: #475467;
+}
+
+
+/* ============================================================
+   WHY RECOMMENDED
+============================================================ */
+
+.parent-guidance-reason {
+    padding: 10px 12px;
+
+    border: 1px solid #e8ecf2;
+    border-radius: 9px;
+
+    background: #f8fafc;
+}
+
+
+.parent-guidance-reason strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+
+.parent-guidance-reason p {
+    margin: 0;
+
+    font-size: 11.5px;
+    line-height: 1.5;
+
+    color: #667085;
+}
+
+
+/* ============================================================
+   PARENTAL GUIDANCE NOTE
+============================================================ */
+
+.parental-guidance-note {
+    margin-top: 14px;
+
+    padding: 10px 12px;
+
+    border-radius: 9px;
+
+    background: #f8fafc;
+
+    font-size: 10.5px;
+    line-height: 1.5;
+
+    color: #667085;
 }

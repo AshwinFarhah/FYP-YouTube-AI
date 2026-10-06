@@ -1666,7 +1666,6 @@ function updateRealRiskResult(
     // ========================================================
 
 
-
     // ========================================================
     // GET MAIN RESULT ELEMENTS
     // ========================================================
@@ -2394,250 +2393,250 @@ function updateHybridAssessment(
     }
 
 
-        // --------------------------------------------------------
-        // RANDOM FOREST / SHAP FEATURE EXPLANATION
-        // --------------------------------------------------------
+    // --------------------------------------------------------
+    // RANDOM FOREST / SHAP FEATURE EXPLANATION
+    // --------------------------------------------------------
 
-        const supportingContainer =
-            document.getElementById(
-                "hybridSupportingFeatures"
-            );
+    const supportingContainer =
+        document.getElementById(
+            "hybridSupportingFeatures"
+        );
 
-        const opposingContainer =
-            document.getElementById(
-                "hybridOpposingFeatures"
-            );
-
-
-        const contributions =
-            explainability &&
-            Array.isArray(
-                explainability.feature_contributions
-            )
-                ? explainability.feature_contributions
-                : [];
+    const opposingContainer =
+        document.getElementById(
+            "hybridOpposingFeatures"
+        );
 
 
-        // --------------------------------------------------------
-        // FEATURE INTERPRETATION LOOKUP
-        // --------------------------------------------------------
+    const contributions =
+        explainability &&
+        Array.isArray(
+            explainability.feature_contributions
+        )
+            ? explainability.feature_contributions
+            : [];
 
-        function getFeatureInterpretation(
-            featureName
+
+    // --------------------------------------------------------
+    // FEATURE INTERPRETATION LOOKUP
+    // --------------------------------------------------------
+
+    function getFeatureInterpretation(
+        featureName
+    ) {
+
+        if (
+            !featureInterpretations ||
+            !featureName
         ) {
-
-            if (
-                !featureInterpretations ||
-                !featureName
-            ) {
-                return "";
-            }
+            return "";
+        }
 
 
-            const interpretation =
-                featureInterpretations[
-                    featureName
+        const interpretation =
+            featureInterpretations[
+                featureName
                 ];
 
 
-            if (!interpretation) {
-                return "";
-            }
-
-
-            if (
-                typeof interpretation.reference_label ===
-                    "string"
-            ) {
-
-                return interpretation.reference_label;
-
-            }
-
-
+        if (!interpretation) {
             return "";
-
         }
 
 
-        // --------------------------------------------------------
-        // CREATE PARENT-FRIENDLY FEATURE ROW
-        // --------------------------------------------------------
-
-        function createHybridFeatureRow(
-            item,
-            direction
+        if (
+            typeof interpretation.reference_label ===
+            "string"
         ) {
 
-            const row =
-                document.createElement("div");
-
-            row.className =
-                "hybrid-feature-row";
-
-
-            const name =
-                document.createElement("div");
-
-            name.className =
-                "hybrid-feature-name";
-
-            name.textContent =
-                item.friendly_name ||
-                formatHybridFeatureName(
-                    item.feature
-                );
-
-
-            const interpretation =
-                document.createElement("div");
-
-            interpretation.className =
-                "hybrid-feature-interpretation";
-
-
-            const interpretationText =
-                getFeatureInterpretation(
-                    item.feature
-                );
-
-
-            interpretation.textContent =
-                interpretationText ||
-                "Reference range unavailable";
-
-
-            const influence =
-                document.createElement("div");
-
-            influence.className =
-                "hybrid-feature-influence";
-
-
-            if (direction === "supporting") {
-
-                influence.textContent =
-                    "Supported the Random Forest prediction";
-
-            } else {
-
-                influence.textContent =
-                    "Opposed the Random Forest prediction";
-
-            }
-
-
-            row.appendChild(name);
-            row.appendChild(interpretation);
-            row.appendChild(influence);
-
-            return row;
+            return interpretation.reference_label;
 
         }
 
 
-        // --------------------------------------------------------
-        // SUPPORTING FEATURES
-        // --------------------------------------------------------
+        return "";
 
-        const supporting =
-            explainability &&
-            Array.isArray(
-                explainability.supporting_factors
-            )
-                ? explainability.supporting_factors
-                : [];
+    }
 
 
-        if (supportingContainer) {
+    // --------------------------------------------------------
+    // CREATE PARENT-FRIENDLY FEATURE ROW
+    // --------------------------------------------------------
 
-            supportingContainer.innerHTML = "";
+    function createHybridFeatureRow(
+        item,
+        direction
+    ) {
 
-            if (supporting.length > 0) {
+        const row =
+            document.createElement("div");
 
-                supporting.forEach(
-                    item => {
+        row.className =
+            "hybrid-feature-row";
 
-                        supportingContainer.appendChild(
-                            createHybridFeatureRow(
-                                item,
-                                "supporting"
-                            )
-                        );
 
-                    }
-                );
+        const name =
+            document.createElement("div");
 
-            } else {
+        name.className =
+            "hybrid-feature-name";
 
-                const empty =
-                    document.createElement("div");
+        name.textContent =
+            item.friendly_name ||
+            formatHybridFeatureName(
+                item.feature
+            );
 
-                empty.className =
-                    "hybrid-feature-empty";
 
-                empty.textContent =
-                    "No supporting feature details available.";
+        const interpretation =
+            document.createElement("div");
 
-                supportingContainer.appendChild(
-                    empty
-                );
+        interpretation.className =
+            "hybrid-feature-interpretation";
 
-            }
+
+        const interpretationText =
+            getFeatureInterpretation(
+                item.feature
+            );
+
+
+        interpretation.textContent =
+            interpretationText ||
+            "Reference range unavailable";
+
+
+        const influence =
+            document.createElement("div");
+
+        influence.className =
+            "hybrid-feature-influence";
+
+
+        if (direction === "supporting") {
+
+            influence.textContent =
+                "Supported the Random Forest prediction";
+
+        } else {
+
+            influence.textContent =
+                "Opposed the Random Forest prediction";
+
+        }
+
+
+        row.appendChild(name);
+        row.appendChild(interpretation);
+        row.appendChild(influence);
+
+        return row;
+
+    }
+
+
+    // --------------------------------------------------------
+    // SUPPORTING FEATURES
+    // --------------------------------------------------------
+
+    const supporting =
+        explainability &&
+        Array.isArray(
+            explainability.supporting_factors
+        )
+            ? explainability.supporting_factors
+            : [];
+
+
+    if (supportingContainer) {
+
+        supportingContainer.innerHTML = "";
+
+        if (supporting.length > 0) {
+
+            supporting.forEach(
+                item => {
+
+                    supportingContainer.appendChild(
+                        createHybridFeatureRow(
+                            item,
+                            "supporting"
+                        )
+                    );
+
+                }
+            );
+
+        } else {
+
+            const empty =
+                document.createElement("div");
+
+            empty.className =
+                "hybrid-feature-empty";
+
+            empty.textContent =
+                "No supporting feature details available.";
+
+            supportingContainer.appendChild(
+                empty
+            );
 
         }
 
-
-        // --------------------------------------------------------
-        // OPPOSING FEATURES
-        // --------------------------------------------------------
-
-        const opposing =
-            explainability &&
-            Array.isArray(
-                explainability.opposing_factors
-            )
-                ? explainability.opposing_factors
-                : [];
+    }
 
 
-        if (opposingContainer) {
+    // --------------------------------------------------------
+    // OPPOSING FEATURES
+    // --------------------------------------------------------
 
-            opposingContainer.innerHTML = "";
+    const opposing =
+        explainability &&
+        Array.isArray(
+            explainability.opposing_factors
+        )
+            ? explainability.opposing_factors
+            : [];
 
-            if (opposing.length > 0) {
 
-                opposing.forEach(
-                    item => {
+    if (opposingContainer) {
 
-                        opposingContainer.appendChild(
-                            createHybridFeatureRow(
-                                item,
-                                "opposing"
-                            )
-                        );
+        opposingContainer.innerHTML = "";
 
-                    }
-                );
+        if (opposing.length > 0) {
 
-            } else {
+            opposing.forEach(
+                item => {
 
-                const empty =
-                    document.createElement("div");
+                    opposingContainer.appendChild(
+                        createHybridFeatureRow(
+                            item,
+                            "opposing"
+                        )
+                    );
 
-                empty.className =
-                    "hybrid-feature-empty";
+                }
+            );
 
-                empty.textContent =
-                    "No opposing feature details available.";
+        } else {
 
-                opposingContainer.appendChild(
-                    empty
-                );
+            const empty =
+                document.createElement("div");
 
-            }
+            empty.className =
+                "hybrid-feature-empty";
+
+            empty.textContent =
+                "No opposing feature details available.";
+
+            opposingContainer.appendChild(
+                empty
+            );
 
         }
+
+    }
 
 
     // ========================================================
@@ -2651,6 +2650,7 @@ function updateHybridAssessment(
 
         initialiseHybridAccordions();
         initialiseMultimediaSection();
+        initialiseParentalGuidance();
 
     }
 
@@ -2767,6 +2767,7 @@ function initialiseHybridAccordions() {
     });
 
 }
+
 // ============================================================
 // MULTIMEDIA SECTION ACCORDION
 // ============================================================
@@ -2833,6 +2834,76 @@ function initialiseMultimediaSection() {
     );
 
 }
+
+// ============================================================
+// PARENTAL GUIDANCE ACCORDION
+// ============================================================
+
+function initialiseParentalGuidance() {
+
+    const toggle =
+        document.getElementById(
+            "parentalGuidanceToggle"
+        );
+
+    const content =
+        document.getElementById(
+            "parentalGuidanceContent"
+        );
+
+    const arrow =
+        document.getElementById(
+            "parentalGuidanceArrow"
+        );
+
+
+    if (
+        !toggle ||
+        !content ||
+        !arrow
+    ) {
+        return;
+    }
+
+
+    if (
+        toggle.dataset.ready === "true"
+    ) {
+        return;
+    }
+
+
+    toggle.dataset.ready = "true";
+
+
+    toggle.addEventListener(
+        "click",
+        function () {
+
+            const isOpen =
+                content.classList.toggle(
+                    "open"
+                );
+
+
+            toggle.setAttribute(
+                "aria-expanded",
+                isOpen
+                    ? "true"
+                    : "false"
+            );
+
+
+            arrow.textContent =
+                isOpen
+                    ? "⌃"
+                    : "⌄";
+
+        }
+    );
+
+}
+
 // ============================================================
 // HYBRID FEATURE NAME FORMATTER
 // ============================================================
@@ -2932,7 +3003,7 @@ function formatHybridFeatureName(
 }
 
 // ============================================================
-// PARENT GUIDANCE
+// PARENTAL GUIDANCE
 // ============================================================
 
 function updateParentGuidance(
@@ -2941,217 +3012,352 @@ function updateParentGuidance(
 ) {
 
     const container =
-        document.getElementById(
-            "recommendation"
+        document.getElementById("recommendation");
+
+    const intro =
+        document.getElementById("parentalGuidanceIntro");
+
+
+    if (!container) {
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // READ CURRENT ASSESSMENT
+    // --------------------------------------------------------
+
+    const hybridCategory =
+        String(
+            hybridAssessment?.hybrid_category ||
+            hybridAssessment?.category ||
+            ""
+        ).toLowerCase();
+
+
+    const cognitive =
+        Number(
+            developmentalScores?.cognitive?.score ??
+            developmentalScores?.cognitive_score ??
+            0
         );
 
 
-    if (
-        !container ||
-        !hybridAssessment ||
-        !developmentalScores ||
-        typeof hybridAssessment.score !== "number"
+    const behavioural =
+        Number(
+            developmentalScores?.behavioural?.score ??
+            developmentalScores?.behavioural_score ??
+            0
+        );
+
+
+    const emotional =
+        Number(
+            developmentalScores?.emotional?.score ??
+            developmentalScores?.emotional_score ??
+            0
+        );
+
+
+    // --------------------------------------------------------
+    // INTRODUCTION
+    // --------------------------------------------------------
+
+    if (intro) {
+
+        intro.textContent =
+            "Based on this video's assessment, parents may consider the following guidance.";
+
+    }
+
+
+    // --------------------------------------------------------
+    // BUILD RECOMMENDATION LIST
+    // --------------------------------------------------------
+
+    const recommendations = [];
+
+
+    function addRecommendation(
+        id,
+        icon,
+        title,
+        action,
+        reason
     ) {
 
-        return;
-
-    }
-
-
-    const hybridScore =
-        Math.max(
-            0,
-            Math.min(
-                100,
-                hybridAssessment.score
+        if (
+            recommendations.some(
+                item => item.id === id
             )
-        );
-
-
-    const dimensions = [
-
-        {
-            name: "Cognitive",
-            value:
-            developmentalScores.cognitive
-        },
-
-        {
-            name: "Behavioural",
-            value:
-            developmentalScores.behavioural
-        },
-
-        {
-            name: "Emotional",
-            value:
-            developmentalScores.emotional
+        ) {
+            return;
         }
 
-    ]
-        .filter(
-            function (dimension) {
 
-                return (
-                    typeof dimension.value ===
-                    "number"
-                );
-
-            }
-        )
-        .map(
-            function (dimension) {
-
-                return {
-
-                    name:
-                    dimension.name,
-
-                    value:
-                        Math.max(
-                            0,
-                            Math.min(
-                                100,
-                                dimension.value
-                            )
-                        )
-
-                };
-
-            }
-        );
-
-
-    if (dimensions.length === 0) {
-
-        return;
+        recommendations.push({
+            id,
+            icon,
+            title,
+            action,
+            reason
+        });
 
     }
 
 
-    // Highest developmental dimension
+    // --------------------------------------------------------
+    // HIGH HYBRID RESULT
+    // --------------------------------------------------------
 
-    const rankedDimensions =
-        [...dimensions].sort(
-            function (a, b) {
+    if (hybridCategory.includes("high")) {
 
-                return (
-                    b.value -
-                    a.value
-                );
-
-            }
+        addRecommendation(
+            "watch-together",
+            "👨‍👩‍👧",
+            "Watch Together & Discuss",
+            "Consider watching the video together and talking with your child about what they are seeing and hearing.",
+            "The overall NeuroShield assessment identified a high level of combined machine-learning risk evidence and developmental stimulation."
         );
 
 
-    const strongestDimension =
-        rankedDimensions[0];
+        addRecommendation(
+            "viewing-break",
+            "⏸",
+            "Take a Viewing Break",
+            "Consider taking a break before continuing to another video and encourage an offline activity such as play, reading or physical activity.",
+            "The overall assessment suggests that a pause between videos may be appropriate before continuing viewing."
+        );
 
 
-    // ========================================================
-    // GUIDANCE LEVEL
-    // Uses existing HYBRID operational thresholds.
-    // ========================================================
-
-    let guidanceLevel =
-        "";
-
-    let guidanceClass =
-        "";
-
-    let guidanceText =
-        "";
-
-
-    if (hybridScore >= 68.5) {
-
-        guidanceLevel =
-            "Higher Attention Recommended";
-
-        guidanceClass =
-            "high";
-
-        guidanceText =
-            "This video produced a higher combined assessment. " +
-            "Consider the child's age, viewing duration and viewing " +
-            "context when deciding whether this content is appropriate.";
-
-    } else if (hybridScore >= 28) {
-
-        guidanceLevel =
-            "Consider Viewing Context";
-
-        guidanceClass =
-            "moderate";
-
-        guidanceText =
-            "This video produced a moderate combined assessment. " +
-            "Consider the strongest developmental indicator together " +
-            "with the child's age and viewing context.";
-
-    } else {
-
-        guidanceLevel =
-            "Lower Attention Indicated";
-
-        guidanceClass =
-            "low";
-
-        guidanceText =
-            "This video produced a lower combined assessment. " +
-            "The measured developmental indicators were generally " +
-            "lower, although parental judgement should still consider " +
-            "the child's age and viewing context.";
+        addRecommendation(
+            "autoplay",
+            "▶",
+            "Consider Turning Off Autoplay",
+            "Consider disabling autoplay so that another video does not begin automatically after the current video finishes.",
+            "The video received a high overall assessment, so allowing the child or parent to make an intentional choice before the next video may be helpful."
+        );
 
     }
 
 
-    // ========================================================
-    // DIMENSION ROWS
-    // ========================================================
+    // --------------------------------------------------------
+    // BEHAVIOURAL PRIORITY
+    // --------------------------------------------------------
 
-    const dimensionHTML =
-        rankedDimensions
+    if (behavioural >= 60) {
+
+        addRecommendation(
+            "behavioural-break",
+            "⏸",
+            "Pause Between Videos",
+            "Consider creating a natural stopping point after this video before another video begins.",
+            `Behavioural stimulation was elevated in this analysis (${formatGuidanceScore(behavioural)}/100).`
+        );
+
+
+        addRecommendation(
+            "autoplay",
+            "▶",
+            "Consider Turning Off Autoplay",
+            "Consider disabling autoplay so that viewing does not automatically continue into another video.",
+            `Behavioural stimulation was elevated in this analysis (${formatGuidanceScore(behavioural)}/100).`
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // COGNITIVE PRIORITY
+    // --------------------------------------------------------
+
+    if (cognitive >= 60) {
+
+        addRecommendation(
+            "watch-discuss",
+            "💬",
+            "Watch & Discuss",
+            "Ask simple questions about what happened in the video, what your child noticed, and what they understood.",
+            `Cognitive stimulation was elevated in this analysis (${formatGuidanceScore(cognitive)}/100).`
+        );
+
+
+        addRecommendation(
+            "offline-connection",
+            "📚",
+            "Connect Viewing to the Real World",
+            "Consider following the video with an offline activity such as reading, drawing, play or discussing a related real-world example.",
+            `Cognitive stimulation was elevated in this analysis (${formatGuidanceScore(cognitive)}/100).`
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // EMOTIONAL PRIORITY
+    // --------------------------------------------------------
+
+    if (emotional >= 60) {
+
+        addRecommendation(
+            "emotional-discussion",
+            "💬",
+            "Talk About the Video",
+            "Consider asking your child how the video made them feel and discussing any intense or confusing moments together.",
+            `Emotional stimulation was elevated in this analysis (${formatGuidanceScore(emotional)}/100).`
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // MEDIUM HYBRID RESULT
+    // --------------------------------------------------------
+
+    if (hybridCategory.includes("medium")) {
+
+        addRecommendation(
+            "watch-together",
+            "👨‍👩‍👧",
+            "Watch Together When Possible",
+            "Consider watching alongside your child when practical and discussing parts of the video that attract their attention.",
+            "The overall NeuroShield assessment identified a moderate level of combined machine-learning risk evidence and developmental stimulation."
+        );
+
+
+        addRecommendation(
+            "balanced-viewing",
+            "⚖",
+            "Balance Viewing with Offline Activities",
+            "Consider balancing screen viewing with activities such as play, reading, conversation or physical activity.",
+            "The overall assessment suggests that maintaining balanced media habits may be appropriate."
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // LOW HYBRID RESULT
+    // --------------------------------------------------------
+
+    if (hybridCategory.includes("low")) {
+
+        addRecommendation(
+            "balanced-media",
+            "⚖",
+            "Maintain Balanced Media Habits",
+            "Continue balancing video viewing with sleep, physical activity, family interaction, reading and other offline activities.",
+            "The video received a lower overall NeuroShield assessment, but balanced media habits remain useful regardless of an individual video's result."
+        );
+
+
+        addRecommendation(
+            "co-viewing",
+            "👨‍👩‍👧",
+            "Watch & Talk Together",
+            "When possible, watching and discussing media together can help make viewing a more active experience.",
+            "This is general parental guidance and is not an indication that NeuroShield detected a specific problem."
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // GENERAL BEDTIME GUIDANCE
+    // --------------------------------------------------------
+
+    addRecommendation(
+        "bedtime",
+        "🌙",
+        "Protect Bedtime",
+        "Consider keeping media use from interfering with the child's regular bedtime and sleep routine.",
+        "This is general media-use guidance rather than a recommendation triggered by one specific NeuroShield feature."
+    );
+
+
+    // --------------------------------------------------------
+    // FALLBACK
+    // --------------------------------------------------------
+
+    if (recommendations.length === 0) {
+
+        addRecommendation(
+            "general-guidance",
+            "👨‍👩‍👧",
+            "Stay Involved in Viewing",
+            "Consider watching and discussing digital media together and balancing viewing with offline activities.",
+            "NeuroShield could not determine a specific guidance priority from the current assessment."
+        );
+
+    }
+
+
+    // --------------------------------------------------------
+    // RENDER
+    // --------------------------------------------------------
+
+    container.innerHTML =
+        recommendations
             .map(
-                function (
-                    dimension,
-                    index
-                ) {
+                (item, index) => {
+
+                    const contentId =
+                        `parentGuidanceItem-${index}`;
 
                     return `
+                        <div class="parent-guidance-item">
 
-                        <div class="guidance-result-row">
+                            <button
+                                type="button"
+                                class="parent-guidance-item-toggle"
+                                data-guidance-target="${contentId}"
+                                aria-expanded="false"
+                            >
 
-                            <span class="guidance-result-name">
+                                <span class="parent-guidance-item-heading">
 
-                                ${escapeHTML(
-                        dimension.name
-                    )}
+                                    <span class="parent-guidance-item-icon">
+                                        ${escapeHTML(item.icon)}
+                                    </span>
 
-                            </span>
+                                    <span>
+                                        ${escapeHTML(item.title)}
+                                    </span>
 
-                            <div class="guidance-result-value">
+                                </span>
 
-                                <strong>
-                                    ${Math.round(
-                        dimension.value
-                    )} / 100
-                                </strong>
+                                <span class="parent-guidance-item-arrow">
+                                    ⌄
+                                </span>
 
-                                ${
-                        index === 0
-                            ? `
-                                            <span class="guidance-highest-badge">
-                                                Highest
-                                            </span>
-                                        `
-                            : ""
-                    }
+                            </button>
+
+
+                            <div
+                                class="parent-guidance-item-content"
+                                id="${contentId}"
+                            >
+
+                                <p class="parent-guidance-action">
+                                    ${escapeHTML(item.action)}
+                                </p>
+
+
+                                <div class="parent-guidance-reason">
+
+                                    <strong>
+                                        Why this is recommended
+                                    </strong>
+
+                                    <p>
+                                        ${escapeHTML(item.reason)}
+                                    </p>
+
+                                </div>
 
                             </div>
 
                         </div>
-
                     `;
 
                 }
@@ -3159,120 +3365,102 @@ function updateParentGuidance(
             .join("");
 
 
-    // ========================================================
-    // DISPLAY
-    // ========================================================
+    initialiseParentGuidanceItems();
 
-    container.innerHTML = `
+}
+// ============================================================
+// FORMAT PARENTAL GUIDANCE SCORE
+// ============================================================
 
-        <div class="parent-guidance-content">
+function formatGuidanceScore(value) {
 
+    const number = Number(value);
 
-            <div
-                class="guidance-attention-badge ${guidanceClass}"
-            >
+    if (!Number.isFinite(number)) {
+        return "—";
+    }
 
-                ${escapeHTML(
-        guidanceLevel
-    )}
-
-            </div>
-
-
-            <div class="guidance-main-result">
-
-                <div class="guidance-main-header">
-
-                    <span>
-                        Combined Assessment
-                    </span>
-
-                    <strong>
-                        ${Math.round(
-        hybridScore
-    )} / 100
-                    </strong>
-
-                </div>
-
-
-                <div class="guidance-combined-track">
-
-                    <div
-                        class="guidance-combined-fill"
-                        style="width: ${hybridScore}%"
-                    ></div>
-
-                </div>
-
-
-                <div class="guidance-score-note">
-
-                    Random Forest risk evidence +
-                    developmental scoring
-
-                </div>
-
-            </div>
-
-
-            <div class="guidance-highlight">
-
-                <div class="guidance-highlight-title">
-                    Why this needs attention
-                </div>
-
-                <p>
-
-                    ${escapeHTML(
-        strongestDimension.name
-    )}
-                    indicators were the strongest
-                    developmental area detected at
-
-                    <strong>
-                        ${Math.round(
-        strongestDimension.value
-    )} / 100.
-                    </strong>
-
-                </p>
-
-            </div>
-
-
-            <div class="guidance-results">
-
-                <div class="guidance-results-title">
-                    What the analysis found
-                </div>
-
-                ${dimensionHTML}
-
-            </div>
-
-
-            <div class="parent-guidance-message">
-
-                <strong>
-                    Parent Guidance
-                </strong>
-
-                <p>
-                    ${escapeHTML(
-        guidanceText
-    )}
-                </p>
-
-            </div>
-
-
-        </div>
-
-    `;
+    return number.toFixed(1);
 
 }
 
+
+// ============================================================
+// PARENTAL GUIDANCE ITEM ACCORDIONS
+// ============================================================
+
+function initialiseParentGuidanceItems() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".parent-guidance-item-toggle"
+        );
+
+
+    buttons.forEach(button => {
+
+        if (
+            button.dataset.ready === "true"
+        ) {
+            return;
+        }
+
+
+        button.dataset.ready = "true";
+
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                const targetId =
+                    button.dataset.guidanceTarget;
+
+                const content =
+                    document.getElementById(
+                        targetId
+                    );
+
+                const arrow =
+                    button.querySelector(
+                        ".parent-guidance-item-arrow"
+                    );
+
+
+                if (!content) {
+                    return;
+                }
+
+
+                const isOpen =
+                    content.classList.toggle(
+                        "open"
+                    );
+
+
+                button.setAttribute(
+                    "aria-expanded",
+                    isOpen
+                        ? "true"
+                        : "false"
+                );
+
+
+                if (arrow) {
+
+                    arrow.textContent =
+                        isOpen
+                            ? "⌃"
+                            : "⌄";
+
+                }
+
+            }
+        );
+
+    });
+
+}
 // ============================================================
 // MONITORING STATUS
 // ============================================================
@@ -4092,7 +4280,7 @@ function renderExplainability(
                     return (
                         feature &&
                         typeof feature.absolute_shap ===
-                            "number" &&
+                        "number" &&
                         Number.isFinite(
                             feature.absolute_shap
                         )
@@ -4140,7 +4328,7 @@ function renderExplainability(
 
         const shapValue =
             typeof strongestFeature.shap_value ===
-                "number"
+            "number"
                 ? strongestFeature.shap_value
                 : 0;
 
@@ -4163,8 +4351,8 @@ function renderExplainability(
 
             <img
                 src="${chrome.runtime.getURL(
-                    "icons/explainability.png"
-                )}"
+        "icons/explainability.png"
+    )}"
                 alt=""
             >
 
@@ -4182,8 +4370,8 @@ function renderExplainability(
                 The Random Forest evaluated patterns across
                 the extracted multimedia features to produce
                 the ${escapeHTML(
-                    predictedLabel
-                )} classification.
+        predictedLabel
+    )} classification.
             </p>
 
 
@@ -4195,14 +4383,14 @@ function renderExplainability(
 
                 <div class="explainability-feature-name">
                     ${escapeHTML(
-                        strongestFeatureName
-                    )}
+        strongestFeatureName
+    )}
                 </div>
 
                 <div class="explainability-feature-influence">
                     ${escapeHTML(
-                        influenceText
-                    )}
+        influenceText
+    )}
                 </div>
 
             </div>
@@ -5327,173 +5515,173 @@ function renderLiveContributionGroup(
     }
 
 
-        // ========================================================
-        // DISPLAY SELECTED INDIVIDUAL FEATURES
-        // ========================================================
+    // ========================================================
+    // DISPLAY SELECTED INDIVIDUAL FEATURES
+    // ========================================================
 
 
-        // ========================================================
-        // SORT FEATURES BY REFERENCE LEVEL
-        // Higher → Typical → Lower → No reference
-        // ========================================================
+    // ========================================================
+    // SORT FEATURES BY REFERENCE LEVEL
+    // Higher → Typical → Lower → No reference
+    // ========================================================
 
-        const referenceOrder = {
-            "Higher than typical": 0,
-            "Typical range": 1,
-            "Lower than typical": 2
-        };
+    const referenceOrder = {
+        "Higher than typical": 0,
+        "Typical range": 1,
+        "Lower than typical": 2
+    };
 
 
-        const sortedFeatures =
-            [...selectedFeatures].sort(
-                function (a, b) {
+    const sortedFeatures =
+        [...selectedFeatures].sort(
+            function (a, b) {
 
-                    const aInterpretation =
+                const aInterpretation =
+                    featureInterpretations &&
+                    featureInterpretations[a.feature];
+
+                const bInterpretation =
+                    featureInterpretations &&
+                    featureInterpretations[b.feature];
+
+
+                const aLabel =
+                    aInterpretation &&
+                    aInterpretation.reference_label
+                        ? aInterpretation.reference_label
+                        : "";
+
+                const bLabel =
+                    bInterpretation &&
+                    bInterpretation.reference_label
+                        ? bInterpretation.reference_label
+                        : "";
+
+
+                const aOrder =
+                    referenceOrder[aLabel] !== undefined
+                        ? referenceOrder[aLabel]
+                        : 3;
+
+                const bOrder =
+                    referenceOrder[bLabel] !== undefined
+                        ? referenceOrder[bLabel]
+                        : 3;
+
+
+                return aOrder - bOrder;
+            }
+        );
+
+
+    // ========================================================
+    // RENDER FEATURES
+    // ========================================================
+
+    container.innerHTML =
+        sortedFeatures
+            .map(
+                function (feature) {
+
+                    const interpretation =
                         featureInterpretations &&
-                        featureInterpretations[a.feature];
-
-                    const bInterpretation =
-                        featureInterpretations &&
-                        featureInterpretations[b.feature];
-
-
-                    const aLabel =
-                        aInterpretation &&
-                        aInterpretation.reference_label
-                            ? aInterpretation.reference_label
-                            : "";
-
-                    const bLabel =
-                        bInterpretation &&
-                        bInterpretation.reference_label
-                            ? bInterpretation.reference_label
-                            : "";
-
-
-                    const aOrder =
-                        referenceOrder[aLabel] !== undefined
-                            ? referenceOrder[aLabel]
-                            : 3;
-
-                    const bOrder =
-                        referenceOrder[bLabel] !== undefined
-                            ? referenceOrder[bLabel]
-                            : 3;
-
-
-                    return aOrder - bOrder;
-                }
-            );
-
-
-        // ========================================================
-        // RENDER FEATURES
-        // ========================================================
-
-        container.innerHTML =
-            sortedFeatures
-                .map(
-                    function (feature) {
-
-                        const interpretation =
-                            featureInterpretations &&
-                            featureInterpretations[
-                                feature.feature
+                        featureInterpretations[
+                            feature.feature
                             ]
-                                ? featureInterpretations[
-                                    feature.feature
+                            ? featureInterpretations[
+                                feature.feature
                                 ]
-                                : null;
+                            : null;
 
 
-                        const featureName =
-                            interpretation &&
-                            interpretation.display_name
-                                ? interpretation.display_name
-                                : (
-                                    feature.friendly_name ||
-                                    formatHybridFeatureName(
-                                        feature.feature
-                                    )
-                                );
-
-
-                        const rawValue =
-                            interpretation &&
-                            typeof interpretation.value ===
-                            "number"
-                                ? interpretation.value
-                                : feature.feature_value;
-
-
-                        const value =
-                            formatFeatureValue(
-                                rawValue
+                    const featureName =
+                        interpretation &&
+                        interpretation.display_name
+                            ? interpretation.display_name
+                            : (
+                                feature.friendly_name ||
+                                formatHybridFeatureName(
+                                    feature.feature
+                                )
                             );
 
 
-                        const referenceLabel =
-                            interpretation &&
-                            typeof interpretation.reference_label ===
-                            "string"
-                                ? interpretation.reference_label
-                                : "";
+                    const rawValue =
+                        interpretation &&
+                        typeof interpretation.value ===
+                        "number"
+                            ? interpretation.value
+                            : feature.feature_value;
 
 
-                        let referenceClass =
-                            "reference-unknown";
+                    const value =
+                        formatFeatureValue(
+                            rawValue
+                        );
 
 
-                        if (
-                            referenceLabel ===
-                            "Higher than typical"
-                        ) {
-
-                            referenceClass =
-                                "reference-higher";
-
-                        } else if (
-                            referenceLabel ===
-                            "Typical range"
-                        ) {
-
-                            referenceClass =
-                                "reference-typical";
-
-                        } else if (
-                            referenceLabel ===
-                            "Lower than typical"
-                        ) {
-
-                            referenceClass =
-                                "reference-lower";
-
-                        }
+                    const referenceLabel =
+                        interpretation &&
+                        typeof interpretation.reference_label ===
+                        "string"
+                            ? interpretation.reference_label
+                            : "";
 
 
-                        return `
+                    let referenceClass =
+                        "reference-unknown";
+
+
+                    if (
+                        referenceLabel ===
+                        "Higher than typical"
+                    ) {
+
+                        referenceClass =
+                            "reference-higher";
+
+                    } else if (
+                        referenceLabel ===
+                        "Typical range"
+                    ) {
+
+                        referenceClass =
+                            "reference-typical";
+
+                    } else if (
+                        referenceLabel ===
+                        "Lower than typical"
+                    ) {
+
+                        referenceClass =
+                            "reference-lower";
+
+                    }
+
+
+                    return `
         
                             <div class="detected-feature detailed ${referenceClass}">
         
                                 <div class="detected-feature-name">
                                     ${escapeHTML(
-                                        featureName
-                                    )}
+                        featureName
+                    )}
                                 </div>
         
                                 <div class="detected-feature-value">
                                     ${escapeHTML(
-                                        value
-                                    )}
+                        value
+                    )}
                                 </div>
         
                             </div>
         
                         `;
 
-                    }
-                )
-                .join("");
+                }
+            )
+            .join("");
 
 
 // ========================================================
@@ -5553,8 +5741,8 @@ function renderLiveContributionGroup(
                 ${featureCount}
                 extracted
                 ${featureCount === 1
-                    ? "feature"
-                    : "features"}
+            ? "feature"
+            : "features"}
             </span>
     
             <span class="detected-features-toggle-arrow">
@@ -5649,6 +5837,7 @@ function renderLiveContributionGroup(
         "false"
     );
 }
+
 // ============================================================
 // FORMAT FEATURE VALUE
 // ============================================================
