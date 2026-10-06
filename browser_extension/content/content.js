@@ -1958,7 +1958,8 @@ function updateRealRiskResult(
     ) {
 
         renderContributingFeatures(
-            explainability.feature_contributions
+            explainability.feature_contributions,
+            featureInterpretations
         );
 
 
@@ -2649,6 +2650,7 @@ function updateHybridAssessment(
             "block";
 
         initialiseHybridAccordions();
+        initialiseMultimediaSection();
 
     }
 
@@ -2763,6 +2765,72 @@ function initialiseHybridAccordions() {
         );
 
     });
+
+}
+// ============================================================
+// MULTIMEDIA SECTION ACCORDION
+// ============================================================
+
+function initialiseMultimediaSection() {
+
+    const toggle =
+        document.getElementById(
+            "multimediaSectionToggle"
+        );
+
+    const content =
+        document.getElementById(
+            "multimediaSectionContent"
+        );
+
+    const arrow =
+        document.getElementById(
+            "multimediaSectionArrow"
+        );
+
+
+    if (
+        !toggle ||
+        !content ||
+        !arrow
+    ) {
+        return;
+    }
+
+
+    if (
+        toggle.dataset.ready === "true"
+    ) {
+        return;
+    }
+
+
+    toggle.dataset.ready = "true";
+
+
+    toggle.addEventListener(
+        "click",
+        function () {
+
+            const isOpen =
+                content.classList.toggle(
+                    "open"
+                );
+
+            toggle.setAttribute(
+                "aria-expanded",
+                isOpen
+                    ? "true"
+                    : "false"
+            );
+
+            arrow.textContent =
+                isOpen
+                    ? "⌃"
+                    : "⌄";
+
+        }
+    );
 
 }
 // ============================================================
@@ -3995,144 +4063,176 @@ function renderExplainability(
     }
 
 
+    // ========================================================
+    // READ EXPLAINABILITY DATA
+    // ========================================================
+
     const predictedLabel =
         explainability.predicted_label ||
         "the predicted class";
 
 
-    const parentExplanation =
-        explainability.parent_explanation ||
-        "No explanation is available.";
-
-
-    const supportingFactors =
+    const contributions =
         Array.isArray(
-            explainability.supporting_factors
+            explainability.feature_contributions
         )
-            ? explainability.supporting_factors
-            : [];
-
-
-    const opposingFactors =
-        Array.isArray(
-            explainability.opposing_factors
-        )
-            ? explainability.opposing_factors
+            ? explainability.feature_contributions
             : [];
 
 
     // ========================================================
-    // BUILD SUPPORTING FACTORS
+    // FIND MOST INFLUENTIAL FEATURE
     // ========================================================
 
-    const supportingHTML =
-        supportingFactors
-            .map(
-                function (factor) {
+    const validContributions =
+        contributions
+            .filter(
+                function (feature) {
 
-                    return `
-                        <li>
-                            ${escapeHTML(
-                        factor.friendly_name ||
-                        factor.feature
-                    )}
-                        </li>
-                    `;
+                    return (
+                        feature &&
+                        typeof feature.absolute_shap ===
+                            "number" &&
+                        Number.isFinite(
+                            feature.absolute_shap
+                        )
+                    );
 
                 }
             )
-            .join("");
+            .sort(
+                function (a, b) {
 
-
-    // ========================================================
-    // BUILD OPPOSING FACTORS
-    // ========================================================
-
-    const opposingHTML =
-        opposingFactors
-            .map(
-                function (factor) {
-
-                    return `
-                        <li>
-                            ${escapeHTML(
-                        factor.friendly_name ||
-                        factor.feature
-                    )}
-                        </li>
-                    `;
+                    return (
+                        b.absolute_shap -
+                        a.absolute_shap
+                    );
 
                 }
-            )
-            .join("");
+            );
+
+
+    const strongestFeature =
+        validContributions.length > 0
+            ? validContributions[0]
+            : null;
 
 
     // ========================================================
-    // DISPLAY EXPLANATION
+    // FEATURE DETAILS
+    // ========================================================
+
+    let strongestFeatureName =
+        "Feature information unavailable";
+
+    let influenceText =
+        "Influence information unavailable";
+
+
+    if (strongestFeature) {
+
+        strongestFeatureName =
+            strongestFeature.friendly_name ||
+            formatHybridFeatureName(
+                strongestFeature.feature
+            );
+
+
+        const shapValue =
+            typeof strongestFeature.shap_value ===
+                "number"
+                ? strongestFeature.shap_value
+                : 0;
+
+
+        influenceText =
+            shapValue >= 0
+                ? "Supports the Random Forest result"
+                : "Opposes the Random Forest result";
+
+    }
+
+
+    // ========================================================
+    // DISPLAY EXPLAINABILITY INSIGHT
     // ========================================================
 
     container.innerHTML = `
 
-       <div class="empty-insight-icon">
+        <div class="empty-insight-icon">
+
             <img
-                src="${chrome.runtime.getURL('icons/explainability.png')}"
+                src="${chrome.runtime.getURL(
+                    "icons/explainability.png"
+                )}"
                 alt=""
             >
+
         </div>
 
-        <div>
+
+        <div class="explainability-detail">
 
             <strong>
-                Why ${escapeHTML(
-        predictedLabel
-    )}?
+                What influenced the Random Forest result?
             </strong>
 
+
             <p>
-                ${escapeHTML(
-        parentExplanation
-    )}
+                The Random Forest evaluated patterns across
+                the extracted multimedia features to produce
+                the ${escapeHTML(
+                    predictedLabel
+                )} classification.
             </p>
 
-            ${
-        supportingHTML
-            ? `
-                        <div class="shap-factor-group supporting">
 
-                            <strong>
-                                Supporting the prediction
-                            </strong>
+            <div class="explainability-primary-feature">
 
-                            <ul>
-                                ${supportingHTML}
-                            </ul>
+                <div class="explainability-feature-label">
+                    Most Influential Feature
+                </div>
 
-                        </div>
-                    `
-            : ""
-    }
+                <div class="explainability-feature-name">
+                    ${escapeHTML(
+                        strongestFeatureName
+                    )}
+                </div>
 
-            ${
-        opposingHTML
-            ? `
-                        <div class="shap-factor-group opposing">
+                <div class="explainability-feature-influence">
+                    ${escapeHTML(
+                        influenceText
+                    )}
+                </div>
 
-                            <strong>
-                                Opposing the prediction
-                            </strong>
+            </div>
 
-                            <ul>
-                                ${opposingHTML}
-                            </ul>
 
-                        </div>
-                    `
-            : ""
-    }
+            <div class="explainability-method-note">
+
+                <strong>
+                    How this explanation works
+                </strong>
+
+                <p>
+                    SHAP estimates how each feature contributed
+                    to the Random Forest prediction. A feature
+                    may support or oppose the predicted class.
+                    These influences explain the model's
+                    prediction and do not establish causation.
+                </p>
+
+            </div>
 
         </div>
 
     `;
+
+
+    console.log(
+        "NeuroShield AI: Explainability insight rendered:",
+        strongestFeature
+    );
 
 }
 
@@ -4141,7 +4241,8 @@ function renderExplainability(
 // ============================================================
 
 function renderContributingFeatures(
-    featureContributions
+    featureContributions,
+    featureInterpretations = {}
 ) {
 
     if (
@@ -4372,9 +4473,10 @@ function renderContributingFeatures(
         "visualFeatures",
         "visualBar",
         "visualLevel",
-        selectedGroups.visual,
         allGroups.visual,
-        totalAbsoluteShap
+        allGroups.visual,
+        totalAbsoluteShap,
+        featureInterpretations
     );
 
 
@@ -4386,9 +4488,10 @@ function renderContributingFeatures(
         "audioFeatures",
         "audioBar",
         "audioLevel",
-        selectedGroups.audio,
         allGroups.audio,
-        totalAbsoluteShap
+        allGroups.audio,
+        totalAbsoluteShap,
+        featureInterpretations
     );
 
 
@@ -4400,9 +4503,10 @@ function renderContributingFeatures(
         "textFeatures",
         "textBar",
         "textLevel",
-        selectedGroups.text,
         allGroups.text,
-        totalAbsoluteShap
+        allGroups.text,
+        totalAbsoluteShap,
+        featureInterpretations
     );
 
 
@@ -4414,9 +4518,10 @@ function renderContributingFeatures(
         "engagementFeatures",
         "engagementBar",
         "engagementLevel",
-        selectedGroups.engagement,
         allGroups.engagement,
-        totalAbsoluteShap
+        allGroups.engagement,
+        totalAbsoluteShap,
+        featureInterpretations
     );
 
 
@@ -4428,9 +4533,10 @@ function renderContributingFeatures(
         "emotionalFeatures",
         "emotionalFeatureBar",
         "emotionalFeatureLevel",
-        selectedGroups.emotional,
         allGroups.emotional,
-        totalAbsoluteShap
+        allGroups.emotional,
+        totalAbsoluteShap,
+        featureInterpretations
     );
 
 
@@ -4442,9 +4548,10 @@ function renderContributingFeatures(
         "metadataFeatures",
         "metadataBar",
         "metadataLevel",
-        selectedGroups.metadata,
         allGroups.metadata,
-        totalAbsoluteShap
+        allGroups.metadata,
+        totalAbsoluteShap,
+        featureInterpretations
     );
     // ========================================================
     // SORT FEATURE CARDS BY LIVE SHAP CONTRIBUTION
@@ -5026,7 +5133,8 @@ function renderLiveContributionGroup(
     levelId,
     selectedFeatures,
     allGroupFeatures,
-    totalAbsoluteShap
+    totalAbsoluteShap,
+    featureInterpretations = {}
 ) {
 
 
@@ -5219,86 +5327,328 @@ function renderLiveContributionGroup(
     }
 
 
-    // ========================================================
-    // DISPLAY SELECTED INDIVIDUAL FEATURES
-    // ========================================================
-
-    container.innerHTML =
-        selectedFeatures
-            .map(
-                function (feature) {
+        // ========================================================
+        // DISPLAY SELECTED INDIVIDUAL FEATURES
+        // ========================================================
 
 
-                    const featureName =
-                        feature.friendly_name ||
-                        feature.feature;
+        // ========================================================
+        // SORT FEATURES BY REFERENCE LEVEL
+        // Higher → Typical → Lower → No reference
+        // ========================================================
+
+        const referenceOrder = {
+            "Higher than typical": 0,
+            "Typical range": 1,
+            "Lower than typical": 2
+        };
 
 
-                    const value =
-                        formatFeatureValue(
-                            feature.feature_value
-                        );
+        const sortedFeatures =
+            [...selectedFeatures].sort(
+                function (a, b) {
+
+                    const aInterpretation =
+                        featureInterpretations &&
+                        featureInterpretations[a.feature];
+
+                    const bInterpretation =
+                        featureInterpretations &&
+                        featureInterpretations[b.feature];
 
 
-                    const shapValue =
-                        typeof feature.shap_value ===
-                        "number"
-                            ? feature.shap_value
-                            : 0;
+                    const aLabel =
+                        aInterpretation &&
+                        aInterpretation.reference_label
+                            ? aInterpretation.reference_label
+                            : "";
+
+                    const bLabel =
+                        bInterpretation &&
+                        bInterpretation.reference_label
+                            ? bInterpretation.reference_label
+                            : "";
 
 
-                    const absoluteShap =
-                        typeof feature.absolute_shap ===
-                        "number"
-                            ? feature.absolute_shap
-                            : Math.abs(
-                                shapValue
+                    const aOrder =
+                        referenceOrder[aLabel] !== undefined
+                            ? referenceOrder[aLabel]
+                            : 3;
+
+                    const bOrder =
+                        referenceOrder[bLabel] !== undefined
+                            ? referenceOrder[bLabel]
+                            : 3;
+
+
+                    return aOrder - bOrder;
+                }
+            );
+
+
+        // ========================================================
+        // RENDER FEATURES
+        // ========================================================
+
+        container.innerHTML =
+            sortedFeatures
+                .map(
+                    function (feature) {
+
+                        const interpretation =
+                            featureInterpretations &&
+                            featureInterpretations[
+                                feature.feature
+                            ]
+                                ? featureInterpretations[
+                                    feature.feature
+                                ]
+                                : null;
+
+
+                        const featureName =
+                            interpretation &&
+                            interpretation.display_name
+                                ? interpretation.display_name
+                                : (
+                                    feature.friendly_name ||
+                                    formatHybridFeatureName(
+                                        feature.feature
+                                    )
+                                );
+
+
+                        const rawValue =
+                            interpretation &&
+                            typeof interpretation.value ===
+                            "number"
+                                ? interpretation.value
+                                : feature.feature_value;
+
+
+                        const value =
+                            formatFeatureValue(
+                                rawValue
                             );
 
 
-                    const direction =
-                        feature.direction ||
-                        (
-                            shapValue >= 0
-                                ? "supports"
-                                : "opposes"
-                        );
+                        const referenceLabel =
+                            interpretation &&
+                            typeof interpretation.reference_label ===
+                            "string"
+                                ? interpretation.reference_label
+                                : "";
 
 
-                    return `
+                        let referenceClass =
+                            "reference-unknown";
 
-                        <span
-                            class="detected-feature"
-                            title="${escapeHTML(
-                        direction
-                    )} prediction | Absolute SHAP: ${escapeHTML(
-                        absoluteShap.toFixed(
-                            4
-                        )
-                    )}"
-                        >
 
-                            ${escapeHTML(
-                        featureName
-                    )}
+                        if (
+                            referenceLabel ===
+                            "Higher than typical"
+                        ) {
 
-                            <strong>
-                                ${escapeHTML(
-                        value
-                    )}
-                            </strong>
+                            referenceClass =
+                                "reference-higher";
 
-                        </span>
+                        } else if (
+                            referenceLabel ===
+                            "Typical range"
+                        ) {
 
-                    `;
+                            referenceClass =
+                                "reference-typical";
 
+                        } else if (
+                            referenceLabel ===
+                            "Lower than typical"
+                        ) {
+
+                            referenceClass =
+                                "reference-lower";
+
+                        }
+
+
+                        return `
+        
+                            <div class="detected-feature detailed ${referenceClass}">
+        
+                                <div class="detected-feature-name">
+                                    ${escapeHTML(
+                                        featureName
+                                    )}
+                                </div>
+        
+                                <div class="detected-feature-value">
+                                    ${escapeHTML(
+                                        value
+                                    )}
+                                </div>
+        
+                            </div>
+        
+                        `;
+
+                    }
+                )
+                .join("");
+
+
+// ========================================================
+// COLLAPSIBLE DETECTED FEATURES
+// ========================================================
+
+    container.classList.add(
+        "detected-features-collapsible"
+    );
+
+    container.classList.remove(
+        "detected-features-open"
+    );
+
+
+// Avoid creating the button more than once
+
+    let toggle =
+        container.previousElementSibling;
+
+    if (
+        !toggle ||
+        !toggle.classList.contains(
+            "detected-features-toggle"
+        )
+    ) {
+
+        toggle =
+            document.createElement(
+                "button"
+            );
+
+        toggle.type = "button";
+
+        toggle.className =
+            "detected-features-toggle";
+
+        container.parentNode.insertBefore(
+            toggle,
+            container
+        );
+
+    }
+
+
+    const featureCount =
+        selectedFeatures.length;
+
+
+    function updateToggleText(
+        isOpen
+    ) {
+
+        toggle.innerHTML = `
+    
+            <span>
+                ${featureCount}
+                extracted
+                ${featureCount === 1
+                    ? "feature"
+                    : "features"}
+            </span>
+    
+            <span class="detected-features-toggle-arrow">
+                ${isOpen ? "⌃" : "⌄"}
+            </span>
+    
+        `;
+
+    }
+
+
+    updateToggleText(false);
+
+
+    toggle.onclick =
+        function () {
+
+            const isOpen =
+                container.classList.toggle(
+                    "detected-features-open"
+                );
+
+            toggle.classList.toggle(
+                "open",
+                isOpen
+            );
+
+            toggle.setAttribute(
+                "aria-expanded",
+                isOpen
+                    ? "true"
+                    : "false"
+            );
+
+            updateToggleText(
+                isOpen
+            );
+
+        };
+
+    // ========================================================
+    // MAKE THE WHOLE FEATURE CARD CLICKABLE
+    // ========================================================
+
+    const featureCard =
+        container.closest(
+            ".feature-card"
+        );
+
+
+    if (featureCard) {
+
+        featureCard.classList.add(
+            "feature-card-clickable"
+        );
+
+
+        featureCard.onclick =
+            function (event) {
+
+                // The existing View / Hide button already
+                // handles its own click.
+                if (
+                    event.target.closest(
+                        ".detected-features-toggle"
+                    )
+                ) {
+                    return;
                 }
-            )
-            .join("");
 
+
+                // Do not close the card when the user clicks
+                // one of the individual feature tiles.
+                if (
+                    event.target.closest(
+                        ".detected-feature"
+                    )
+                ) {
+                    return;
+                }
+
+
+                toggle.click();
+
+            };
+
+    }
+
+
+    toggle.setAttribute(
+        "aria-expanded",
+        "false"
+    );
 }
-
-
 // ============================================================
 // FORMAT FEATURE VALUE
 // ============================================================

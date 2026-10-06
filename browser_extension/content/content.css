@@ -2896,3 +2896,462 @@
 
     opacity: 0.8;
 }
+
+/* ============================================================
+   EXPLAINABILITY INSIGHTS
+============================================================ */
+
+.explainability-detail {
+    flex: 1;
+    min-width: 0;
+}
+
+
+/* Main explanation paragraph */
+
+.explainability-detail > p {
+    margin: 6px 0 12px 0;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    color: #667085;
+}
+
+
+/* ============================================================
+   MOST INFLUENTIAL FEATURE
+============================================================ */
+
+.explainability-primary-feature {
+    margin-top: 12px;
+    padding: 12px 14px;
+
+    background: #ffffff;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 12px;
+}
+
+
+.explainability-feature-label {
+    margin-bottom: 5px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    color: #667085;
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+
+.explainability-feature-name {
+    margin-bottom: 6px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #252b37;
+}
+
+
+.explainability-feature-influence {
+    display: inline-block;
+
+    padding: 4px 8px;
+
+    border-radius: 7px;
+
+    background: #eef2ff;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    color: #475467;
+}
+
+
+/* ============================================================
+   SHAP METHOD NOTE
+============================================================ */
+
+.explainability-method-note {
+    margin-top: 12px;
+    padding-top: 11px;
+
+    border-top: 1px solid #e4e8ef;
+}
+
+
+.explainability-method-note > strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+
+.explainability-method-note > p {
+    margin: 0;
+
+    font-size: 12px;
+    line-height: 1.55;
+
+    color: #667085;
+}
+
+/* ============================================================
+   DETECTED MULTIMEDIA FEATURES - DETAILED FEATURE GRID
+============================================================ */
+
+.feature-bubbles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-top: 12px;
+}
+
+
+/* ============================================================
+   INDIVIDUAL DETECTED FEATURE
+============================================================ */
+
+.detected-feature.detailed {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    min-width: 0;
+
+    padding: 9px 10px;
+
+    background: #ffffff;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 10px;
+
+    box-sizing: border-box;
+}
+
+
+/* FEATURE NAME */
+
+.detected-feature-name {
+    width: 100%;
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+    line-height: 1.3;
+    font-weight: 600;
+
+    color: #344054;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* RAW EXTRACTED VALUE */
+
+.detected-feature-value {
+    margin-bottom: 6px;
+
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: 700;
+
+    color: #1d2939;
+}
+
+
+/* TRAINING-DATA REFERENCE */
+
+.detected-feature-reference {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 3px 7px;
+
+    border-radius: 999px;
+
+    background: #f2f4f7;
+
+    font-size: 9px;
+    line-height: 1.2;
+    font-weight: 600;
+
+    color: #667085;
+}
+
+
+/* ============================================================
+   FEATURE CARD SPACING
+============================================================ */
+
+.feature-card {
+    padding-bottom: 16px;
+}
+
+
+.feature-card .mini-progress {
+    margin-top: 12px;
+}
+
+
+/* ============================================================
+   CONTRIBUTION BADGE
+============================================================ */
+
+.feature-level {
+    white-space: nowrap;
+
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   SMALLER EXTENSION WIDTH
+============================================================ */
+
+@media (max-width: 390px) {
+
+    .feature-bubbles {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* ============================================================
+   COLLAPSIBLE DETECTED FEATURES
+============================================================ */
+
+.detected-features-collapsible {
+    display: none;
+}
+
+
+/* OPEN STATE */
+
+.detected-features-collapsible.detected-features-open {
+    display: grid;
+}
+
+
+/* ============================================================
+   VIEW / HIDE FEATURES BUTTON
+============================================================ */
+
+.detected-features-toggle {
+    width: 100%;
+
+    margin-top: 10px;
+    padding: 8px 2px 2px 2px;
+
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    color: #667085;
+}
+
+
+/* FEATURE COUNT */
+
+.detected-features-toggle > span:first-child {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* RIGHT SIDE */
+
+.detected-features-toggle-action {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #475467;
+}
+
+
+/* ARROW */
+
+.detected-features-toggle-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+    border: 1px solid #e4e8ef;
+
+    font-size: 10px;
+}
+
+
+/* HOVER */
+
+.detected-features-toggle:hover
+.detected-features-toggle-action {
+    color: #1d2939;
+}
+
+
+/* SPACE BETWEEN TOGGLE AND OPEN GRID */
+
+.detected-features-collapsible.detected-features-open {
+    margin-top: 10px;
+}
+
+/* ============================================================
+   DETECTED FEATURE REFERENCE COLOURS
+============================================================ */
+
+.detected-feature.detailed.reference-higher {
+    background: #fff1f1;
+    border-color: #f1bcbc;
+}
+
+.detected-feature.detailed.reference-typical {
+    background: #f0faf3;
+    border-color: #b9dfc3;
+}
+
+.detected-feature.detailed.reference-lower {
+    background: #f1f6ff;
+    border-color: #bfd1ec;
+}
+
+.detected-feature.detailed.reference-unknown {
+    background: #ffffff;
+}
+
+/* ============================================================
+   CLICKABLE MULTIMEDIA FEATURE CARDS
+============================================================ */
+
+.feature-card.feature-card-clickable {
+    cursor: pointer;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+}
+
+
+.feature-card.feature-card-clickable:hover {
+    border-color: #d0d5dd;
+
+    box-shadow:
+        0 3px 10px rgba(16, 24, 40, 0.05);
+}
+
+
+/* Individual feature tiles are informational,
+   so don't make them look clickable */
+
+.feature-card.feature-card-clickable
+.detected-feature {
+    cursor: default;
+}
+
+/* ============================================================
+   CLEAN COLLAPSIBLE FEATURE CARD FOOTER
+============================================================ */
+
+.detected-features-toggle {
+    cursor: inherit;
+}
+
+.detected-features-toggle-arrow {
+    margin-left: auto;
+}
+
+/* ============================================================
+   COLLAPSIBLE MULTIMEDIA SECTION
+============================================================ */
+
+.multimedia-section-toggle {
+    width: 100%;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 700;
+
+    color: #252b37;
+
+    cursor: pointer;
+    text-align: left;
+}
+
+
+.multimedia-section-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 22px;
+    height: 22px;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 50%;
+
+    font-size: 11px;
+
+    background: #ffffff;
+    color: #667085;
+}
+
+
+/* CLOSED */
+
+.multimedia-section-content {
+    display: none;
+}
+
+
+/* OPEN */
+
+.multimedia-section-content.open {
+    display: block;
+    margin-top: 14px;
+}
