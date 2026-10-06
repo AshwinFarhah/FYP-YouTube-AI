@@ -514,35 +514,66 @@
         <!-- EXPLAINABILITY -->
         <!-- ================================================= -->
 
-        <section class="neuroshield-card">
+        <section class="neuroshield-card explainability-card">
 
-            <div class="card-title">
-                Explainability Insights
-            </div>
+            <!-- MAIN SECTION TOGGLE -->
 
-            <div
-                    class="empty-insight"
-                    id="insightContainer"
+            <button
+                    type="button"
+                    class="explainability-section-toggle"
+                    id="explainabilitySectionToggle"
+                    aria-expanded="true"
             >
 
-                <div class="empty-insight-icon">
-                    <img
-                            src="" id="explainabilityIcon"
-                            alt=""
-                    >
-                </div>
+        <span>
+            Explainability Insights
+        </span>
 
-                <div>
+                <span
+                        class="explainability-section-arrow"
+                        id="explainabilitySectionArrow"
+                >
+            ⌃
+        </span>
 
-                    <strong>
-                        No analysis available yet
-                    </strong>
+            </button>
 
-                    <p>
-                        Explainable AI insights will appear
-                        here after the backend completes
-                        analysis of this video.
-                    </p>
+
+            <!-- MAIN SECTION CONTENT -->
+
+            <div
+                    class="explainability-section-content open"
+                    id="explainabilitySectionContent"
+            >
+
+                <div
+                        class="empty-insight"
+                        id="insightContainer"
+                >
+
+                    <div class="empty-insight-icon">
+
+                        <img
+                                src=""
+                                id="explainabilityIcon"
+                                alt=""
+                        >
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            No analysis available yet
+                        </strong>
+
+                        <p>
+                            Explainable AI insights will appear
+                            here after the backend completes
+                            analysis of this video.
+                        </p>
+
+                    </div>
 
                 </div>
 

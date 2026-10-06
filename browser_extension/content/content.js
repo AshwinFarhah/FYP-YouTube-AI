@@ -2651,6 +2651,7 @@ function updateHybridAssessment(
         initialiseHybridAccordions();
         initialiseMultimediaSection();
         initialiseParentalGuidance();
+        initialiseExplainabilitySection();
 
     }
 
@@ -3368,6 +3369,7 @@ function updateParentGuidance(
     initialiseParentGuidanceItems();
 
 }
+
 // ============================================================
 // FORMAT PARENTAL GUIDANCE SCORE
 // ============================================================
@@ -3461,6 +3463,76 @@ function initialiseParentGuidanceItems() {
     });
 
 }
+
+// ============================================================
+// EXPLAINABILITY SECTION ACCORDION
+// ============================================================
+
+function initialiseExplainabilitySection() {
+
+    const toggle =
+        document.getElementById(
+            "explainabilitySectionToggle"
+        );
+
+    const content =
+        document.getElementById(
+            "explainabilitySectionContent"
+        );
+
+    const arrow =
+        document.getElementById(
+            "explainabilitySectionArrow"
+        );
+
+
+    if (
+        !toggle ||
+        !content ||
+        !arrow
+    ) {
+        return;
+    }
+
+
+    if (
+        toggle.dataset.ready === "true"
+    ) {
+        return;
+    }
+
+
+    toggle.dataset.ready = "true";
+
+
+    toggle.addEventListener(
+        "click",
+        function () {
+
+            const isOpen =
+                content.classList.toggle(
+                    "open"
+                );
+
+
+            toggle.setAttribute(
+                "aria-expanded",
+                isOpen
+                    ? "true"
+                    : "false"
+            );
+
+
+            arrow.textContent =
+                isOpen
+                    ? "⌃"
+                    : "⌄";
+
+        }
+    );
+
+}
+
 // ============================================================
 // MONITORING STATUS
 // ============================================================
@@ -4231,36 +4303,23 @@ function updateFeatureScore(
 // LIVE SHAP EXPLAINABILITY
 // ============================================================
 
-function renderExplainability(
-    explainability
-) {
+// ============================================================
+// RENDER EXPLAINABILITY
+// ============================================================
+
+function renderExplainability(explainability) {
 
     const container =
-        document.getElementById(
-            "insightContainer"
-        );
+        document.getElementById("insightContainer");
 
 
-    if (
-        !container ||
-        !explainability
-    ) {
-
+    if (!container) {
         return;
-
     }
 
 
-    // ========================================================
-    // READ EXPLAINABILITY DATA
-    // ========================================================
-
-    const predictedLabel =
-        explainability.predicted_label ||
-        "the predicted class";
-
-
     const contributions =
+        explainability &&
         Array.isArray(
             explainability.feature_contributions
         )
@@ -4268,139 +4327,209 @@ function renderExplainability(
             : [];
 
 
-    // ========================================================
-    // FIND MOST INFLUENTIAL FEATURE
-    // ========================================================
+    // --------------------------------------------------------
+    // NO EXPLANATION AVAILABLE
+    // --------------------------------------------------------
 
-    const validContributions =
-        contributions
-            .filter(
-                function (feature) {
+    if (contributions.length === 0) {
 
-                    return (
-                        feature &&
-                        typeof feature.absolute_shap ===
-                        "number" &&
-                        Number.isFinite(
-                            feature.absolute_shap
-                        )
-                    );
-
-                }
+        container.innerHTML = `
+            <div class="empty-insight-icon">
+                <img
+                    src="${escapeHTML(
+            chrome.runtime.getURL(
+                "icons/explainability.png"
             )
-            .sort(
-                function (a, b) {
+        )}"
+                    alt=""
+                >
+            </div>
 
-                    return (
-                        b.absolute_shap -
-                        a.absolute_shap
-                    );
+            <div>
+                <strong>
+                    No explanation available
+                </strong>
 
-                }
-            );
+                <p>
+                    Explainable AI information was not
+                    available for this analysis.
+                </p>
+            </div>
+        `;
 
-
-    const strongestFeature =
-        validContributions.length > 0
-            ? validContributions[0]
-            : null;
-
-
-    // ========================================================
-    // FEATURE DETAILS
-    // ========================================================
-
-    let strongestFeatureName =
-        "Feature information unavailable";
-
-    let influenceText =
-        "Influence information unavailable";
-
-
-    if (strongestFeature) {
-
-        strongestFeatureName =
-            strongestFeature.friendly_name ||
-            formatHybridFeatureName(
-                strongestFeature.feature
-            );
-
-
-        const shapValue =
-            typeof strongestFeature.shap_value ===
-            "number"
-                ? strongestFeature.shap_value
-                : 0;
-
-
-        influenceText =
-            shapValue >= 0
-                ? "Supports the Random Forest result"
-                : "Opposes the Random Forest result";
-
+        return;
     }
 
 
-    // ========================================================
-    // DISPLAY EXPLAINABILITY INSIGHT
-    // ========================================================
+    // --------------------------------------------------------
+    // FIND MOST INFLUENTIAL FEATURE
+    // --------------------------------------------------------
+
+    const strongest =
+        contributions.reduce(
+            (currentStrongest, item) => {
+
+                const currentValue =
+                    Math.abs(
+                        Number(
+                            currentStrongest?.absolute_shap ??
+                            currentStrongest?.shap_value ??
+                            0
+                        )
+                    );
+
+                const itemValue =
+                    Math.abs(
+                        Number(
+                            item?.absolute_shap ??
+                            item?.shap_value ??
+                            0
+                        )
+                    );
+
+
+                return itemValue > currentValue
+                    ? item
+                    : currentStrongest;
+
+            },
+            contributions[0]
+        );
+
+
+    const featureName =
+        strongest?.friendly_name ||
+        formatHybridFeatureName(
+            strongest?.feature
+        );
+
+
+    const shapValue =
+        Number(
+            strongest?.shap_value ?? 0
+        );
+
+
+    const supportsPrediction =
+        shapValue >= 0;
+
+
+    const directionText =
+        supportsPrediction
+            ? "Supports the Random Forest result"
+            : "Opposes the Random Forest result";
+
+
+    const directionClass =
+        supportsPrediction
+            ? "supports"
+            : "opposes";
+
+
+    const directionArrow =
+        supportsPrediction
+            ? "↑"
+            : "↓";
+
+
+    // --------------------------------------------------------
+    // RENDER
+    // --------------------------------------------------------
 
     container.innerHTML = `
 
-        <div class="empty-insight-icon">
+        <div class="explainability-overview">
 
-            <img
-                src="${chrome.runtime.getURL(
-        "icons/explainability.png"
+            <div class="explainability-overview-icon">
+
+                <img
+                    src="${escapeHTML(
+        chrome.runtime.getURL(
+            "icons/explainability.png"
+        )
     )}"
-                alt=""
-            >
-
-        </div>
-
-
-        <div class="explainability-detail">
-
-            <strong>
-                What influenced the Random Forest result?
-            </strong>
-
-
-            <p>
-                The Random Forest evaluated patterns across
-                the extracted multimedia features to produce
-                the ${escapeHTML(
-        predictedLabel
-    )} classification.
-            </p>
-
-
-            <div class="explainability-primary-feature">
-
-                <div class="explainability-feature-label">
-                    Most Influential Feature
-                </div>
-
-                <div class="explainability-feature-name">
-                    ${escapeHTML(
-        strongestFeatureName
-    )}
-                </div>
-
-                <div class="explainability-feature-influence">
-                    ${escapeHTML(
-        influenceText
-    )}
-                </div>
+                    alt=""
+                >
 
             </div>
 
 
-            <div class="explainability-method-note">
+            <div class="explainability-overview-text">
 
                 <strong>
-                    How this explanation works
+                    What influenced the Random Forest result?
                 </strong>
+
+                <p>
+                    The Random Forest evaluated the extracted
+                    multimedia features to produce this
+                    classification.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="explainability-feature-card">
+
+            <div class="explainability-feature-label">
+                MOST INFLUENTIAL FEATURE
+            </div>
+
+
+            <div class="explainability-feature-name">
+                ${escapeHTML(featureName)}
+            </div>
+
+
+            <div
+                class="
+                    explainability-direction
+                    ${directionClass}
+                "
+            >
+
+                <span class="explainability-direction-arrow">
+                    ${directionArrow}
+                </span>
+
+                <span>
+                    ${escapeHTML(directionText)}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="explainability-method">
+
+            <button
+                type="button"
+                class="explainability-method-toggle"
+                id="explainabilityMethodToggle"
+                aria-expanded="false"
+            >
+
+                <span>
+                    How this explanation works
+                </span>
+
+                <span
+                    class="explainability-method-arrow"
+                    id="explainabilityMethodArrow"
+                >
+                    ⌄
+                </span>
+
+            </button>
+
+
+            <div
+                class="explainability-method-content"
+                id="explainabilityMethodContent"
+            >
 
                 <p>
                     SHAP estimates how each feature contributed
@@ -4413,13 +4542,77 @@ function renderExplainability(
             </div>
 
         </div>
-
     `;
 
 
-    console.log(
-        "NeuroShield AI: Explainability insight rendered:",
-        strongestFeature
+    initialiseExplainabilityMethod();
+
+}
+// ============================================================
+// EXPLAINABILITY METHOD ACCORDION
+// ============================================================
+
+function initialiseExplainabilityMethod() {
+
+    const toggle =
+        document.getElementById(
+            "explainabilityMethodToggle"
+        );
+
+    const content =
+        document.getElementById(
+            "explainabilityMethodContent"
+        );
+
+    const arrow =
+        document.getElementById(
+            "explainabilityMethodArrow"
+        );
+
+
+    if (
+        !toggle ||
+        !content ||
+        !arrow
+    ) {
+        return;
+    }
+
+
+    if (
+        toggle.dataset.ready === "true"
+    ) {
+        return;
+    }
+
+
+    toggle.dataset.ready = "true";
+
+
+    toggle.addEventListener(
+        "click",
+        function () {
+
+            const isOpen =
+                content.classList.toggle(
+                    "open"
+                );
+
+
+            toggle.setAttribute(
+                "aria-expanded",
+                isOpen
+                    ? "true"
+                    : "false"
+            );
+
+
+            arrow.textContent =
+                isOpen
+                    ? "⌃"
+                    : "⌄";
+
+        }
     );
 
 }

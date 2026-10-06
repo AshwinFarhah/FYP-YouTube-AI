@@ -3591,3 +3591,405 @@
 
     color: #667085;
 }
+
+/* ============================================================
+   EXPLAINABILITY - COLLAPSIBLE SECTION
+============================================================ */
+
+.explainability-section-toggle {
+    width: 100%;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 700;
+
+    color: #252b37;
+
+    cursor: pointer;
+    text-align: left;
+}
+
+
+.explainability-section-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 22px;
+    height: 22px;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 50%;
+
+    background: #ffffff;
+    color: #667085;
+
+    font-size: 11px;
+}
+
+
+.explainability-section-content {
+    display: none;
+}
+
+
+.explainability-section-content.open {
+    display: block;
+    margin-top: 14px;
+}
+/* ============================================================
+   EXPLAINABILITY - FINAL UI
+============================================================ */
+
+
+/* ------------------------------------------------------------
+   MAIN SECTION BUTTON
+------------------------------------------------------------ */
+
+.explainability-section-toggle {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    outline: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 700;
+
+    color: #252b37;
+
+    cursor: pointer;
+    text-align: left;
+}
+
+.explainability-section-toggle:focus {
+    outline: none;
+}
+
+.explainability-section-toggle:focus-visible {
+    outline: 2px solid #98a2b3;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.explainability-section-arrow {
+    flex-shrink: 0;
+
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 50%;
+
+    background: #ffffff;
+    color: #667085;
+
+    font-size: 11px;
+}
+
+
+/* ------------------------------------------------------------
+   MAIN CONTENT
+------------------------------------------------------------ */
+
+.explainability-section-content {
+    display: none;
+}
+
+.explainability-section-content.open {
+    display: block;
+    margin-top: 14px;
+}
+
+
+/* ------------------------------------------------------------
+   IMPORTANT:
+   OVERRIDE OLD EMPTY-INSIGHT FLEX LAYOUT
+------------------------------------------------------------ */
+
+#insightContainer {
+    display: block !important;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    background: #f7f9fc;
+}
+
+
+/* ------------------------------------------------------------
+   TOP OVERVIEW
+------------------------------------------------------------ */
+
+.explainability-overview {
+    width: 100%;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    box-sizing: border-box;
+}
+
+.explainability-overview-icon {
+    flex: 0 0 38px;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #eef2ff;
+}
+
+.explainability-overview-icon img {
+    width: 24px;
+    height: 24px;
+
+    object-fit: contain;
+}
+
+.explainability-overview-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.explainability-overview-text strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.explainability-overview-text p {
+    margin: 0;
+
+    font-size: 11.5px;
+    line-height: 1.5;
+
+    color: #667085;
+}
+
+
+/* ------------------------------------------------------------
+   MOST INFLUENTIAL FEATURE
+------------------------------------------------------------ */
+
+.explainability-feature-card {
+    width: auto;
+
+    margin-top: 14px;
+    margin-left: 50px;
+
+    padding: 13px 14px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e1e6ef;
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 2px 6px rgba(16, 24, 40, 0.025);
+}
+
+.explainability-feature-label {
+    margin-bottom: 4px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.04em;
+
+    color: #667085;
+}
+
+.explainability-feature-name {
+    margin-bottom: 8px;
+
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.35;
+
+    color: #252b37;
+}
+
+
+/* ------------------------------------------------------------
+   SHAP DIRECTION
+------------------------------------------------------------ */
+
+.explainability-direction {
+    width: fit-content;
+    max-width: 100%;
+
+    padding: 5px 9px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    box-sizing: border-box;
+
+    border-radius: 7px;
+
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.explainability-direction.supports {
+    background: #eef3ff;
+    color: #475467;
+}
+
+.explainability-direction.opposes {
+    background: #f3f4f6;
+    color: #475467;
+}
+
+.explainability-direction-arrow {
+    flex-shrink: 0;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ------------------------------------------------------------
+   HOW THIS EXPLANATION WORKS
+------------------------------------------------------------ */
+
+.explainability-method {
+    width: auto;
+
+    margin-top: 14px;
+    margin-left: 50px;
+
+    padding-top: 12px;
+
+    box-sizing: border-box;
+
+    border-top: 1px solid #e4e8ef;
+}
+
+.explainability-method-toggle {
+    width: 100%;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    outline: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    box-sizing: border-box;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+
+    color: #344054;
+
+    cursor: pointer;
+    text-align: left;
+}
+
+.explainability-method-toggle:focus {
+    outline: none;
+}
+
+.explainability-method-toggle:focus-visible {
+    outline: 2px solid #98a2b3;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.explainability-method-arrow {
+    flex: 0 0 20px;
+
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 50%;
+
+    background: #ffffff;
+    color: #667085;
+
+    font-size: 10px;
+}
+
+
+/* ------------------------------------------------------------
+   METHOD CONTENT
+------------------------------------------------------------ */
+
+.explainability-method-content {
+    display: none;
+}
+
+.explainability-method-content.open {
+    display: block;
+}
+
+.explainability-method-content p {
+    margin: 10px 0 0 0;
+
+    padding: 10px 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e8ecf2;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    font-size: 11.5px;
+    line-height: 1.55;
+
+    color: #667085;
+}
