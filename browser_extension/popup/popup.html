@@ -7,15 +7,17 @@
     <meta charset="UTF-8">
 
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
     >
 
     <title>NeuroShield AI</title>
 
+    <link rel="stylesheet" href="../styles/theme.css">
+
     <link
-        rel="stylesheet"
-        href="popup.css"
+            rel="stylesheet"
+            href="popup.css"
     >
 
 </head>
@@ -29,14 +31,14 @@
     <!-- INITIAL SCREEN -->
 
     <section
-        id="initialScreen"
-        class="screen active"
+            id="initialScreen"
+            class="screen active"
     >
 
         <div class="hero-icon">
             <img
-                src="../icons/logo.png"
-                alt="NeuroShield AI"
+                    src="../icons/logo.png"
+                    alt="NeuroShield AI"
             >
         </div>
 
@@ -56,8 +58,8 @@
         </p>
 
         <button
-            id="protectionButton"
-            class="protection-button"
+                id="protectionButton"
+                class="protection-button"
         >
 
             Turn On Protection
@@ -66,31 +68,31 @@
 
         <div class="protection-info">
 
-    <div class="floating-bubbles">
+            <div class="floating-bubbles">
 
-        <div class="info-bubble bubble-visual">
-            <span class="info-icon">👁️</span>
-            <span>Language characteristics</span>
+                <div class="info-bubble bubble-visual">
+                    <span class="info-icon">👁️</span>
+                    <span>Visual stimulation</span>
+                </div>
+
+                <div class="info-bubble bubble-audio">
+                    <span class="info-icon">🔊</span>
+                    <span>Audio stimulation</span>
+                </div>
+
+                <div class="info-bubble bubble-language">
+                    <span class="info-icon">💬</span>
+                    <span>Language characteristics</span>
+                </div>
+
+                <div class="info-bubble bubble-engagement">
+                    <span class="info-icon">🎯</span>
+                    <span>Engagement patterns</span>
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="info-bubble bubble-audio">
-            <span class="info-icon">🔊</span>
-            <span>Audio stimulation</span>
-        </div>
-
-        <div class="info-bubble bubble-language">
-            <span class="info-icon">💬</span>
-            <span>Visual stimulation</span>
-        </div>
-
-        <div class="info-bubble bubble-engagement">
-            <span class="info-icon">🎯</span>
-            <span>Engagement patterns</span>
-        </div>
-
-    </div>
-
-</div>
 
         <p class="privacy-text">
 
@@ -105,16 +107,16 @@
     <!-- ANALYSING SCREEN -->
 
     <section
-        id="analysingScreen"
-        class="screen"
+            id="analysingScreen"
+            class="screen"
     >
 
         <div class="loading-icon">
-    <img
-        src="../icons/logo1.png"
-        alt="NeuroShield AI"
-    >
-</div>
+            <img
+                    src="../icons/logo1.png"
+                    alt="NeuroShield AI"
+            >
+        </div>
 
         <h2>
             NeuroShield AI Active
@@ -133,8 +135,8 @@
             <div class="loading-track">
 
                 <div
-                    id="loadingBar"
-                    class="loading-bar"
+                        id="loadingBar"
+                        class="loading-bar"
                 ></div>
 
             </div>
@@ -145,8 +147,8 @@
         <div class="steps">
 
             <div
-                id="step1"
-                class="step"
+                    id="step1"
+                    class="step"
             >
                 <span>✓</span>
                 Protection enabled
@@ -154,8 +156,8 @@
 
 
             <div
-                id="step2"
-                class="step"
+                    id="step2"
+                    class="step"
             >
                 <span>✓</span>
                 YouTube monitoring
@@ -163,8 +165,8 @@
 
 
             <div
-                id="step3"
-                class="step"
+                    id="step3"
+                    class="step"
             >
                 <span>✓</span>
                 Multimodal analysis
@@ -172,8 +174,8 @@
 
 
             <div
-                id="step4"
-                class="step"
+                    id="step4"
+                    class="step"
             >
                 <span>✓</span>
                 Ready
@@ -190,6 +192,23 @@
         </p>
 
     </section>
+
+    <!-- OPEN ANALYSIS OVERLAY -->
+
+    <button
+            id="openOverlayButton"
+            class="open-overlay-button"
+            type="button"
+    >
+        ↗ Open Analysis Overlay
+    </button>
+
+    <p
+            id="openOverlayMessage"
+            class="open-overlay-message"
+            role="status"
+            aria-live="polite"
+    ></p>
 
 
     <!-- FOOTER -->

@@ -1,0 +1,71 @@
+/* ============================================================
+   NeuroShield AI
+   Shared Light / Dark Theme
+============================================================ */
+
+/* LIGHT MODE — DEFAULT */
+
+:root {
+    --ns-bg: #f8faff;
+    --ns-surface: #ffffff;
+    --ns-surface-soft: #f3f6fc;
+
+    --ns-text: #253047;
+    --ns-text-secondary: #64748b;
+
+    --ns-border: #e4e8f0;
+
+    --ns-primary: #5c6cff;
+    --ns-primary-hover: #4858e8;
+
+    --ns-shadow: 0 8px 24px rgba(30, 45, 80, 0.08);
+
+    color-scheme: light;
+}
+
+/* DARK MODE */
+
+:root[data-ns-theme="dark"] {
+    --ns-bg: #0b1220;
+    --ns-surface: #151f30;
+    --ns-surface-soft: #1d2a3e;
+
+    --ns-text: #f1f5f9;
+    --ns-text-secondary: #a7b4c7;
+
+    --ns-border: #344256;
+
+    --ns-primary: #737dff;
+    --ns-primary-hover: #8d95ff;
+
+    --ns-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+
+    color-scheme: dark;
+}
+/* Theme variables scoped to the YouTube overlay */
+
+#neuroshield-overlay {
+    --ns-bg: #f8faff;
+    --ns-surface: #ffffff;
+    --ns-surface-soft: #f3f6fc;
+    --ns-text: #253047;
+    --ns-text-secondary: #64748b;
+    --ns-border: #e4e8f0;
+    --ns-primary: #5c6cff;
+    --ns-primary-hover: #4858e8;
+    --ns-shadow: 0 8px 24px rgba(30, 45, 80, 0.08);
+    color-scheme: light;
+}
+
+#neuroshield-overlay[data-ns-theme="dark"] {
+    --ns-bg: #0b1220;
+    --ns-surface: #151f30;
+    --ns-surface-soft: #1d2a3e;
+    --ns-text: #f1f5f9;
+    --ns-text-secondary: #a7b4c7;
+    --ns-border: #344256;
+    --ns-primary: #737dff;
+    --ns-primary-hover: #8d95ff;
+    --ns-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    color-scheme: dark;
+}

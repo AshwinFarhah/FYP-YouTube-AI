@@ -61,6 +61,7 @@
         "content/content.js"
       ],
       "css": [
+        "styles/theme.css",
         "content/content.css",
         "settings/settings.css"
       ],

@@ -19,7 +19,6 @@
 
 }
 
-
 /* ============================================================
    MAIN WINDOW
 ============================================================ */
@@ -64,7 +63,6 @@
 
 }
 
-
 /* ============================================================
    HEADER
 ============================================================ */
@@ -99,7 +97,6 @@
 
 }
 
-
 .neuroshield-header.dragging {
 
     cursor: grabbing;
@@ -126,7 +123,6 @@
     overflow: hidden;
 
 }
-
 
 /* ============================================================
    LOGO
@@ -156,7 +152,6 @@
 
 }
 
-
 /* ============================================================
    BRAND
 ============================================================ */
@@ -177,7 +172,6 @@
 
 }
 
-
 /* ============================================================
    BRAND TEXT
 ============================================================ */
@@ -189,7 +183,6 @@
     overflow: hidden;
 
 }
-
 
 .neuroshield-title {
 
@@ -207,7 +200,6 @@
 
 }
 
-
 .neuroshield-subtitle {
 
     margin-top: 3px;
@@ -223,7 +215,6 @@
     text-overflow: ellipsis;
 
 }
-
 
 /* ============================================================
    HEADER ACTIONS
@@ -242,7 +233,6 @@
     flex-shrink: 0;
 
 }
-
 
 /* ============================================================
    ACTION BUTTON
@@ -287,7 +277,6 @@
 
 }
 
-
 .neuroshield-action:hover {
 
     background: #e7ecf5;
@@ -296,20 +285,17 @@
 
 }
 
-
 .neuroshield-action:active {
 
     transform: scale(0.94);
 
 }
 
-
 .neuroshield-action.muted {
 
     opacity: 0.5;
 
 }
-
 
 /* ============================================================
    CLOSE BUTTON
@@ -322,7 +308,6 @@
     color: #e53935;
 
 }
-
 
 /* ============================================================
    CONTENT
@@ -342,7 +327,6 @@
 
 }
 
-
 /* ============================================================
    SCROLLBAR
 ============================================================ */
@@ -353,13 +337,11 @@
 
 }
 
-
 .neuroshield-content::-webkit-scrollbar-track {
 
     background: transparent;
 
 }
-
 
 .neuroshield-content::-webkit-scrollbar-thumb {
 
@@ -368,7 +350,6 @@
     border-radius: 999px;
 
 }
-
 
 /* ============================================================
    STATUS
@@ -394,7 +375,6 @@
 
 }
 
-
 .status-left {
 
     display: flex;
@@ -405,7 +385,6 @@
 
 }
 
-
 .status-dot {
     width: 9px;
     height: 9px;
@@ -413,7 +392,6 @@
     background: #eab308;
     box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.12);
 }
-
 
 .status-title {
 
@@ -425,7 +403,6 @@
 
 }
 
-
 .status-text {
 
     margin-top: 3px;
@@ -435,7 +412,6 @@
     color: #7d8593;
 
 }
-
 
 .status-badge {
     padding: 6px 10px;
@@ -460,7 +436,6 @@
     border-color: #bfe5cb;
 }
 
-
 /* STATUS DOT */
 
 .status-dot.waiting {
@@ -472,7 +447,6 @@
     background: #22c55e;
     box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
 }
-
 
 /* STATUS BADGE */
 
@@ -514,7 +488,6 @@
 
 }
 
-
 .neuroshield-main-card::after {
 
     content: "";
@@ -535,7 +508,6 @@
 
 }
 
-
 .neuroshield-main-card.high {
 
     background: linear-gradient(
@@ -545,7 +517,6 @@
     );
 
 }
-
 
 .neuroshield-main-card.moderate {
 
@@ -557,7 +528,6 @@
 
 }
 
-
 .neuroshield-main-card.low {
 
     background: linear-gradient(
@@ -567,7 +537,6 @@
     );
 
 }
-
 
 /* ============================================================
    LIVE BADGE
@@ -595,7 +564,6 @@
 
 }
 
-
 /* ============================================================
    MAIN SCORE
 ============================================================ */
@@ -610,7 +578,6 @@
 
 }
 
-
 .main-score-empty {
 
     font-size: 64px;
@@ -623,7 +590,6 @@
 
 }
 
-
 .main-score-label {
 
     font-size: 18px;
@@ -633,7 +599,6 @@
     margin-top: 7px;
 
 }
-
 
 .main-score-description {
 
@@ -646,7 +611,6 @@
     opacity: 0.9;
 
 }
-
 
 /* ============================================================
    CARDS
@@ -668,7 +632,6 @@
 
 }
 
-
 .card-title {
 
     font-size: 16px;
@@ -680,7 +643,6 @@
     margin-bottom: 15px;
 
 }
-
 
 /* ============================================================
    SCORE ROW
@@ -702,13 +664,11 @@
 
 }
 
-
 .score-row:last-child {
 
     margin-bottom: 0;
 
 }
-
 
 .score-icon {
 
@@ -748,20 +708,17 @@
 
 }
 
-
 .behavioural-icon {
 
     background: #f44336;
 
 }
 
-
 .emotional-icon {
 
     background: #9c27b0;
 
 }
-
 
 .overall-icon {
 
@@ -771,7 +728,6 @@
 
 }
 
-
 .score-content {
 
     flex: 1;
@@ -779,7 +735,6 @@
     min-width: 0;
 
 }
-
 
 .score-header {
 
@@ -793,7 +748,6 @@
 
 }
 
-
 .score-header span {
 
     font-size: 12px;
@@ -804,7 +758,6 @@
 
 }
 
-
 .score-header strong {
 
     font-size: 13px;
@@ -812,7 +765,6 @@
     color: #343b48;
 
 }
-
 
 /* ============================================================
    PROGRESS
@@ -832,7 +784,6 @@
 
 }
 
-
 .progress-fill {
 
     height: 100%;
@@ -845,20 +796,17 @@
 
 }
 
-
 .cognitive-fill {
 
     background: #ff9800;
 
 }
 
-
 .behavioural-fill {
 
     background: #f44336;
 
 }
-
 
 .emotional-fill {
 
@@ -892,7 +840,6 @@
 
 }
 
-
 /* ============================================================
    INSIGHT
 ============================================================ */
@@ -913,13 +860,11 @@
 
 }
 
-
 .empty-insight:last-child {
 
     margin-bottom: 0;
 
 }
-
 
 .empty-insight-icon {
 
@@ -943,7 +888,6 @@
 
 }
 
-
 .empty-insight strong {
 
     font-size: 12px;
@@ -951,7 +895,6 @@
     color: #3b4350;
 
 }
-
 
 .empty-insight p {
 
@@ -975,7 +918,6 @@
 
 }
 
-
 #insightContainer > div:last-child {
 
     flex: 1;
@@ -983,7 +925,6 @@
     min-width: 0;
 
 }
-
 
 #insightContainer > div:last-child > strong {
 
@@ -999,7 +940,6 @@
 
 }
 
-
 #insightContainer > div:last-child > p {
 
     margin: 7px 0 0 0;
@@ -1011,7 +951,6 @@
     color: #737c8c;
 
 }
-
 
 /* ============================================================
    SHAP FACTOR GROUPS
@@ -1027,7 +966,6 @@
 
 }
 
-
 .shap-factor-group strong {
 
     display: block;
@@ -1041,7 +979,6 @@
     color: #454d5b;
 
 }
-
 
 /* ============================================================
    SHAP FACTOR LIST
@@ -1062,7 +999,6 @@
     gap: 6px;
 
 }
-
 
 .shap-factor-group li {
 
@@ -1094,7 +1030,6 @@
 
 }
 
-
 .shap-factor-group.supporting li {
 
     background: #eefaf2;
@@ -1105,7 +1040,6 @@
 
 }
 
-
 /* ============================================================
    OPPOSING FACTORS
 ============================================================ */
@@ -1115,7 +1049,6 @@
     color: #b26a00;
 
 }
-
 
 .shap-factor-group.opposing li {
 
@@ -1141,7 +1074,6 @@
 
 }
 
-
 .feature-card {
 
     background: #f8faff;
@@ -1153,7 +1085,6 @@
     padding: 14px;
 
 }
-
 
 .feature-top {
 
@@ -1167,7 +1098,6 @@
 
 }
 
-
 .feature-heading {
 
     display: flex;
@@ -1177,7 +1107,6 @@
     min-width: 0;
 
 }
-
 
 .feature-icon {
 
@@ -1199,20 +1128,17 @@
 
 }
 
-
 .feature-icon.visual {
 
     background: #fff0dc;
 
 }
 
-
 .feature-icon.audio {
 
     background: #ffe3e3;
 
 }
-
 
 .feature-icon.text {
 
@@ -1242,7 +1168,6 @@
 
 }
 
-
 .feature-name {
 
     font-size: 12px;
@@ -1252,7 +1177,6 @@
     color: #303743;
 
 }
-
 
 .feature-subtitle {
 
@@ -1265,7 +1189,6 @@
     line-height: 1.4;
 
 }
-
 
 .feature-level {
 
@@ -1284,7 +1207,6 @@
     flex-shrink: 0;
 
 }
-
 
 /* ============================================================
    MINI PROGRESS
@@ -1306,7 +1228,6 @@
 
 }
 
-
 .mini-fill {
 
     width: 0%;
@@ -1318,7 +1239,6 @@
     transition: width 0.5s ease;
 
 }
-
 
 /* ============================================================
    FEATURE BUBBLES
@@ -1335,7 +1255,6 @@
     margin-top: 11px;
 
 }
-
 
 .feature-bubbles span {
 
@@ -1354,7 +1273,6 @@
     font-weight: 600;
 
 }
-
 
 /* ============================================================
    RECOMMENDATION
@@ -1378,13 +1296,11 @@
 
 }
 
-
 .empty-recommendation span {
 
     font-size: 18px;
 
 }
-
 
 .empty-recommendation p {
 
@@ -1397,7 +1313,6 @@
     color: #666e7b;
 
 }
-
 
 /* ============================================================
    FOOTER
@@ -1415,19 +1330,23 @@
 
 }
 
-
 .neuroshield-footer span {
 
     margin: 0 5px;
 
 }
 
-
 /* ============================================================
    MINIMIZED
 ============================================================ */
+/* ============================================================
+   NEUROSHIELD AI — MINIMIZE
+   Works for Analysis and Settings
+============================================================ */
 
-.neuroshield-window.minimized {
+/* Collapse the floating window */
+
+#neuroshield-overlay .neuroshield-window.minimized {
 
     height: auto !important;
 
@@ -1437,22 +1356,26 @@
 
 }
 
+/* Hide analysis content and settings */
 
-.neuroshield-window.minimized
-.neuroshield-content {
+#neuroshield-overlay .neuroshield-window.minimized
+.neuroshield-content,
 
-    display: none;
+#neuroshield-overlay .neuroshield-window.minimized
+#neuroshield-settings-view {
+
+    display: none !important;
 
 }
 
+/* Keep header visible */
 
-.neuroshield-window.minimized
+#neuroshield-overlay .neuroshield-window.minimized
 .neuroshield-header {
 
     border-bottom: none;
 
 }
-
 
 /* ============================================================
    HIGH ALERT
@@ -1480,13 +1403,11 @@
 
 }
 
-
 .neuroshield-main-card.alert-pulse {
 
     animation: neuroshieldAlert 0.7s ease-in-out 3;
 
 }
-
 
 /* ============================================================
    DRAGGING
@@ -1499,7 +1420,6 @@
     opacity: 0.96;
 
 }
-
 
 /* ============================================================
    RESPONSIVE
@@ -1579,7 +1499,6 @@
 
 }
 
-
 /* ============================================================
    HYBRID RESULT BADGE
 ============================================================ */
@@ -1620,7 +1539,6 @@
 
 }
 
-
 /* ============================================================
    HYBRID TITLE
 ============================================================ */
@@ -1644,7 +1562,6 @@
     line-height: 1.3;
 
 }
-
 
 /* ============================================================
    HYBRID SCORE
@@ -1670,7 +1587,6 @@
 
 }
 
-
 /* ============================================================
    HYBRID CATEGORY LABEL
 ============================================================ */
@@ -1691,7 +1607,6 @@
 
 }
 
-
 /* ============================================================
    HYBRID DESCRIPTION
 ============================================================ */
@@ -1710,11 +1625,9 @@
 
 }
 
-
 /* ============================================================
    HYBRID CATEGORY COLOURS
 ============================================================ */
-
 
 /* LOW DEVELOPMENTAL IMPACT */
 
@@ -1728,7 +1641,6 @@
 
 }
 
-
 /* MODERATE DEVELOPMENTAL IMPACT */
 
 .hybrid-assessment-card.moderate {
@@ -1740,7 +1652,6 @@
     );
 
 }
-
 
 /* HIGH DEVELOPMENTAL IMPACT */
 
@@ -1772,7 +1683,6 @@
 
 }
 
-
 /* ============================================================
    HYBRID ACCORDION
 ============================================================ */
@@ -1790,7 +1700,6 @@
     background: rgba(255, 255, 255, 0.12);
 
 }
-
 
 /* ============================================================
    CLICKABLE ACCORDION BUTTON
@@ -1834,20 +1743,17 @@
 
 }
 
-
 .hybrid-accordion-button:hover {
 
     background: rgba(255, 255, 255, 0.08);
 
 }
 
-
 .hybrid-accordion-button.open {
 
     background: rgba(255, 255, 255, 0.06);
 
 }
-
 
 /* ============================================================
    ACCORDION ARROW
@@ -1869,7 +1775,6 @@
 
 }
 
-
 /* ============================================================
    COLLAPSED CONTENT
 ============================================================ */
@@ -1884,7 +1789,6 @@
 
 }
 
-
 /* ============================================================
    EXPANDED CONTENT
 ============================================================ */
@@ -1894,7 +1798,6 @@
     display: block;
 
 }
-
 
 /* ============================================================
    COMPONENT BREAKDOWN
@@ -1907,7 +1810,6 @@
     margin-bottom: 16px;
 
 }
-
 
 .hybrid-component-header {
 
@@ -1923,7 +1825,6 @@
 
 }
 
-
 .hybrid-component-header span {
 
     color: rgba(255, 255, 255, 0.92);
@@ -1933,7 +1834,6 @@
     font-weight: 600;
 
 }
-
 
 .hybrid-component-header strong {
 
@@ -1946,7 +1846,6 @@
     font-weight: 800;
 
 }
-
 
 /* ============================================================
    COMPONENT BARS
@@ -1966,7 +1865,6 @@
 
 }
 
-
 .hybrid-component-fill {
 
     width: 0;
@@ -1981,7 +1879,6 @@
 
 }
 
-
 .hybrid-component-weight {
 
     margin-top: 5px;
@@ -1991,7 +1888,6 @@
     font-size: 9px;
 
 }
-
 
 /* ============================================================
    COMBINED RESULT
@@ -2013,7 +1909,6 @@
 
 }
 
-
 .hybrid-calculation-result span {
 
     color: rgba(255, 255, 255, 0.90);
@@ -2024,7 +1919,6 @@
 
 }
 
-
 .hybrid-calculation-result strong {
 
     color: #ffffff;
@@ -2034,7 +1928,6 @@
     font-weight: 800;
 
 }
-
 
 /* ============================================================
    WHY THIS RESULT
@@ -2052,7 +1945,6 @@
 
 }
 
-
 .hybrid-why-item {
 
     padding: 11px 0;
@@ -2061,13 +1953,11 @@
 
 }
 
-
 .hybrid-why-item:last-child {
 
     padding-bottom: 0;
 
 }
-
 
 .hybrid-why-label {
 
@@ -2080,7 +1970,6 @@
     font-weight: 800;
 
 }
-
 
 .hybrid-why-text {
 
@@ -2111,7 +2000,6 @@
 
 }
 
-
 /* Keep AI card background neutral for all categories */
 
 .ai-risk-card.low,
@@ -2121,7 +2009,6 @@
     background: #ffffff !important;
 
 }
-
 
 /* ============================================================
    AI CARD TEXT
@@ -2133,7 +2020,6 @@
 
 }
 
-
 .ai-risk-card .main-score-empty {
 
     color: #222222;
@@ -2144,7 +2030,6 @@
 
 }
 
-
 .ai-risk-card .main-score-label {
 
     font-size: 20px;
@@ -2153,13 +2038,11 @@
 
 }
 
-
 .ai-risk-card .main-score-description {
 
     color: #6b7280;
 
 }
-
 
 /* ============================================================
    AI MODEL PREDICTION BADGE
@@ -2173,11 +2056,9 @@
 
 }
 
-
 /* ============================================================
    AI CATEGORY ACCENTS
 ============================================================ */
-
 
 /* LOW DEVELOPMENTAL IMPACT */
 
@@ -2201,7 +2082,6 @@
 
 }
 
-
 /* MODERATE DEVELOPMENTAL IMPACT */
 
 .ai-risk-card.moderate {
@@ -2223,7 +2103,6 @@
     color: #c97800;
 
 }
-
 
 /* HIGH DEVELOPMENTAL IMPACT */
 
@@ -2257,7 +2136,6 @@
 
 }
 
-
 /* ATTENTION BADGE */
 
 .guidance-attention-badge {
@@ -2282,7 +2160,6 @@
 
 }
 
-
 .guidance-attention-badge.high {
 
     background: #fde8e8;
@@ -2290,7 +2167,6 @@
     color: #c62828;
 
 }
-
 
 .guidance-attention-badge.moderate {
 
@@ -2300,7 +2176,6 @@
 
 }
 
-
 .guidance-attention-badge.low {
 
     background: #e8f5e9;
@@ -2308,7 +2183,6 @@
     color: #2e7d32;
 
 }
-
 
 /* MAIN RESULT */
 
@@ -2326,7 +2200,6 @@
 
 }
 
-
 .guidance-main-header {
 
     display: flex;
@@ -2339,7 +2212,6 @@
 
 }
 
-
 .guidance-main-header span {
 
     font-size: 12px;
@@ -2350,7 +2222,6 @@
 
 }
 
-
 .guidance-main-header strong {
 
     font-size: 17px;
@@ -2358,7 +2229,6 @@
     color: #222222;
 
 }
-
 
 .guidance-combined-track {
 
@@ -2374,7 +2244,6 @@
 
 }
 
-
 .guidance-combined-fill {
 
     height: 100%;
@@ -2385,7 +2254,6 @@
 
 }
 
-
 .guidance-score-note {
 
     margin-top: 7px;
@@ -2395,7 +2263,6 @@
     color: #8a8f9c;
 
 }
-
 
 /* STRONGEST RESULT */
 
@@ -2413,7 +2280,6 @@
 
 }
 
-
 .guidance-highlight-title {
 
     margin-bottom: 5px;
@@ -2425,7 +2291,6 @@
     color: #333333;
 
 }
-
 
 .guidance-highlight p {
 
@@ -2439,7 +2304,6 @@
 
 }
 
-
 /* ANALYSIS RESULTS */
 
 .guidance-results {
@@ -2447,7 +2311,6 @@
     margin-bottom: 14px;
 
 }
-
 
 .guidance-results-title {
 
@@ -2465,7 +2328,6 @@
 
 }
 
-
 .guidance-result-row {
 
     display: flex;
@@ -2480,13 +2342,11 @@
 
 }
 
-
 .guidance-result-row:last-child {
 
     border-bottom: none;
 
 }
-
 
 .guidance-result-name {
 
@@ -2495,7 +2355,6 @@
     color: #4b5563;
 
 }
-
 
 .guidance-result-value {
 
@@ -2507,7 +2366,6 @@
 
 }
 
-
 .guidance-result-value strong {
 
     font-size: 11px;
@@ -2515,7 +2373,6 @@
     color: #222222;
 
 }
-
 
 .guidance-highest-badge {
 
@@ -2533,7 +2390,6 @@
 
 }
 
-
 /* GUIDANCE MESSAGE */
 
 .parent-guidance-message {
@@ -2546,7 +2402,6 @@
 
 }
 
-
 .parent-guidance-message strong {
 
     display: block;
@@ -2558,7 +2413,6 @@
     color: #333333;
 
 }
-
 
 .parent-guidance-message p {
 
@@ -2598,7 +2452,6 @@
 
 }
 
-
 .developmental-overall-description {
 
     margin-top: 5px;
@@ -2631,7 +2484,6 @@
     border-radius: 16px;
 }
 
-
 /* ============================================================
    DONUT RING
 ============================================================ */
@@ -2658,7 +2510,6 @@
     margin-bottom: 12px;
 }
 
-
 /* WHITE CENTRE CREATES THE RING */
 
 .developmental-donut-inner {
@@ -2675,7 +2526,6 @@
     justify-content: center;
 }
 
-
 /* SCORE */
 
 .developmental-donut-inner strong {
@@ -2685,7 +2535,6 @@
     color: #222222;
 }
 
-
 .developmental-donut-inner span {
     margin-top: 3px;
 
@@ -2694,7 +2543,6 @@
 
     color: #6b7280;
 }
-
 
 /* LABEL */
 
@@ -2708,7 +2556,6 @@
 
     text-align: center;
 }
-
 
 /* DESCRIPTION */
 
@@ -2735,7 +2582,6 @@
     font-weight: 500;
 }
 
-
 /* ============================================================
    FEATURE SECTIONS
 ============================================================ */
@@ -2756,7 +2602,6 @@
     opacity: 0.8;
 }
 
-
 /* ============================================================
    FEATURE ROW
 ============================================================ */
@@ -2771,7 +2616,6 @@
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-
 /* FEATURE NAME */
 
 .hybrid-feature-name {
@@ -2781,7 +2625,6 @@
     line-height: 1.3;
     font-weight: 700;
 }
-
 
 /* TRAINING REFERENCE */
 
@@ -2800,7 +2643,6 @@
     font-weight: 600;
 }
 
-
 /* SHAP DIRECTION */
 
 .hybrid-feature-influence {
@@ -2809,7 +2651,6 @@
 
     opacity: 0.85;
 }
-
 
 /* ============================================================
    DEVELOPMENTAL ANALYSIS
@@ -2834,7 +2675,6 @@
     line-height: 1.45;
 }
 
-
 /* ============================================================
    EXPLANATION NOTE
 ============================================================ */
@@ -2852,7 +2692,6 @@
 
     opacity: 0.85;
 }
-
 
 /* ============================================================
    EMPTY FEATURE STATE
@@ -2880,7 +2719,6 @@
     min-width: 0;
 }
 
-
 /* Main explanation paragraph */
 
 .explainability-detail > p {
@@ -2891,7 +2729,6 @@
 
     color: #667085;
 }
-
 
 /* ============================================================
    MOST INFLUENTIAL FEATURE
@@ -2907,7 +2744,6 @@
     border-radius: 12px;
 }
 
-
 .explainability-feature-label {
     margin-bottom: 5px;
 
@@ -2920,7 +2756,6 @@
     letter-spacing: 0.04em;
 }
 
-
 .explainability-feature-name {
     margin-bottom: 6px;
 
@@ -2929,7 +2764,6 @@
 
     color: #252b37;
 }
-
 
 .explainability-feature-influence {
     display: inline-block;
@@ -2946,7 +2780,6 @@
     color: #475467;
 }
 
-
 /* ============================================================
    SHAP METHOD NOTE
 ============================================================ */
@@ -2958,7 +2791,6 @@
     border-top: 1px solid #e4e8ef;
 }
 
-
 .explainability-method-note > strong {
     display: block;
 
@@ -2969,7 +2801,6 @@
 
     color: #344054;
 }
-
 
 .explainability-method-note > p {
     margin: 0;
@@ -2993,7 +2824,6 @@
     margin-top: 12px;
 }
 
-
 /* ============================================================
    INDIVIDUAL DETECTED FEATURE
 ============================================================ */
@@ -3015,7 +2845,6 @@
     box-sizing: border-box;
 }
 
-
 /* FEATURE NAME */
 
 .detected-feature-name {
@@ -3032,7 +2861,6 @@
     overflow-wrap: anywhere;
 }
 
-
 /* RAW EXTRACTED VALUE */
 
 .detected-feature-value {
@@ -3044,7 +2872,6 @@
 
     color: #1d2939;
 }
-
 
 /* TRAINING-DATA REFERENCE */
 
@@ -3065,7 +2892,6 @@
     color: #667085;
 }
 
-
 /* ============================================================
    FEATURE CARD SPACING
 ============================================================ */
@@ -3074,11 +2900,9 @@
     padding-bottom: 16px;
 }
 
-
 .feature-card .mini-progress {
     margin-top: 12px;
 }
-
 
 /* ============================================================
    CONTRIBUTION BADGE
@@ -3094,7 +2918,6 @@
     font-size: 10px;
     font-weight: 600;
 }
-
 
 /* ============================================================
    SMALLER EXTENSION WIDTH
@@ -3116,13 +2939,11 @@
     display: none;
 }
 
-
 /* OPEN STATE */
 
 .detected-features-collapsible.detected-features-open {
     display: grid;
 }
-
 
 /* ============================================================
    VIEW / HIDE FEATURES BUTTON
@@ -3148,14 +2969,12 @@
     color: #667085;
 }
 
-
 /* FEATURE COUNT */
 
 .detected-features-toggle > span:first-child {
     font-size: 10px;
     font-weight: 600;
 }
-
 
 /* RIGHT SIDE */
 
@@ -3170,7 +2989,6 @@
 
     color: #475467;
 }
-
 
 /* ARROW */
 
@@ -3190,14 +3008,12 @@
     font-size: 10px;
 }
 
-
 /* HOVER */
 
 .detected-features-toggle:hover
 .detected-features-toggle-action {
     color: #1d2939;
 }
-
 
 /* SPACE BETWEEN TOGGLE AND OPEN GRID */
 
@@ -3240,13 +3056,11 @@
     transform 0.15s ease;
 }
 
-
 .feature-card.feature-card-clickable:hover {
     border-color: #d0d5dd;
 
     box-shadow: 0 3px 10px rgba(16, 24, 40, 0.05);
 }
-
 
 /* Individual feature tiles are informational,
    so don't make them look clickable */
@@ -3295,7 +3109,6 @@
     text-align: left;
 }
 
-
 .multimedia-section-arrow {
     display: flex;
     align-items: center;
@@ -3313,13 +3126,11 @@
     color: #667085;
 }
 
-
 /* CLOSED */
 
 .multimedia-section-content {
     display: none;
 }
-
 
 /* OPEN */
 
@@ -3355,7 +3166,6 @@
     text-align: left;
 }
 
-
 .parental-guidance-arrow {
     display: flex;
     align-items: center;
@@ -3373,11 +3183,9 @@
     font-size: 11px;
 }
 
-
 .parental-guidance-content {
     display: none;
 }
-
 
 .parental-guidance-content.open {
     display: block;
@@ -3397,7 +3205,6 @@
     color: #667085;
 }
 
-
 /* ============================================================
    RECOMMENDATION LIST
 ============================================================ */
@@ -3407,7 +3214,6 @@
     flex-direction: column;
     gap: 10px;
 }
-
 
 /* ============================================================
    INDIVIDUAL RECOMMENDATION
@@ -3425,13 +3231,11 @@
     box-shadow 0.2s ease;
 }
 
-
 .parent-guidance-item:hover {
     border-color: #d0d5dd;
 
     box-shadow: 0 3px 10px rgba(16, 24, 40, 0.05);
 }
-
 
 /* ============================================================
    RECOMMENDATION BUTTON
@@ -3457,7 +3261,6 @@
     text-align: left;
 }
 
-
 .parent-guidance-item-heading {
     min-width: 0;
 
@@ -3470,7 +3273,6 @@
 
     color: #252b37;
 }
-
 
 .parent-guidance-item-icon {
     flex-shrink: 0;
@@ -3488,7 +3290,6 @@
 
     font-size: 16px;
 }
-
 
 .parent-guidance-item-arrow {
     flex-shrink: 0;
@@ -3510,7 +3311,6 @@
     font-size: 11px;
 }
 
-
 /* ============================================================
    EXPANDED RECOMMENDATION
 ============================================================ */
@@ -3521,11 +3321,9 @@
     padding: 0 14px 14px 54px;
 }
 
-
 .parent-guidance-item-content.open {
     display: block;
 }
-
 
 .parent-guidance-action {
     margin: 0 0 12px 0;
@@ -3535,7 +3333,6 @@
 
     color: #475467;
 }
-
 
 /* ============================================================
    WHY RECOMMENDED
@@ -3550,7 +3347,6 @@
     background: #f8fafc;
 }
 
-
 .parent-guidance-reason strong {
     display: block;
 
@@ -3562,7 +3358,6 @@
     color: #344054;
 }
 
-
 .parent-guidance-reason p {
     margin: 0;
 
@@ -3571,7 +3366,6 @@
 
     color: #667085;
 }
-
 
 /* ============================================================
    PARENTAL GUIDANCE NOTE
@@ -3619,7 +3413,6 @@
     text-align: left;
 }
 
-
 .explainability-section-arrow {
     display: flex;
     align-items: center;
@@ -3637,11 +3430,9 @@
     font-size: 11px;
 }
 
-
 .explainability-section-content {
     display: none;
 }
-
 
 .explainability-section-content.open {
     display: block;
@@ -3650,7 +3441,6 @@
 /* ============================================================
    EXPLAINABILITY - FINAL UI
 ============================================================ */
-
 
 /* ------------------------------------------------------------
    MAIN SECTION BUTTON
@@ -3708,7 +3498,6 @@
     font-size: 11px;
 }
 
-
 /* ------------------------------------------------------------
    MAIN CONTENT
 ------------------------------------------------------------ */
@@ -3721,7 +3510,6 @@
     display: block;
     margin-top: 14px;
 }
-
 
 /* ------------------------------------------------------------
    IMPORTANT:
@@ -3740,7 +3528,6 @@
 
     background: #f7f9fc;
 }
-
 
 /* ------------------------------------------------------------
    TOP OVERVIEW
@@ -3803,7 +3590,6 @@
     color: #667085;
 }
 
-
 /* ------------------------------------------------------------
    MOST INFLUENTIAL FEATURE
 ------------------------------------------------------------ */
@@ -3848,7 +3634,6 @@
     color: #252b37;
 }
 
-
 /* ------------------------------------------------------------
    SHAP DIRECTION
 ------------------------------------------------------------ */
@@ -3888,7 +3673,6 @@
     font-size: 12px;
     font-weight: 700;
 }
-
 
 /* ------------------------------------------------------------
    HOW THIS EXPLANATION WORKS
@@ -3963,7 +3747,6 @@
     font-size: 10px;
 }
 
-
 /* ------------------------------------------------------------
    METHOD CONTENT
 ------------------------------------------------------------ */
@@ -3998,7 +3781,6 @@
    FINAL LIGHT EXPLANATION DESIGN
 ============================================================ */
 
-
 /* ------------------------------------------------------------
    MAIN EXPLANATION AREA
 ------------------------------------------------------------ */
@@ -4010,7 +3792,6 @@
 
     border-radius: 0 0 14px 14px;
 }
-
 
 /* ------------------------------------------------------------
    SUMMARY
@@ -4031,7 +3812,6 @@
     line-height: 1.55;
 }
 
-
 /* ------------------------------------------------------------
    DETAIL SECTIONS
 ------------------------------------------------------------ */
@@ -4046,7 +3826,6 @@
 
     background: #ffffff;
 }
-
 
 /* ------------------------------------------------------------
    DETAIL BUTTON
@@ -4075,22 +3854,18 @@
     text-align: left;
 }
 
-
 .hybrid-detail-toggle:hover {
     background: #fafbfc;
 }
-
 
 .hybrid-detail-toggle:focus {
     outline: none;
 }
 
-
 .hybrid-detail-toggle:focus-visible {
     outline: 2px solid #98a2b3;
     outline-offset: -2px;
 }
-
 
 .hybrid-detail-heading {
     min-width: 0;
@@ -4107,14 +3882,12 @@
     color: #344054;
 }
 
-
 .hybrid-detail-count {
     font-size: 10px;
     font-weight: 500;
 
     color: #98a2b3;
 }
-
 
 .hybrid-detail-arrow {
     flex: 0 0 21px;
@@ -4136,7 +3909,6 @@
     font-size: 10px;
 }
 
-
 /* ------------------------------------------------------------
    COLLAPSIBLE CONTENT
 ------------------------------------------------------------ */
@@ -4150,11 +3922,9 @@
         12px;
 }
 
-
 .hybrid-detail-content.open {
     display: block;
 }
-
 
 /* ------------------------------------------------------------
    EXISTING FEATURE CONTAINERS
@@ -4167,7 +3937,6 @@
 
     gap: 8px;
 }
-
 
 /* ------------------------------------------------------------
    EXISTING FEATURE ROWS
@@ -4186,7 +3955,6 @@
     color: #344054 !important;
 }
 
-
 /* Feature name */
 
 .hybrid-feature-name {
@@ -4196,14 +3964,12 @@
     font-weight: 700;
 }
 
-
 /* Other feature text */
 
 .hybrid-feature-row,
 .hybrid-feature-row * {
     text-shadow: none !important;
 }
-
 
 /* ------------------------------------------------------------
    REFERENCE BADGES
@@ -4227,7 +3993,6 @@
     border: 1px solid #f1bcbc;
 }
 
-
 .hybrid-feature-reference.reference-typical {
     background: #f0faf3 !important;
     color: #297a42 !important;
@@ -4235,14 +4000,12 @@
     border: 1px solid #b9dfc3;
 }
 
-
 .hybrid-feature-reference.reference-lower {
     background: #f1f6ff !important;
     color: #3b5f91 !important;
 
     border: 1px solid #bfd1ec;
 }
-
 
 /* ------------------------------------------------------------
    DEVELOPMENTAL EXPLANATION
@@ -4261,7 +4024,6 @@
     font-size: 11.5px;
     line-height: 1.55;
 }
-
 
 /* ------------------------------------------------------------
    CAUSATION NOTE
@@ -4288,11 +4050,2001 @@
     line-height: 1.5;
 }
 
-
 .hybrid-note-icon {
     flex-shrink: 0;
 
     color: #667085;
 
     font-size: 12px;
+}
+
+/* ============================================================
+   NEUROSHIELD LIGHT / DARK MODE
+============================================================ */
+
+#neuroshield-overlay .neuroshield-window {
+    background: var(--ns-surface);
+    border-color: var(--ns-border);
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .neuroshield-header {
+    background: var(--ns-surface);
+    border-bottom-color: var(--ns-border);
+}
+
+#neuroshield-overlay .neuroshield-title {
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .neuroshield-subtitle {
+    color: var(--ns-text-secondary);
+}
+
+#neuroshield-overlay .neuroshield-content {
+    background: var(--ns-bg);
+}
+
+#neuroshield-overlay .neuroshield-card,
+#neuroshield-overlay .ai-risk-card {
+    background: var(--ns-surface) !important;
+    border-color: var(--ns-border);
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .card-title {
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .score-row,
+#neuroshield-overlay .feature-card,
+#neuroshield-overlay .empty-insight {
+    background: var(--ns-surface-soft);
+}
+
+#neuroshield-overlay .score-header span,
+#neuroshield-overlay .score-header strong,
+#neuroshield-overlay .feature-name {
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .score-description,
+#neuroshield-overlay .feature-subtitle {
+    color: var(--ns-text-secondary);
+}
+
+/* SETTINGS */
+
+#neuroshield-overlay .ns-settings-page {
+    background: var(--ns-bg);
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .ns-settings-card {
+    background: var(--ns-surface);
+    border-color: var(--ns-border);
+}
+
+#neuroshield-overlay .ns-settings-header h2,
+#neuroshield-overlay .ns-settings-card h3,
+#neuroshield-overlay .ns-settings-description strong {
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .ns-settings-description p,
+#neuroshield-overlay .ns-settings-header p {
+    color: var(--ns-text-secondary);
+}
+
+/* ============================================================
+   PHASE 5.3.1 — OVERLAY WINDOW AND HEADER
+============================================================ */
+
+#neuroshield-overlay .neuroshield-window {
+    width: 440px;
+    height: min(740px, 88vh);
+
+    min-width: 350px;
+    min-height: 420px;
+
+    max-width: 95vw;
+    max-height: 92vh;
+
+    background: var(--ns-surface);
+    border: 1px solid var(--ns-border);
+    border-radius: 20px;
+
+    box-shadow:
+        0 16px 48px rgba(15, 23, 42, 0.18);
+
+    overflow: hidden;
+}
+
+/* HEADER */
+
+#neuroshield-overlay .neuroshield-header {
+    height: 76px;
+    min-height: 76px;
+
+    padding: 12px 16px;
+
+    background: var(--ns-surface);
+    border-bottom: 1px solid var(--ns-border);
+
+    gap: 8px;
+}
+
+/* BRAND */
+
+#neuroshield-overlay .neuroshield-brand {
+    flex: 1;
+    min-width: 0;
+    gap: 8px;
+}
+
+#neuroshield-overlay .neuroshield-logo-container {
+    width: 60px;
+    height: 48px;
+}
+
+#neuroshield-overlay .neuroshield-logo {
+    width: 60px !important;
+    height: 48px !important;
+
+    max-width: 60px !important;
+    max-height: 48px !important;
+}
+
+#neuroshield-overlay .neuroshield-title {
+    font-size: 16px;
+    font-weight: 750;
+    letter-spacing: -0.3px;
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .neuroshield-subtitle {
+    font-size: 10px;
+    line-height: 1.4;
+    color: var(--ns-text-secondary);
+}
+
+/* ACTION BUTTONS */
+
+#neuroshield-overlay .neuroshield-actions {
+    gap: 5px;
+}
+
+#neuroshield-overlay .neuroshield-action {
+    width: 30px;
+    height: 30px;
+
+    min-width: 30px;
+    min-height: 30px;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 9px;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-text-secondary);
+
+    font-size: 15px;
+}
+
+#neuroshield-overlay .neuroshield-action:hover {
+    background: var(--ns-border);
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .neuroshield-action:focus-visible {
+    outline: 2px solid var(--ns-primary);
+    outline-offset: 2px;
+}
+
+#neuroshield-overlay .neuroshield-action.close:hover {
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+/* SCROLLABLE CONTENT */
+
+#neuroshield-overlay .neuroshield-content {
+    flex: 1;
+    min-height: 0;
+
+    padding: 16px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: var(--ns-bg);
+    scrollbar-gutter: stable;
+}
+
+#neuroshield-overlay .neuroshield-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+#neuroshield-overlay .neuroshield-content::-webkit-scrollbar-thumb {
+    background: var(--ns-border);
+    border-radius: 999px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 480px) {
+    #neuroshield-overlay .neuroshield-window {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+
+        right: 10px;
+        top: 55px;
+    }
+
+    #neuroshield-overlay .neuroshield-header {
+        padding: 10px;
+    }
+
+    #neuroshield-overlay .neuroshield-content {
+        padding: 12px;
+    }
+}
+/* ============================================================
+   PHASE 5.3.2 — MONITORING STATUS
+============================================================ */
+
+#neuroshield-overlay .neuroshield-status-card {
+    padding: 13px 14px;
+    margin-bottom: 16px;
+
+    border-radius: 14px;
+    border: 1px solid var(--ns-border);
+
+    background: var(--ns-surface);
+    gap: 10px;
+}
+
+#neuroshield-overlay .status-left {
+    min-width: 0;
+    gap: 11px;
+}
+
+#neuroshield-overlay .status-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .status-text {
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--ns-text-secondary);
+}
+
+#neuroshield-overlay .status-badge {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* WAITING */
+
+#neuroshield-overlay .neuroshield-status-card.waiting {
+    background: var(--ns-surface);
+    border-color: #e8c66c;
+}
+
+#neuroshield-overlay .status-badge.waiting {
+    background: #fff1b8;
+    color: #805600;
+}
+
+/* ACTIVE */
+
+#neuroshield-overlay .neuroshield-status-card.active {
+    background: var(--ns-surface);
+    border-color: #70c996;
+}
+
+#neuroshield-overlay .status-badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+/* ============================================================
+   PHASE 5.3.2 — HYBRID ASSESSMENT
+============================================================ */
+
+#neuroshield-overlay .hybrid-assessment-card {
+    padding: 22px;
+    margin-bottom: 16px;
+
+    border-radius: 18px;
+    overflow: hidden;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 24px rgba(30, 45, 80, 0.12);
+}
+
+#neuroshield-overlay .hybrid-assessment-card .main-score-title {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+
+    margin-bottom: 18px;
+    padding-right: 115px;
+
+    color: #ffffff;
+}
+
+#neuroshield-overlay .hybrid-assessment-card .main-score-empty {
+    font-size: 58px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+
+    color: #ffffff;
+}
+
+#neuroshield-overlay .hybrid-assessment-card .main-score-label {
+    margin-top: 8px;
+
+    font-size: 19px;
+    font-weight: 700;
+
+    color: #ffffff;
+}
+
+#neuroshield-overlay .hybrid-assessment-card .main-score-description {
+    margin-top: 12px;
+
+    font-size: 11px;
+    line-height: 1.65;
+
+    color: rgba(255, 255, 255, 0.94);
+}
+
+#neuroshield-overlay .hybrid-assessment-card .live-badge {
+    top: 17px;
+    right: 17px;
+
+    padding: 6px 10px;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    color: #ffffff;
+}
+
+/* PRESERVE RISK COLOURS */
+
+#neuroshield-overlay .hybrid-assessment-card.low {
+    background: linear-gradient(
+        135deg,
+        #15965c,
+        #34bd7a
+    );
+}
+
+#neuroshield-overlay .hybrid-assessment-card.moderate {
+    background: linear-gradient(
+        135deg,
+        #dc8500,
+        #f5ad37
+    );
+}
+
+#neuroshield-overlay .hybrid-assessment-card.high {
+    background: linear-gradient(
+        135deg,
+        #d93636,
+        #ef6666
+    );
+}
+
+/* EXPLANATION ACCORDION */
+
+#neuroshield-overlay .hybrid-accordion {
+    margin-top: 12px;
+    border-radius: 12px;
+}
+
+#neuroshield-overlay .hybrid-accordion-button {
+    padding: 13px 14px;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+}
+
+#neuroshield-overlay .hybrid-accordion-button:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: -3px;
+}
+/* ============================================================
+   PHASE 5.3.2 — RANDOM FOREST CARD
+============================================================ */
+
+#neuroshield-overlay .ai-risk-card,
+#neuroshield-overlay .ai-risk-card.low,
+#neuroshield-overlay .ai-risk-card.moderate,
+#neuroshield-overlay .ai-risk-card.high {
+    padding: 20px;
+    margin-bottom: 16px;
+
+    border-radius: 18px;
+    border-top: 1px solid var(--ns-border);
+    border-right: 1px solid var(--ns-border);
+    border-bottom: 1px solid var(--ns-border);
+
+    background: var(--ns-surface) !important;
+    color: var(--ns-text);
+
+    box-shadow: var(--ns-shadow);
+}
+
+#neuroshield-overlay .ai-risk-card .main-score-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ns-text-secondary);
+}
+
+#neuroshield-overlay .ai-risk-card .main-score-empty {
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .ai-risk-card .main-score-label {
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+#neuroshield-overlay .ai-risk-card .main-score-description {
+    margin-top: 11px;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--ns-text-secondary);
+}
+
+#neuroshield-overlay .ai-risk-card .live-badge {
+    font-size: 9px;
+    font-weight: 800;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-primary);
+}
+
+/* CATEGORY ACCENTS */
+
+#neuroshield-overlay .ai-risk-card.low {
+    border-left: 5px solid #22b573;
+}
+
+#neuroshield-overlay .ai-risk-card.moderate {
+    border-left: 5px solid #f59e0b;
+}
+
+#neuroshield-overlay .ai-risk-card.high {
+    border-left: 5px solid #ef4444;
+}
+/* ============================================================
+   PHASE 5.3.3 — DEVELOPMENTAL IMPACT SCORES
+============================================================ */
+
+/* MAIN SECTION */
+
+#neuroshield-overlay .neuroshield-card {
+    background: var(--ns-surface);
+    border: 1px solid var(--ns-border);
+    border-radius: 18px;
+
+    padding: 18px;
+    margin-bottom: 16px;
+
+    box-shadow: var(--ns-shadow);
+}
+
+#neuroshield-overlay .card-title {
+    margin-bottom: 16px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    color: var(--ns-text);
+}
+
+/* INDIVIDUAL SCORE ROWS */
+
+#neuroshield-overlay .score-row {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+    padding: 13px;
+
+    margin-bottom: 10px;
+
+    border-radius: 13px;
+    border: 1px solid var(--ns-border);
+
+    background: var(--ns-surface-soft);
+}
+
+#neuroshield-overlay .score-row:last-child {
+    margin-bottom: 0;
+}
+
+/* SCORE ICONS */
+
+#neuroshield-overlay .score-icon {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+    border-radius: 12px;
+}
+
+#neuroshield-overlay .score-icon img {
+    width: 22px;
+    height: 22px;
+
+    object-fit: contain;
+}
+
+/* SCORE LABELS */
+
+#neuroshield-overlay .score-content {
+    flex: 1;
+    min-width: 0;
+}
+
+#neuroshield-overlay .score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 8px;
+    margin-bottom: 9px;
+}
+
+#neuroshield-overlay .score-header span {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .score-header strong {
+    font-size: 13px;
+    font-weight: 800;
+
+    color: var(--ns-text);
+    white-space: nowrap;
+}
+
+/* PROGRESS BARS */
+
+#neuroshield-overlay .progress-track {
+    width: 100%;
+    height: 8px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+    background: var(--ns-border);
+}
+
+#neuroshield-overlay .progress-fill {
+    height: 100%;
+    border-radius: 999px;
+
+    transition: width 0.5s ease;
+}
+
+/* COGNITIVE */
+
+#neuroshield-overlay .cognitive-icon,
+#neuroshield-overlay .cognitive-fill {
+    background: #f59e0b;
+}
+
+/* BEHAVIOURAL */
+
+#neuroshield-overlay .behavioural-icon,
+#neuroshield-overlay .behavioural-fill {
+    background: #ef4444;
+}
+
+/* EMOTIONAL */
+
+#neuroshield-overlay .emotional-icon,
+#neuroshield-overlay .emotional-fill {
+    background: #a855f7;
+}
+
+/* DESCRIPTIONS */
+
+#neuroshield-overlay .score-description {
+    margin-top: 8px;
+
+    font-size: 10px;
+    line-height: 1.5;
+
+    color: var(--ns-text-secondary);
+}
+/* ============================================================
+   PHASE 5.3.3 — OVERALL DEVELOPMENTAL DONUT
+============================================================ */
+
+#neuroshield-overlay .developmental-overall-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 16px;
+    padding: 22px 16px;
+
+    border-radius: 15px;
+    border: 1px solid var(--ns-border);
+
+    background: var(--ns-surface-soft);
+}
+
+/* DONUT RING */
+
+#neuroshield-overlay .developmental-donut {
+    width: 118px;
+    height: 118px;
+
+    margin-bottom: 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: conic-gradient(
+        #6875f5 0deg,
+        #6875f5 var(--developmental-angle, 0deg),
+        var(--ns-border) var(--developmental-angle, 0deg),
+        var(--ns-border) 360deg
+    );
+
+    transition: background 0.3s ease;
+}
+
+/* INNER CIRCLE */
+
+#neuroshield-overlay .developmental-donut-inner {
+    width: 88px;
+    height: 88px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--ns-surface);
+}
+
+/* SCORE */
+
+#neuroshield-overlay .developmental-donut-inner strong {
+    font-size: 25px;
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .developmental-donut-inner span {
+    margin-top: 3px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    color: var(--ns-text-secondary);
+}
+
+/* LABEL */
+
+#neuroshield-overlay .developmental-donut-label {
+    font-size: 13px;
+    font-weight: 700;
+
+    text-align: center;
+    color: var(--ns-text);
+}
+
+/* DESCRIPTION */
+
+#neuroshield-overlay .developmental-overall-description {
+    max-width: 280px;
+
+    margin-top: 0;
+
+    font-size: 10px;
+    line-height: 1.5;
+
+    text-align: center;
+    color: var(--ns-text-secondary);
+}
+/* ============================================================
+   PHASE 5.3.3 — COMPACT OVERLAY LAYOUT
+============================================================ */
+
+#neuroshield-overlay .score-row {
+    min-width: 0;
+}
+
+#neuroshield-overlay .score-header span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+#neuroshield-overlay .score-header strong {
+    flex-shrink: 0;
+}
+
+#neuroshield-overlay .developmental-overall-summary {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #neuroshield-overlay .progress-fill,
+    #neuroshield-overlay .developmental-donut {
+        transition: none;
+    }
+}
+/* ============================================================
+   PHASE 5.3.4 — EXPLAINABILITY INSIGHTS
+============================================================ */
+
+/* MAIN SECTION BUTTON */
+
+#neuroshield-overlay .explainability-section-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    color: var(--ns-text);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+
+    text-align: left;
+    cursor: pointer;
+}
+
+/* MAIN SECTION ARROW */
+
+#neuroshield-overlay .explainability-section-arrow {
+    flex-shrink: 0;
+
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 50%;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-text-secondary);
+
+    font-size: 12px;
+}
+
+/* MAIN CONTENT */
+
+#neuroshield-overlay .explainability-section-content {
+    display: none;
+}
+
+#neuroshield-overlay .explainability-section-content.open {
+    display: block;
+    margin-top: 14px;
+}
+
+/* KEYBOARD FOCUS */
+
+#neuroshield-overlay .explainability-section-toggle:focus-visible {
+    outline: 2px solid var(--ns-primary);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+/* ============================================================
+   PHASE 5.3.4 — SHAP EXPLANATION CONTAINER
+============================================================ */
+
+#neuroshield-overlay #insightContainer {
+    display: block !important;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 15px;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 14px;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-text);
+}
+
+/* OVERVIEW */
+
+#neuroshield-overlay .explainability-overview {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+#neuroshield-overlay .explainability-overview-icon {
+    flex: 0 0 38px;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: var(--ns-surface);
+    border: 1px solid var(--ns-border);
+}
+
+#neuroshield-overlay .explainability-overview-icon img {
+    width: 23px;
+    height: 23px;
+    object-fit: contain;
+}
+
+#neuroshield-overlay .explainability-overview-text {
+    flex: 1;
+    min-width: 0;
+}
+
+#neuroshield-overlay .explainability-overview-text strong,
+#neuroshield-overlay #insightContainer > div:last-child > strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.45;
+
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .explainability-overview-text p,
+#neuroshield-overlay #insightContainer > div:last-child > p {
+    margin: 0;
+
+    font-size: 11px;
+    line-height: 1.6;
+
+    color: var(--ns-text-secondary);
+}
+
+/* EMPTY STATE ICON */
+
+#neuroshield-overlay #insightContainer .empty-insight-icon {
+    background: var(--ns-surface);
+    border: 1px solid var(--ns-border);
+}
+/* ============================================================
+   PHASE 5.3.4 — MOST INFLUENTIAL FEATURE
+============================================================ */
+
+#neuroshield-overlay .explainability-feature-card,
+#neuroshield-overlay .explainability-primary-feature {
+    margin-top: 14px;
+
+    padding: 13px;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 12px;
+
+    background: var(--ns-surface);
+    box-shadow: none;
+}
+
+/* ALIGN WITH OVERVIEW TEXT */
+
+#neuroshield-overlay .explainability-feature-card {
+    margin-left: 50px;
+}
+
+/* FEATURE LABEL */
+
+#neuroshield-overlay .explainability-feature-label {
+    margin-bottom: 5px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+
+    color: var(--ns-text-secondary);
+}
+
+/* FEATURE NAME */
+
+#neuroshield-overlay .explainability-feature-name {
+    margin-bottom: 8px;
+
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+
+    color: var(--ns-text);
+}
+
+/* SHAP DIRECTION */
+
+#neuroshield-overlay .explainability-direction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    max-width: 100%;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* SUPPORTING PREDICTION */
+
+#neuroshield-overlay .explainability-direction.supports {
+    background: #e8f5ec;
+    color: #17633a;
+}
+
+/* OPPOSING PREDICTION */
+
+#neuroshield-overlay .explainability-direction.opposes {
+    background: #fff3df;
+    color: #925600;
+}
+
+/* DARK MODE — SEMANTIC BADGES */
+
+#neuroshield-overlay[data-ns-theme="dark"]
+.explainability-direction.supports {
+    background: #173d2d;
+    color: #9de2b7;
+}
+
+#neuroshield-overlay[data-ns-theme="dark"]
+.explainability-direction.opposes {
+    background: #49351c;
+    color: #ffd38a;
+}
+/* ============================================================
+   PHASE 5.3.4 — HOW SHAP WORKS
+============================================================ */
+
+#neuroshield-overlay .explainability-method {
+    margin-top: 14px;
+    margin-left: 50px;
+
+    padding-top: 13px;
+
+    border-top: 1px solid var(--ns-border);
+}
+
+#neuroshield-overlay .explainability-method-toggle {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: var(--ns-text);
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+
+    text-align: left;
+    cursor: pointer;
+}
+
+#neuroshield-overlay .explainability-method-arrow {
+    flex-shrink: 0;
+
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    border: 1px solid var(--ns-border);
+
+    background: var(--ns-surface);
+    color: var(--ns-text-secondary);
+}
+
+/* COLLAPSED */
+
+#neuroshield-overlay .explainability-method-content {
+    display: none;
+}
+
+/* EXPANDED */
+
+#neuroshield-overlay .explainability-method-content.open {
+    display: block;
+}
+
+#neuroshield-overlay .explainability-method-content p {
+    margin-top: 10px;
+
+    padding: 11px 12px;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 9px;
+
+    background: var(--ns-surface);
+    color: var(--ns-text-secondary);
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 390px) {
+    #neuroshield-overlay .explainability-feature-card,
+    #neuroshield-overlay .explainability-method {
+        margin-left: 0;
+    }
+}
+/* ============================================================
+   PHASE 5.3.5 — MULTIMEDIA SECTION
+============================================================ */
+
+#neuroshield-overlay .multimedia-section-toggle {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+
+    color: var(--ns-text);
+    text-align: left;
+    cursor: pointer;
+}
+
+#neuroshield-overlay .multimedia-section-arrow {
+    flex-shrink: 0;
+
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 50%;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-text-secondary);
+
+    font-size: 12px;
+}
+
+#neuroshield-overlay .multimedia-section-content {
+    display: none;
+}
+
+#neuroshield-overlay .multimedia-section-content.open {
+    display: block;
+    margin-top: 15px;
+}
+
+#neuroshield-overlay .multimedia-section-toggle:focus-visible {
+    outline: 2px solid var(--ns-primary);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+/* ============================================================
+   PHASE 5.3.5 — FEATURE CARDS
+============================================================ */
+
+#neuroshield-overlay .feature-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#neuroshield-overlay .feature-card {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 14px;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 14px;
+
+    background: var(--ns-surface-soft);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#neuroshield-overlay .feature-card.feature-card-clickable:hover {
+    border-color: var(--ns-primary);
+    box-shadow: var(--ns-shadow);
+}
+
+/* TOP ROW */
+
+#neuroshield-overlay .feature-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#neuroshield-overlay .feature-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 0;
+}
+
+/* FEATURE ICONS */
+
+#neuroshield-overlay .feature-icon {
+    flex-shrink: 0;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+}
+
+#neuroshield-overlay .feature-icon img {
+    width: 22px;
+    height: 22px;
+
+    display: block;
+    object-fit: contain;
+}
+
+/* FEATURE TITLES */
+
+#neuroshield-overlay .feature-name {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .feature-subtitle {
+    margin-top: 4px;
+
+    font-size: 10px;
+    line-height: 1.45;
+
+    color: var(--ns-text-secondary);
+}
+
+/* CONTRIBUTION BADGE */
+
+#neuroshield-overlay .feature-level {
+    flex-shrink: 0;
+
+    padding: 5px 8px;
+
+    border-radius: 8px;
+    border: 1px solid var(--ns-border);
+
+    background: var(--ns-surface);
+    color: var(--ns-text-secondary);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+/* ============================================================
+   PHASE 5.3.5 — FEATURE PROGRESS BARS
+============================================================ */
+
+#neuroshield-overlay .mini-progress {
+    width: 100%;
+    height: 7px;
+
+    margin-top: 13px;
+
+    overflow: hidden;
+    border-radius: 999px;
+
+    background: var(--ns-border);
+}
+
+#neuroshield-overlay .mini-fill {
+    height: 100%;
+    width: 0%;
+
+    border-radius: 999px;
+
+    transition: width 0.5s ease;
+}
+
+/* VISUAL */
+
+#neuroshield-overlay #visualBar {
+    background: #f59e0b;
+}
+
+/* AUDIO */
+
+#neuroshield-overlay #audioBar {
+    background: #ef4444;
+}
+
+/* TEXTUAL */
+
+#neuroshield-overlay #textBar {
+    background: #8b5cf6;
+}
+
+/* ENGAGEMENT */
+
+#neuroshield-overlay #engagementBar {
+    background: #3b82f6;
+}
+
+/* EMOTIONAL */
+
+#neuroshield-overlay #emotionalFeatureBar {
+    background: #a855f7;
+}
+
+/* VIDEO CONTEXT */
+
+#neuroshield-overlay #metadataBar {
+    background: #22a06b;
+}
+/* ============================================================
+   PHASE 5.3.5 — DETECTED FEATURE TILES
+============================================================ */
+
+#neuroshield-overlay .feature-bubbles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+    margin-top: 12px;
+}
+
+#neuroshield-overlay .detected-feature.detailed {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    min-width: 0;
+    box-sizing: border-box;
+
+    padding: 11px;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 11px;
+
+    background: var(--ns-surface);
+}
+
+/* FEATURE NAME */
+
+#neuroshield-overlay .detected-feature-name {
+    width: 100%;
+    margin-bottom: 6px;
+
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.4;
+
+    color: var(--ns-text-secondary);
+
+    overflow-wrap: anywhere;
+}
+
+/* EXTRACTED VALUE */
+
+#neuroshield-overlay .detected-feature-value {
+    margin-bottom: 8px;
+
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.3;
+
+    color: var(--ns-text);
+}
+
+/* TRAINING REFERENCE */
+
+#neuroshield-overlay .detected-feature-reference {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 7px;
+
+    border-radius: 7px;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-text-secondary);
+
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* SEMANTIC REFERENCE COLOURS */
+
+/* Higher than typical */
+
+#neuroshield-overlay .detected-feature.detailed.reference-higher {
+    background: #fff1f1;
+    border-color: #f1bcbc;
+}
+
+/* Typical range */
+
+#neuroshield-overlay .detected-feature.detailed.reference-typical {
+    background: #f0faf3;
+    border-color: #b9dfc3;
+}
+
+/* Lower than typical */
+
+#neuroshield-overlay .detected-feature.detailed.reference-lower {
+    background: #f1f6ff;
+    border-color: #bfd1ec;
+}
+
+/* DARK MODE REFERENCE TILES */
+
+#neuroshield-overlay[data-ns-theme="dark"]
+.detected-feature.detailed.reference-higher {
+    background: #40252c;
+    border-color: #78414b;
+}
+
+#neuroshield-overlay[data-ns-theme="dark"]
+.detected-feature.detailed.reference-typical {
+    background: #1d3b30;
+    border-color: #386b50;
+}
+
+#neuroshield-overlay[data-ns-theme="dark"]
+.detected-feature.detailed.reference-lower {
+    background: #1d3049;
+    border-color: #3a5c82;
+}
+
+/* REFERENCE BADGE TEXT */
+
+#neuroshield-overlay[data-ns-theme="dark"]
+.detected-feature-reference {
+    background: #27354a;
+    color: #dbe5f3;
+}
+/* ============================================================
+   PHASE 5.3.5 — EXPANDABLE FEATURE DETAILS
+============================================================ */
+
+/* HIDDEN BY DEFAULT */
+
+#neuroshield-overlay .detected-features-collapsible {
+    display: none;
+}
+
+/* VISIBLE WHEN EXPANDED */
+
+#neuroshield-overlay
+.detected-features-collapsible.detected-features-open {
+    display: grid;
+    margin-top: 10px;
+}
+
+/* EXPAND / COLLAPSE INDICATOR */
+
+#neuroshield-overlay .detected-features-toggle {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 12px;
+    padding: 10px 0 0;
+
+    border: none;
+    border-top: 1px solid var(--ns-border);
+
+    background: transparent;
+    color: var(--ns-text-secondary);
+
+    font-family: inherit;
+}
+
+#neuroshield-overlay .detected-features-toggle-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    color: var(--ns-primary);
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+#neuroshield-overlay .detected-features-toggle-arrow {
+    width: 19px;
+    height: 19px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    border: 1px solid var(--ns-border);
+
+    background: var(--ns-surface);
+    color: var(--ns-text-secondary);
+}
+
+/* COMPACT LAYOUT */
+
+@media (max-width: 390px) {
+    #neuroshield-overlay .feature-bubbles {
+        grid-template-columns: 1fr;
+    }
+
+    #neuroshield-overlay .feature-top {
+        flex-wrap: wrap;
+    }
+}
+/* ============================================================
+   PHASE 5.3 — RESPONSIVE RESULT CARD FIX
+   Hybrid Assessment + Random Forest
+============================================================ */
+
+/* Allow cards to shrink safely */
+
+#neuroshield-overlay .hybrid-assessment-card,
+#neuroshield-overlay .ai-risk-card {
+    position: relative;
+    box-sizing: border-box;
+
+    min-width: 0;
+    width: 100%;
+}
+
+/* Move result badges into normal document flow */
+
+#neuroshield-overlay .hybrid-assessment-card .live-badge,
+#neuroshield-overlay .ai-risk-card .live-badge {
+    position: relative !important;
+
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+
+    display: table;
+    width: fit-content;
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    margin: 0 0 12px auto;
+
+    padding: 6px 10px;
+
+    font-size: 9px;
+    line-height: 1.4;
+
+    white-space: normal;
+    text-align: center;
+
+    overflow-wrap: anywhere;
+}
+
+/* Give titles their full available width */
+
+#neuroshield-overlay .hybrid-assessment-card .main-score-title,
+#neuroshield-overlay .ai-risk-card .main-score-title {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    padding-right: 0 !important;
+    margin-bottom: 14px;
+
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+/* Prevent score values from overflowing */
+
+#neuroshield-overlay .hybrid-assessment-card .main-score-empty {
+    font-size: clamp(34px, 12vw, 58px);
+    line-height: 1.1;
+
+    overflow-wrap: anywhere;
+}
+
+#neuroshield-overlay .ai-risk-card .main-score-empty {
+    font-size: clamp(32px, 11vw, 52px);
+    line-height: 1.1;
+
+    overflow-wrap: anywhere;
+}
+
+/* Prevent category labels from overflowing */
+
+#neuroshield-overlay .hybrid-assessment-card .main-score-label,
+#neuroshield-overlay .ai-risk-card .main-score-label {
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+}
+/* ============================================================
+   PHASE 5.3 — RESPONSIVE HEADER FIX
+============================================================ */
+
+#neuroshield-overlay .neuroshield-header {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+#neuroshield-overlay .neuroshield-brand {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#neuroshield-overlay .neuroshield-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 4px;
+}
+
+#neuroshield-overlay .neuroshield-action {
+    flex-shrink: 0;
+
+    width: 28px;
+    height: 28px;
+
+    min-width: 28px;
+    min-height: 28px;
+}
+
+#neuroshield-overlay .neuroshield-title,
+#neuroshield-overlay .neuroshield-subtitle {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Reduce logo size slightly */
+
+#neuroshield-overlay .neuroshield-logo-container {
+    flex-shrink: 0;
+
+    width: 44px;
+    height: 44px;
+}
+
+#neuroshield-overlay .neuroshield-logo {
+    width: 44px !important;
+    height: 44px !important;
+
+    max-width: 44px !important;
+    max-height: 44px !important;
+}
+/* ============================================================
+   PHASE 5.3.6 — PARENTAL GUIDANCE HEADER
+============================================================ */
+
+#neuroshield-overlay .parental-guidance-card {
+    background: var(--ns-surface);
+    border: 1px solid var(--ns-border);
+    border-radius: 18px;
+
+    padding: 18px;
+    margin-bottom: 16px;
+
+    box-shadow: var(--ns-shadow);
+}
+
+#neuroshield-overlay .parental-guidance-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    min-width: 0;
+    gap: 12px;
+
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: var(--ns-text);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+
+    text-align: left;
+    cursor: pointer;
+}
+
+#neuroshield-overlay .parental-guidance-toggle:focus-visible {
+    outline: 2px solid var(--ns-primary);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* HEADER ICON */
+
+#neuroshield-overlay .parental-guidance-icon {
+    flex-shrink: 0;
+}
+
+/* ARROW */
+
+#neuroshield-overlay .parental-guidance-arrow {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 26px;
+    height: 26px;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 50%;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-text-secondary);
+
+    font-size: 12px;
+}
+/* ============================================================
+   PHASE 5.3.6 — PARENTAL GUIDANCE CONTENT
+============================================================ */
+
+#neuroshield-overlay .parental-guidance-content {
+    min-width: 0;
+
+    margin-top: 14px;
+
+    color: var(--ns-text);
+}
+
+#neuroshield-overlay .parental-guidance-content p {
+    font-size: 11px;
+    line-height: 1.65;
+
+    color: var(--ns-text-secondary);
+}
+
+#neuroshield-overlay .parental-guidance-content strong {
+    color: var(--ns-text);
+    font-weight: 700;
+}
+
+#neuroshield-overlay .parental-guidance-content ul,
+#neuroshield-overlay .parental-guidance-content ol {
+    padding-left: 20px;
+    margin: 10px 0;
+}
+
+#neuroshield-overlay .parental-guidance-content li {
+    margin-bottom: 8px;
+
+    font-size: 11px;
+    line-height: 1.6;
+
+    color: var(--ns-text-secondary);
+}
+
+#neuroshield-overlay .parental-guidance-content li::marker {
+    color: var(--ns-primary);
+}
+
+/* PREVENT LONG TEXT OVERFLOW */
+
+#neuroshield-overlay .parental-guidance-content,
+#neuroshield-overlay .parental-guidance-content * {
+    overflow-wrap: anywhere;
+}
+/* ============================================================
+   PHASE 5.3.6 — GUIDANCE RECOMMENDATION ITEMS
+============================================================ */
+
+/* INDIVIDUAL RECOMMENDATION BLOCKS */
+
+#neuroshield-overlay .parental-guidance-content
+.guidance-item,
+#neuroshield-overlay .parental-guidance-content
+.recommendation-item {
+    box-sizing: border-box;
+
+    width: 100%;
+    min-width: 0;
+
+    margin-bottom: 10px;
+    padding: 13px;
+
+    border: 1px solid var(--ns-border);
+    border-radius: 12px;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-text);
+}
+
+/* RECOMMENDATION TITLES */
+
+#neuroshield-overlay .parental-guidance-content
+.guidance-item-title,
+#neuroshield-overlay .parental-guidance-content
+.recommendation-title {
+    margin-bottom: 7px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    color: var(--ns-text);
+}
+
+/* RECOMMENDATION DESCRIPTIONS */
+
+#neuroshield-overlay .parental-guidance-content
+.guidance-item-description,
+#neuroshield-overlay .parental-guidance-content
+.recommendation-description {
+    margin: 0;
+
+    font-size: 11px;
+    line-height: 1.6;
+
+    color: var(--ns-text-secondary);
+}
+
+/* EMPTY STATE */
+
+#neuroshield-overlay .parental-guidance-content
+.empty-guidance {
+    padding: 14px;
+
+    border: 1px dashed var(--ns-border);
+    border-radius: 12px;
+
+    background: var(--ns-surface-soft);
+    color: var(--ns-text-secondary);
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+/* ============================================================
+   PHASE 5.3.6 — RESPONSIVE GUIDANCE
+============================================================ */
+
+#neuroshield-overlay .parental-guidance-card,
+#neuroshield-overlay .parental-guidance-content {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+#neuroshield-overlay .parental-guidance-toggle > * {
+    min-width: 0;
+}
+
+#neuroshield-overlay .parental-guidance-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #neuroshield-overlay .parental-guidance-card * {
+        transition: none;
+    }
+}
+/* ============================================================
+   PHASE 5.3.6 — PARENTAL GUIDANCE TEXT CONTRAST FIX
+============================================================ */
+
+/* Recommendation cards with light backgrounds */
+
+#neuroshield-overlay .parental-guidance-content
+.recommendation-card,
+#neuroshield-overlay .parental-guidance-content
+.guidance-card {
+    background: var(--ns-surface);
+    color: var(--ns-text);
+    border-color: var(--ns-border);
+}
+
+/* Headings and recommendation titles */
+
+#neuroshield-overlay .parental-guidance-content
+.recommendation-card h3,
+#neuroshield-overlay .parental-guidance-content
+.guidance-card h3 {
+    color: var(--ns-text);
+}
+
+/* Descriptive text */
+
+#neuroshield-overlay .parental-guidance-content
+.recommendation-card p,
+#neuroshield-overlay .parental-guidance-content
+.guidance-card p {
+    color: var(--ns-text-secondary);
+}
+
+/* Explanation panels */
+
+#neuroshield-overlay .parental-guidance-content
+.recommendation-reason,
+#neuroshield-overlay .parental-guidance-content
+.guidance-reason {
+    background: var(--ns-surface-soft);
+    border: 1px solid var(--ns-border);
+    border-radius: 10px;
+    color: var(--ns-text-secondary);
+}
+
+/* Explanation headings */
+
+#neuroshield-overlay .parental-guidance-content
+.recommendation-reason strong,
+#neuroshield-overlay .parental-guidance-content
+.guidance-reason strong {
+    color: var(--ns-text);
+}
+
+/* ============================================================
+   PARENTAL GUIDANCE — ACTUAL COMPONENT CONTRAST FIX
+   Uses the class names rendered by the guidance cards.
+============================================================ */
+#neuroshield-overlay .parental-guidance-content .parental-guidance-intro {
+    color: var(--ns-text-secondary, #475569);
+}
+
+#neuroshield-overlay .parental-guidance-content .parent-guidance-item {
+    background: var(--ns-surface, #ffffff);
+    border-color: var(--ns-border, #e4e8f0);
+    color: var(--ns-text, #253047);
+}
+
+#neuroshield-overlay .parental-guidance-content .parent-guidance-item-heading {
+    color: var(--ns-text, #253047);
+}
+
+#neuroshield-overlay .parental-guidance-content .parent-guidance-action {
+    color: var(--ns-text-secondary, #475569);
+    font-size: 12.5px;
+    line-height: 1.6;
+}
+
+#neuroshield-overlay .parental-guidance-content .parent-guidance-reason {
+    background: var(--ns-surface-soft, #f3f6fc);
+    border-color: var(--ns-border, #e4e8f0);
+}
+
+#neuroshield-overlay .parental-guidance-content .parent-guidance-reason strong {
+    color: var(--ns-text, #253047);
+    font-size: 11.5px;
+}
+
+#neuroshield-overlay .parental-guidance-content .parent-guidance-reason p {
+    color: var(--ns-text-secondary, #475569);
+    font-size: 11.5px;
+    line-height: 1.6;
+}
+/* ============================================================
+   PARENTAL GUIDANCE — DARK MODE ICON CONTRAST
+   Matches the actual markup generated by content.js.
+============================================================ */
+#neuroshield-overlay[data-ns-theme="dark"] .parent-guidance-item-icon {
+    background: #263449;
+    color: #f1f5f9;
+    opacity: 1;
+}
+
+#neuroshield-overlay[data-ns-theme="dark"] .parent-guidance-item-arrow {
+    background: #263449;
+    border-color: #44546a;
+    color: #f1f5f9;
+}
+
+/* ============================================================
+   PHASE 5.4 — SETTINGS DARK MODE READABILITY
+   Scoped to Dark Mode; preserves Light Mode and status colours.
+============================================================ */
+#neuroshield-overlay[data-ns-theme="dark"] .ns-about-value {
+    color: #e2e8f0 !important;
+}
+#neuroshield-overlay[data-ns-theme="dark"] .ns-about-label,
+#neuroshield-overlay[data-ns-theme="dark"] .ns-about-description,
+#neuroshield-overlay[data-ns-theme="dark"] .ns-about-disclaimer,
+#neuroshield-overlay[data-ns-theme="dark"] .ns-reanalyse-description,
+#neuroshield-overlay[data-ns-theme="dark"] .ns-settings-status-row {
+    color: #aebed4 !important;
+}
+#neuroshield-overlay[data-ns-theme="dark"] .ns-settings-status-row span:last-child:not(.ns-status-connected):not(.ns-status-disconnected):not(.ns-status-warning) {
+    color: #cbd5e1 !important;
+}
+#neuroshield-overlay[data-ns-theme="dark"] .ns-settings-status-row {
+    border-bottom-color: #39485d;
 }

@@ -26,10 +26,77 @@ let analysisPolling = false;
 let analysisSessionId = 0;
 let reanalysisStarting = false;
 let manualReanalysisSessionId = null;
+let neuroshieldCurrentTheme = "light";
 
 const ANALYSIS_POLL_INTERVAL_MS = 5000;
 const MAX_ANALYSIS_POLL_ATTEMPTS = 180;
 
+// ============================================================
+// APPLY NEUROSHIELD APPEARANCE
+// ============================================================
+
+async function loadNeuroShieldTheme() {
+
+    try {
+
+        const result = await chrome.storage.local.get(
+            "neuroshieldTheme"
+        );
+
+        neuroshieldCurrentTheme =
+            result.neuroshieldTheme === "dark"
+                ? "dark"
+                : "light";
+
+        applyNeuroShieldTheme();
+
+    } catch (error) {
+
+        console.error(
+            "NeuroShield AI: Failed to load theme:",
+            error
+        );
+
+    }
+
+}
+
+function applyNeuroShieldTheme() {
+
+    const overlay = document.querySelector(
+        "#neuroshield-overlay"
+    );
+
+    if (!overlay) return;
+
+    overlay.setAttribute(
+        "data-ns-theme",
+        neuroshieldCurrentTheme
+    );
+
+}
+
+// Apply theme when the extension loads.
+loadNeuroShieldTheme();
+
+// React to theme changes from Settings.
+chrome.storage.onChanged.addListener((changes, area) => {
+
+    if (
+        area === "local" &&
+        changes.neuroshieldTheme
+    ) {
+
+        neuroshieldCurrentTheme =
+            changes.neuroshieldTheme.newValue === "dark"
+                ? "dark"
+                : "light";
+
+        applyNeuroShieldTheme();
+
+    }
+
+});
 // ============================================================
 // INITIALISE
 // ============================================================
@@ -278,6 +345,9 @@ async function showAnalysisTemplate() {
     document.body.appendChild(
         overlay
     );
+
+    // Apply saved Light / Dark theme to the new overlay.
+    applyNeuroShieldTheme();
 
 
 // Load the embedded Settings interface.
@@ -656,11 +726,20 @@ function initialiseOverlayControls() {
             function (event) {
 
                 event.preventDefault();
-
                 event.stopPropagation();
 
+                const currentOverlay =
+                    document.getElementById("neuroshield-overlay");
 
-                removeOverlay();
+                if (currentOverlay) {
+
+                    currentOverlay.style.display = "none";
+
+                    console.log(
+                        "NeuroShield AI: Overlay hidden by user."
+                    );
+
+                }
 
             }
         );
@@ -7025,6 +7104,113 @@ chrome.storage.onChanged.addListener(
             );
 
         }
+
+    }
+);
+
+// ============================================================
+// REOPEN OVERLAY FROM CHROME POPUP
+// ============================================================
+
+chrome.runtime.onMessage.addListener(
+    function (message, sender, sendResponse) {
+
+        if (message.action !== "OPEN_NEUROSHIELD_OVERLAY") {
+            return false;
+        }
+
+        (async function () {
+
+            try {
+
+                const saved = await chrome.storage.local.get(
+                    "protectionEnabled"
+                );
+
+                if (saved.protectionEnabled !== true) {
+
+                    sendResponse({
+                        success: false,
+                        error: "Please enable protection first."
+                    });
+
+                    return;
+                }
+
+                const videoId = new URLSearchParams(
+                    window.location.search
+                ).get("v");
+
+                if (
+                    window.location.hostname !== "www.youtube.com" &&
+                    window.location.hostname !== "youtube.com"
+                ) {
+                    sendResponse({
+                        success: false,
+                        error: "Open a YouTube video first."
+                    });
+
+                    return;
+                }
+
+                if (
+                    window.location.pathname !== "/watch" ||
+                    !videoId
+                ) {
+                    sendResponse({
+                        success: false,
+                        error: "Open a YouTube video first."
+                    });
+
+                    return;
+                }
+
+                const existingOverlay =
+                    document.getElementById("neuroshield-overlay");
+
+                if (existingOverlay) {
+
+                    existingOverlay.style.display = "";
+
+                    applyNeuroShieldTheme();
+
+                    sendResponse({
+                        success: true
+                    });
+
+                    return;
+                }
+
+                // If the overlay was removed, recreate it.
+                await showAnalysisTemplate();
+
+                const newOverlay =
+                    document.getElementById("neuroshield-overlay");
+
+                sendResponse({
+                    success: Boolean(newOverlay),
+                    error: newOverlay
+                        ? null
+                        : "Could not create the overlay."
+                });
+
+            } catch (error) {
+
+                console.error(
+                    "NeuroShield AI: Could not reopen overlay:",
+                    error
+                );
+
+                sendResponse({
+                    success: false,
+                    error: error.message
+                });
+
+            }
+
+        })();
+
+        return true;
 
     }
 );

@@ -527,3 +527,48 @@
     display: none;
 
 }
+/* ============================================================
+   APPEARANCE THEME SELECTOR
+============================================================ */
+
+.ns-theme-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.ns-theme-options label {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 12px 8px;
+
+    border: 1px solid var(--ns-border, #e4e8f0);
+    border-radius: 12px;
+
+    background: var(--ns-surface-soft, #f3f6fc);
+    color: var(--ns-text, #253047);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.ns-theme-options label:has(input:checked) {
+    border-color: var(--ns-primary, #5c6cff);
+    background: color-mix(
+        in srgb,
+        var(--ns-primary, #5c6cff) 12%,
+        var(--ns-surface, #ffffff)
+    );
+}
+
+.ns-theme-options input {
+    accent-color: var(--ns-primary, #5c6cff);
+}

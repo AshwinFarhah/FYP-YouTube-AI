@@ -28,6 +28,7 @@ const NeuroShieldSettings = (() => {
         setupPreferenceToggles();
         setupBackendCheck();
         setupResetPreferences();
+        setupThemePreference();
 
         await loadPreferences();
 
@@ -527,6 +528,50 @@ const NeuroShieldSettings = (() => {
             checkButton.textContent = "Check Connection";
 
         }
+    }
+
+    // ============================================================
+    // APPEARANCE THEME PREFERENCE
+    // ============================================================
+
+    async function setupThemePreference() {
+
+        const themeInputs = settingsRoot.querySelectorAll(
+            'input[name="ns-theme"]'
+        );
+
+        const saved = await chrome.storage.local.get(
+            "neuroshieldTheme"
+        );
+
+        const currentTheme =
+            saved.neuroshieldTheme === "dark"
+                ? "dark"
+                : "light";
+
+        themeInputs.forEach((input) => {
+
+            input.checked = input.value === currentTheme;
+
+            input.addEventListener("change", async () => {
+
+                if (!input.checked) return;
+
+                const theme = input.value;
+
+                await chrome.storage.local.set({
+                    neuroshieldTheme: theme
+                });
+
+                document.documentElement.setAttribute(
+                    "data-ns-theme",
+                    theme
+                );
+
+            });
+
+        });
+
     }
 
 
