@@ -23,6 +23,9 @@ let lastAlertedVideoId = null;
 
 let activeAnalysisJobId = null;
 let analysisPolling = false;
+let analysisSessionId = 0;
+let reanalysisStarting = false;
+let manualReanalysisSessionId = null;
 
 const ANALYSIS_POLL_INTERVAL_MS = 5000;
 const MAX_ANALYSIS_POLL_ATTEMPTS = 180;
@@ -95,7 +98,7 @@ function checkCurrentPage() {
     // --------------------------------------------------------
 
     if (videoId !== currentVideoId) {
-
+        manualReanalysisSessionId = null;
         currentVideoId = videoId;
 
         lastAlertedVideoId = null;
@@ -362,41 +365,85 @@ async function showAnalysisTemplate() {
 // INITIALISE EMBEDDED SETTINGS
 // ========================================================
 
+
     const settingsContainer =
-        document.getElementById(
-            "neuroshield-settings-view"
-        );
+        document.getElementById("neuroshield-settings-view");
 
     if (
         settingsContainer &&
         typeof NeuroShieldSettings !== "undefined"
     ) {
-
         await NeuroShieldSettings.initialise(
             settingsContainer,
             function () {
-
                 const analysisView =
-                    document.getElementById(
-                        "neuroshield-content"
-                    );
+                    document.getElementById("neuroshield-content");
 
                 const settingsView =
-                    document.getElementById(
-                        "neuroshield-settings-view"
-                    );
+                    document.getElementById("neuroshield-settings-view");
 
                 if (analysisView && settingsView) {
-
                     settingsView.style.display = "none";
-
                     analysisView.style.display = "";
-
                 }
-
             }
         );
 
+        // Register button AFTER settings have initialised.
+        const reanalyseButton =
+            settingsContainer.querySelector("#ns-reanalyse-video");
+
+        const reanalyseMessage =
+            settingsContainer.querySelector("#ns-reanalyse-message");
+
+        if (reanalyseButton) {
+            console.log(
+                "NeuroShield AI: Reanalyse button initialised."
+            );
+
+            reanalyseButton.addEventListener(
+                "click",
+                async function (event) {
+                    event.preventDefault();
+
+                    if (reanalysisStarting) {
+                        return;
+                    }
+
+                    reanalyseButton.disabled = true;
+
+                    if (reanalyseMessage) {
+                        reanalyseMessage.textContent =
+                            "Starting fresh analysis...";
+                    }
+
+                    try {
+                        await reanalyseCurrentVideo();
+
+                        if (reanalyseMessage) {
+                            reanalyseMessage.textContent =
+                                "Fresh analysis started. Results will update when complete.";
+                        }
+                    } catch (error) {
+                        console.error(
+                            "NeuroShield AI: Reanalysis failed:",
+                            error
+                        );
+
+                        if (reanalyseMessage) {
+                            reanalyseMessage.textContent =
+                                error.message || "Unable to start reanalysis.";
+                        }
+                    } finally {
+                        reanalyseButton.disabled = false;
+                    }
+                }
+            );
+        } else {
+            console.warn(
+                "NeuroShield AI: Reanalyse button not found."
+            );
+        }
     }
 
 
@@ -1388,96 +1435,152 @@ async function checkBackendConnection() {
 
 }
 
+// ============================================================
+// REANALYSE CURRENT VIDEO
+// ============================================================
+
+
+async function reanalyseCurrentVideo() {
+
+    if (reanalysisStarting) {
+        throw new Error("Reanalysis is already starting.");
+    }
+
+    const videoId = getCurrentVideoId();
+
+    if (!protectionEnabled || !videoId) {
+        throw new Error(
+            "Enable protection and open a YouTube video first."
+        );
+    }
+
+    const backendReady = await checkBackendConnection();
+
+    if (!backendReady) {
+        throw new Error(
+            "Backend is not connected or the model is unavailable."
+        );
+    }
+
+    reanalysisStarting = true;
+
+    try {
+        currentVideoId = videoId;
+
+        // Invalidate previous polling sessions.
+        analysisSessionId++;
+
+        activeAnalysisJobId = null;
+        analysisPolling = false;
+        lastAlertedVideoId = null;
+
+        manualReanalysisSessionId = analysisSessionId + 1;
+
+        const started = await requestVideoAnalysis(true);
+
+        if (!started) {
+            throw new Error(
+                "Backend did not accept the fresh analysis request."
+            );
+        }
+
+        console.log(
+            "NeuroShield AI: Fresh reanalysis job started."
+        );
+
+        return true;
+
+    } finally {
+        reanalysisStarting = false;
+    }
+}
+
 
 // ============================================================
 // REQUEST VIDEO ANALYSIS
 // ============================================================
 
-async function requestVideoAnalysis() {
 
-    if (!currentVideoId) {
+async function requestVideoAnalysis(forceReanalyse = false) {
 
+    const sessionId = ++analysisSessionId;
+
+    const requestedVideoId = currentVideoId;
+
+    if (!requestedVideoId) {
         console.warn(
             "NeuroShield AI: No YouTube video ID available."
         );
-
-        return;
+        return false;
     }
-
-
-    const requestedVideoId =
-        currentVideoId;
-
 
     const youtubeUrl =
         `https://www.youtube.com/watch?v=${requestedVideoId}`;
 
-
     console.log(
         "NeuroShield AI: Requesting analysis:",
-        youtubeUrl
+        youtubeUrl,
+        "Force:",
+        forceReanalyse
     );
 
-
     try {
-
-        const response =
-            await chrome.runtime.sendMessage({
-
-                action:
-                    "ANALYZE_VIDEO",
-
-                youtubeUrl:
-                youtubeUrl
-
-            });
-
+        const response = await chrome.runtime.sendMessage({
+            action: "ANALYZE_VIDEO",
+            youtubeUrl: youtubeUrl,
+            force_reanalyse: forceReanalyse
+        });
 
         if (
             !response ||
             response.started !== true ||
             !response.job_id
         ) {
-
             console.error(
                 "NeuroShield AI: Analysis could not start:",
                 response
             );
 
-            return;
+            return false;
         }
 
+        if (
+            sessionId !== analysisSessionId ||
+            currentVideoId !== requestedVideoId
+        ) {
+            return false;
+        }
 
-        activeAnalysisJobId =
-            response.job_id;
-
+        activeAnalysisJobId = response.job_id;
 
         console.log(
-            "NeuroShield AI: Analysis started successfully."
-        );
-
-
-        console.log(
-            "NeuroShield AI: Job ID:",
+            "NeuroShield AI: Analysis started successfully.",
+            "Job ID:",
             activeAnalysisJobId
         );
 
+        if (forceReanalyse) {
+            setMonitoringStatus(true);
+        }
 
-        pollAnalysisFromContentScript(
+        void pollAnalysisFromContentScript(
             activeAnalysisJobId,
-            requestedVideoId
+            requestedVideoId,
+            sessionId
         );
 
-    } catch (error) {
+        return true;
 
+    } catch (error) {
         console.error(
-            "NeuroShield AI: Could not request video analysis:",
+            "NeuroShield AI: Could not request analysis:",
             error
         );
 
+        return false;
     }
-
 }
+
 
 // ============================================================
 // POLL ANALYSIS FROM CONTENT SCRIPT
@@ -1485,7 +1588,8 @@ async function requestVideoAnalysis() {
 
 async function pollAnalysisFromContentScript(
     jobId,
-    requestedVideoId
+    requestedVideoId,
+    sessionId
 ) {
 
     if (!jobId) {
@@ -1497,10 +1601,7 @@ async function pollAnalysisFromContentScript(
         return;
     }
 
-
-    analysisPolling =
-        true;
-
+    analysisPolling = true;
 
     for (
         let attempt = 1;
@@ -1513,20 +1614,16 @@ async function pollAnalysisFromContentScript(
         // --------------------------------------------------------
 
         if (
-            currentVideoId !==
-            requestedVideoId
+            currentVideoId !== requestedVideoId ||
+            sessionId !== analysisSessionId
         ) {
 
             console.log(
                 "NeuroShield AI: Video changed. Stopping old analysis polling."
             );
 
-            analysisPolling =
-                false;
-
             return;
         }
-
 
         // --------------------------------------------------------
         // WAIT 5 SECONDS
@@ -1536,6 +1633,12 @@ async function pollAnalysisFromContentScript(
             ANALYSIS_POLL_INTERVAL_MS
         );
 
+        if (
+            sessionId !== analysisSessionId ||
+            currentVideoId !== requestedVideoId
+        ) {
+            return;
+        }
 
         try {
 
@@ -1543,18 +1646,22 @@ async function pollAnalysisFromContentScript(
                 `NeuroShield AI: Checking analysis status (${attempt}/${MAX_ANALYSIS_POLL_ATTEMPTS})...`
             );
 
-
             const response =
                 await chrome.runtime.sendMessage({
 
-                    action:
-                        "CHECK_ANALYSIS_STATUS",
+                    action: "CHECK_ANALYSIS_STATUS",
 
-                    jobId:
-                    jobId
+                    jobId: jobId
 
                 });
 
+            // Ignore responses from older sessions.
+            if (
+                sessionId !== analysisSessionId ||
+                currentVideoId !== requestedVideoId
+            ) {
+                return;
+            }
 
             if (
                 !response ||
@@ -1570,25 +1677,18 @@ async function pollAnalysisFromContentScript(
                 continue;
             }
 
-
-            const data =
-                response.data;
-
+            const data = response.data;
 
             console.log(
                 "NeuroShield AI: Analysis status:",
                 data.status
             );
 
-
             // ----------------------------------------------------
             // ANALYSIS COMPLETE
             // ----------------------------------------------------
 
-            if (
-                data.status ===
-                "complete"
-            ) {
+            if (data.status === "complete") {
 
                 if (!data.result) {
 
@@ -1596,98 +1696,126 @@ async function pollAnalysisFromContentScript(
                         "NeuroShield AI: Analysis completed but no result was returned."
                     );
 
-                    analysisPolling =
-                        false;
+                    analysisPolling = false;
+                    activeAnalysisJobId = null;
 
                     return;
                 }
 
-
-                // Make absolutely sure the user is still
-                // viewing the video that requested this job.
-
+                // Ensure the video has not changed.
                 if (
-                    currentVideoId !==
-                    requestedVideoId
+                    currentVideoId !== requestedVideoId ||
+                    sessionId !== analysisSessionId
                 ) {
 
                     console.log(
                         "NeuroShield AI: Ignoring result because the video changed."
                     );
 
-                    analysisPolling =
-                        false;
+                    analysisPolling = false;
 
                     return;
                 }
 
-
                 console.log(
                     "NeuroShield AI: Backend analysis received."
                 );
-
 
                 console.log(
                     "NeuroShield AI: REAL ANALYSIS RESULT:",
                     data.result
                 );
 
-
+                // Update the analysis results.
                 updateRealRiskResult(
                     data.result
                 );
 
+                // ============================================================
+                // SHOW SUCCESS ONLY FOR MANUAL REANALYSIS
+                // ============================================================
 
-                activeAnalysisJobId =
-                    null;
+                if (manualReanalysisSessionId === sessionId) {
 
+                    const reanalyseMessage =
+                        document.querySelector("#ns-reanalyse-message");
 
-                analysisPolling =
-                    false;
+                    if (reanalyseMessage) {
 
+                        reanalyseMessage.textContent =
+                            "Video reanalysed successfully!";
+
+                        reanalyseMessage.style.color = "#16a34a";
+
+                    }
+
+                    manualReanalysisSessionId = null;
+                }
+
+                // ----------------------------------------------------
+                // CLEAN UP COMPLETED JOB
+                // ----------------------------------------------------
+
+                activeAnalysisJobId = null;
+
+                analysisPolling = false;
 
                 console.log(
                     "NeuroShield AI: UI updated successfully."
                 );
 
-
                 return;
             }
-
 
             // ----------------------------------------------------
             // ANALYSIS FAILED
             // ----------------------------------------------------
 
-            if (
-                data.status ===
-                "failed"
-            ) {
+            if (data.status === "failed") {
 
                 console.error(
                     "NeuroShield AI: Analysis failed:",
-                    data.error ||
-                    "Unknown backend error."
+                    data.error || "Unknown backend error."
                 );
 
+                activeAnalysisJobId = null;
 
-                activeAnalysisJobId =
-                    null;
+                analysisPolling = false;
 
+                // ====================================================
+                // SHOW FAILURE ONLY FOR MANUAL REANALYSIS
+                // ====================================================
 
-                analysisPolling =
-                    false;
+                if (manualReanalysisSessionId === sessionId) {
 
+                    const reanalyseMessage =
+                        document.querySelector(
+                            "#ns-reanalyse-message"
+                        );
+
+                    if (reanalyseMessage) {
+
+                        reanalyseMessage.textContent =
+                            "Video reanalysis failed. Please try again.";
+
+                        reanalyseMessage.style.color =
+                            "#dc2626";
+
+                    }
+
+                    manualReanalysisSessionId = null;
+                }
 
                 return;
             }
 
+            // ----------------------------------------------------
+            // ANALYSIS STILL PROCESSING
+            // ----------------------------------------------------
 
-            // queued / processing
             console.log(
                 "NeuroShield AI: Analysis still processing..."
             );
-
 
         } catch (error) {
 
@@ -1696,28 +1824,52 @@ async function pollAnalysisFromContentScript(
                 error
             );
 
-            // Do NOT stop immediately.
-            // A temporary service-worker restart or request
-            // failure should not destroy the analysis session.
+            // Continue polling after temporary errors.
 
         }
 
     }
 
+    // --------------------------------------------------------
+    // ANALYSIS POLLING TIMED OUT
+    // --------------------------------------------------------
 
-    activeAnalysisJobId =
-        null;
+    if (
+        sessionId !== analysisSessionId ||
+        currentVideoId !== requestedVideoId
+    ) {
+        return;
+    }
 
+    activeAnalysisJobId = null;
 
-    analysisPolling =
-        false;
-
+    analysisPolling = false;
 
     console.error(
         "NeuroShield AI: Analysis polling timed out."
     );
 
+    if (manualReanalysisSessionId === sessionId) {
+
+        const reanalyseMessage =
+            document.querySelector(
+                "#ns-reanalyse-message"
+            );
+
+        if (reanalyseMessage) {
+
+            reanalyseMessage.textContent =
+                "Reanalysis timed out. Please try again.";
+
+            reanalyseMessage.style.color =
+                "#dc2626";
+        }
+
+        manualReanalysisSessionId = null;
+    }
+
 }
+
 
 // ============================================================
 // CONTENT SCRIPT SLEEP

@@ -8,7 +8,6 @@ const NeuroShieldSettings = (() => {
     let settingsRoot = null;
     let onBackToAnalysis = null;
 
-
     // ========================================================
     // INITIALISE SETTINGS
     // ========================================================
@@ -94,11 +93,46 @@ const NeuroShieldSettings = (() => {
 
         backButton.addEventListener("click", () => {
 
+            // ====================================================
+            // CLEAR RESET PREFERENCES SUCCESS MESSAGE
+            // ====================================================
+
+            const resetMessage =
+                getElement("ns-reset-message");
+
+            if (resetMessage) {
+
+                resetMessage.textContent = "";
+
+            }
+
+            // ====================================================
+            // CLEAR REANALYSIS SUCCESS MESSAGE
+            // ====================================================
+
+            const reanalyseMessage =
+                getElement("ns-reanalyse-message");
+
+            if (reanalyseMessage) {
+
+                reanalyseMessage.textContent = "";
+
+                reanalyseMessage.style.color = "";
+
+            }
+
+            // ====================================================
+            // RETURN TO MAIN ANALYSIS PAGE
+            // ====================================================
+
             if (typeof onBackToAnalysis === "function") {
+
                 onBackToAnalysis();
+
             }
 
         });
+
     }
 
 
