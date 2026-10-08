@@ -1,82 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- ============================================================
+     NeuroShield AI
+     Settings View
+     Loaded inside the YouTube floating overlay
+============================================================ -->
 
-<head>
+<div class="ns-settings-page">
 
-    <meta charset="UTF-8">
+    <!-- HEADER -->
+    <div class="ns-settings-header">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        NeuroShield AI Settings
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="settings.css"
-    >
-
-</head>
-
-<body>
-
-<div class="settings-page">
-
-    <header>
-
-        <img
-            src="../icons/logo.png"
-            alt="NeuroShield AI"
+        <button
+                type="button"
+                id="ns-settings-back"
+                class="ns-settings-back"
         >
+            &#8592; Back to Analysis
+        </button>
 
-        <div>
+        <h2>Settings & Preferences</h2>
 
-            <h1>
-                NeuroShield AI
-            </h1>
+        <p>
+            Manage your NeuroShield AI preferences.
+        </p>
 
-            <p>
-                Settings
-            </p>
-
-        </div>
-
-    </header>
+    </div>
 
 
-    <section class="settings-card">
+    <!-- PROTECTION -->
+    <section class="ns-settings-card">
 
-        <h2>
-            Protection
-        </h2>
+        <h3>Protection</h3>
 
-        <div class="setting-row">
+        <div class="ns-settings-row">
 
-            <div>
+            <div class="ns-settings-description">
 
-                <strong>
-                    Enable Protection
-                </strong>
+                <strong>Enable Protection</strong>
 
                 <p>
                     Enable developmental analysis
-                    while watching YouTube.
+                    while watching YouTube videos.
                 </p>
 
             </div>
 
-            <label class="switch">
+            <label class="ns-settings-switch">
 
                 <input
-                    type="checkbox"
-                    id="protectionToggle"
-                    checked
+                        type="checkbox"
+                        id="ns-protection-toggle"
                 >
 
-                <span class="slider"></span>
+                <span class="ns-settings-slider"></span>
 
             </label>
 
@@ -85,126 +60,302 @@
     </section>
 
 
-    <section class="settings-card">
+    <!-- NOTIFICATIONS -->
+    <section class="ns-settings-card">
 
-        <h2>
-            Analysis
-        </h2>
+        <h3>Notifications</h3>
 
-        <div class="setting-row">
+        <div class="ns-settings-row">
 
-            <div>
+            <div class="ns-settings-description">
+
+                <strong>High-Risk Notifications</strong>
+
+                <p>
+                    Show alerts when NeuroShield AI
+                    identifies a high-risk video.
+                </p>
+
+            </div>
+
+            <label class="ns-settings-switch">
+
+                <input
+                        type="checkbox"
+                        id="ns-notifications-toggle"
+                >
+
+                <span class="ns-settings-slider"></span>
+
+            </label>
+
+        </div>
+
+    </section>
+
+
+    <!-- EXPLAINABILITY -->
+    <section class="ns-settings-card">
+
+        <h3>Explainability</h3>
+
+        <div class="ns-settings-row">
+
+            <div class="ns-settings-description">
+
+                <strong>Explainability Insights</strong>
+
+                <p>
+                    Show explanations of the features
+                    influencing the machine learning
+                    prediction.
+                </p>
+
+            </div>
+
+            <label class="ns-settings-switch">
+
+                <input
+                        type="checkbox"
+                        id="ns-explainability-toggle"
+                >
+
+                <span class="ns-settings-slider"></span>
+
+            </label>
+
+        </div>
+
+    </section>
+
+    <!-- ================================================= -->
+    <!-- MULTIMEDIA FEATURE PREFERENCES -->
+    <!-- ================================================= -->
+
+    <div class="ns-settings-card">
+
+        <h3>Multimedia Features</h3>
+
+        <div class="ns-settings-row">
+
+            <div class="ns-settings-description">
 
                 <strong>
-                    Real-Time Analysis
+                    Show Detailed Multimedia Features
                 </strong>
 
                 <p>
-                    Continuously monitor the
-                    current video playback.
+                    Display the visual, audio, text,
+                    engagement, emotional and metadata
+                    feature breakdowns in the analysis.
                 </p>
 
             </div>
 
-            <label class="switch">
+            <label class="ns-settings-switch">
 
                 <input
-                    type="checkbox"
-                    id="liveToggle"
-                    checked
+                        type="checkbox"
+                        id="ns-multimedia-toggle"
+                        checked
                 >
 
-                <span class="slider"></span>
+                <span class="ns-settings-slider"></span>
 
             </label>
 
         </div>
 
+    </div>
 
-        <div class="setting-row">
 
-            <div>
+    <!-- SYSTEM STATUS -->
+    <section class="ns-settings-card">
 
-                <strong>
-                    Explainability Insights
-                </strong>
+        <h3>System Status</h3>
 
-                <p>
-                    Display the features contributing
-                    to the developmental score.
-                </p>
+        <div class="ns-settings-status-row">
 
-            </div>
+            <span>Backend Connection</span>
 
-            <label class="switch">
-
-                <input
-                    type="checkbox"
-                    id="explainabilityToggle"
-                    checked
-                >
-
-                <span class="slider"></span>
-
-            </label>
+            <span id="ns-backend-status">
+                Not checked
+            </span>
 
         </div>
+
+        <div class="ns-settings-status-row">
+
+            <span>Random Forest Model</span>
+
+            <span id="ns-model-status">
+                Not checked
+            </span>
+
+        </div>
+
+        <button
+                type="button"
+                id="ns-check-backend"
+                class="ns-settings-check-button"
+        >
+            Check Connection
+        </button>
 
     </section>
 
+    <!-- ================================================= -->
+    <!-- RESET PREFERENCES -->
+    <!-- ================================================= -->
 
-    <section class="settings-card">
+    <div class="ns-settings-card">
 
-        <h2>
-            Score Thresholds
-        </h2>
+        <h3>Reset Preferences</h3>
 
-        <div class="threshold">
+        <p>
+            Restore NeuroShield AI settings to their
+            original default values.
+        </p>
 
-            <span class="green">
-                Low
-            </span>
+        <button
+                type="button"
+                id="ns-reset-preferences"
+                class="ns-reset-button"
+        >
+            Reset to Defaults
+        </button>
 
-            <span>
-                0 – 49
-            </span>
+        <p
+                id="ns-reset-message"
+                class="ns-reset-message"
+                aria-live="polite"
+        ></p>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- REANALYSE CURRENT VIDEO -->
+    <!-- ================================================= -->
+
+    <div class="ns-settings-card">
+
+        <h3>Video Analysis</h3>
+
+        <p class="ns-reanalyse-description">
+            Run a fresh assessment of the current YouTube
+            video without refreshing the page.
+        </p>
+
+        <button
+                type="button"
+                id="ns-reanalyse-video"
+                class="ns-reanalyse-button"
+        >
+            <span>↻</span>
+            Reanalyse Current Video
+        </button>
+
+        <p
+                id="ns-reanalyse-message"
+                class="ns-reanalyse-message"
+                aria-live="polite"
+        ></p>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- ABOUT NEUROSHIELD AI -->
+    <!-- ================================================= -->
+
+    <div class="ns-settings-card ns-about-card">
+
+        <h3>About NeuroShield AI</h3>
+
+        <p class="ns-about-description">
+            NeuroShield AI is an explainable, AI-powered
+            YouTube content assessment system designed
+            to support parental awareness of children's
+            digital content exposure.
+        </p>
+
+        <div class="ns-about-divider"></div>
+
+        <div class="ns-about-item">
+
+        <span class="ns-about-label">
+            Assessment Approach
+        </span>
+
+            <span class="ns-about-value">
+            Hybrid AI Framework
+        </span>
 
         </div>
 
-        <div class="threshold">
+        <div class="ns-about-item">
 
-            <span class="yellow">
-                Medium
-            </span>
+        <span class="ns-about-label">
+            Machine Learning
+        </span>
 
-            <span>
-                50 – 74
-            </span>
-
-        </div>
-
-        <div class="threshold">
-
-            <span class="red">
-                High
-            </span>
-
-            <span>
-                75 – 100
-            </span>
+            <span class="ns-about-value">
+            Random Forest
+        </span>
 
         </div>
 
-    </section>
+        <div class="ns-about-item">
+
+        <span class="ns-about-label">
+            Content Analysis
+        </span>
+
+            <span class="ns-about-value">
+            Multimodal Features
+        </span>
+
+        </div>
+
+        <div class="ns-about-item">
+
+        <span class="ns-about-label">
+            Explainability
+        </span>
+
+            <span class="ns-about-value">
+            SHAP
+        </span>
+
+        </div>
+
+        <div class="ns-about-item">
+
+        <span class="ns-about-label">
+            Developmental Assessment
+        </span>
+
+            <span class="ns-about-value">
+            Cognitive, Behavioural &amp; Emotional
+        </span>
+
+        </div>
+
+        <div class="ns-about-divider"></div>
+
+        <p class="ns-about-disclaimer">
+            NeuroShield AI provides Hybrid Developmental analysis
+            content assessments to support parental decision-making.
+            Results are estimates based on extracted video
+            features and do not constitute a clinical or
+            psychological diagnosis.
+        </p>
+
+    </div>
 
 
-    <footer>
-        NeuroShield AI • Explainable Multimodal AI
-    </footer>
+    <!-- FOOTER -->
+    <div class="ns-settings-footer">
+        NeuroShield AI | Settings & Preferences
+    </div>
 
 </div>
-
-<script src="settings.js"></script>
-
-</body>
-</html>

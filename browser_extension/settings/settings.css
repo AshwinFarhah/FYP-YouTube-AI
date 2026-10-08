@@ -1,253 +1,529 @@
-* {
 
-    margin: 0;
+/* ============================================================
+   NeuroShield AI
+   Embedded Settings Interface
+============================================================ */
 
-    padding: 0;
+/* MAIN SETTINGS PAGE */
 
+.ns-settings-page {
+    width: 100%;
     box-sizing: border-box;
+    padding: 20px 16px 28px;
+    background: #f8faff;
+    color: #253047;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-body {
+/* ============================================================
+   HEADER
+============================================================ */
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background: #eef3f9;
-
-    color: #222;
+.ns-settings-header {
+    margin-bottom: 22px;
 }
 
-.settings-page {
-
-    width: 650px;
-
-    max-width: 90%;
-
-    margin: 50px auto;
-}
-
-header {
-
-    display: flex;
-
+.ns-settings-back {
+    display: inline-flex;
     align-items: center;
+    gap: 6px;
 
-    gap: 15px;
-
-    margin-bottom: 30px;
-}
-
-header img {
-
-    width: 64px;
-    height: 64px;
-
-    border-radius: 17px;
-}
-
-header h1 {
-
-    font-size: 26px;
-
-    margin-bottom: 5px;
-}
-
-header p {
-
-    color: #777;
-
-    font-size: 13px;
-}
-
-.settings-card {
-
-    background: white;
-
-    border-radius: 22px;
-
-    padding: 25px;
-
+    padding: 9px 12px;
     margin-bottom: 20px;
 
-    border: 1px solid #e8edf5;
+    border: 1px solid #e1e7f0;
+    border-radius: 10px;
 
-    box-shadow:
-        0 6px 20px
-        rgba(0, 0, 0, 0.04);
-}
-
-.settings-card h2 {
-
-    font-size: 18px;
-
-    margin-bottom: 20px;
-}
-
-.setting-row {
-
-    display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items: center;
-
-    gap: 20px;
-
-    padding: 17px 0;
-
-    border-bottom:
-        1px solid #edf0f5;
-}
-
-.setting-row:last-child {
-
-    border-bottom: none;
-
-    padding-bottom: 0;
-}
-
-.setting-row strong {
-
-    font-size: 14px;
-}
-
-.setting-row p {
-
-    color: #777;
+    background: #ffffff;
+    color: #5967c9;
 
     font-size: 12px;
+    font-weight: 600;
 
-    margin-top: 6px;
-
-    line-height: 1.5;
+    cursor: pointer;
+    transition: background 0.2s ease;
 }
 
+.ns-settings-back:hover {
+    background: #eef1ff;
+}
 
-/* SWITCH */
+.ns-settings-header h2 {
+    margin: 0 0 8px;
+    font-size: 21px;
+    font-weight: 700;
+    color: #202b43;
+}
 
-.switch {
+.ns-settings-header p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #7a8498;
+}
 
+/* ============================================================
+   SETTINGS CARDS
+============================================================ */
+
+.ns-settings-card {
+    margin-bottom: 16px;
+    padding: 18px 16px;
+
+    background: #ffffff;
+    border: 1px solid #e7ebf3;
+    border-radius: 16px;
+
+    box-shadow: 0 3px 12px rgba(30, 45, 80, 0.04);
+}
+
+.ns-settings-card h3 {
+    margin: 0 0 16px;
+
+    color: #303b55;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* ============================================================
+   SETTING ROWS
+============================================================ */
+
+.ns-settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ns-settings-description {
+    flex: 1;
+    min-width: 0;
+}
+
+.ns-settings-description strong {
+    display: block;
+    margin-bottom: 6px;
+
+    color: #33405a;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ns-settings-description p {
+    margin: 0;
+
+    color: #8590a3;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* ============================================================
+   TOGGLE SWITCHES
+============================================================ */
+
+.ns-settings-switch {
     position: relative;
-
     display: inline-block;
 
-    width: 48px;
-
-    height: 26px;
+    width: 42px;
+    height: 24px;
 
     flex-shrink: 0;
+    cursor: pointer;
 }
 
-.switch input {
-
+.ns-settings-switch input {
+    position: absolute;
     opacity: 0;
-
     width: 0;
-
     height: 0;
 }
 
-.slider {
-
+.ns-settings-slider {
     position: absolute;
+    inset: 0;
+
+    background: #cbd3e0;
+    border-radius: 24px;
+
+    transition: background 0.2s ease;
+}
+
+.ns-settings-slider::before {
+    content: "";
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    bottom: 3px;
+
+    background: #ffffff;
+    border-radius: 50%;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+
+    transition: transform 0.2s ease;
+}
+
+.ns-settings-switch input:checked + .ns-settings-slider {
+    background: #6672e5;
+}
+
+.ns-settings-switch input:checked + .ns-settings-slider::before {
+    transform: translateX(18px);
+}
+
+.ns-settings-switch input:focus-visible + .ns-settings-slider {
+    outline: 2px solid #6672e5;
+    outline-offset: 3px;
+}
+
+/* ============================================================
+   SYSTEM STATUS
+============================================================ */
+
+.ns-settings-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid #edf0f5;
+
+    font-size: 11px;
+    color: #59657c;
+}
+
+.ns-settings-status-row span:last-child {
+    font-weight: 600;
+    text-align: right;
+    color: #8993a5;
+}
+
+.ns-settings-status-row span:last-child.ns-status-connected {
+    color: #25966b;
+}
+
+.ns-settings-status-row span:last-child.ns-status-disconnected {
+    color: #d45a5a;
+}
+
+.ns-settings-status-row span:last-child.ns-status-warning {
+    color: #c28b27;
+}
+
+/* ============================================================
+   CHECK CONNECTION BUTTON
+============================================================ */
+
+.ns-settings-check-button {
+    width: 100%;
+
+    margin-top: 16px;
+    padding: 11px 14px;
+
+    border: 1px solid #dfe4ff;
+    border-radius: 10px;
+
+    background: #f0f2ff;
+    color: #5866c9;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.ns-settings-check-button:hover {
+    background: #e5e9ff;
+}
+
+.ns-settings-check-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+.ns-settings-footer {
+    margin-top: 24px;
+
+    text-align: center;
+    color: #a0a9ba;
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+/* ============================================================
+   NEUROSHIELD SETTINGS - SCROLL FIX
+============================================================ */
+
+#neuroshield-settings-view {
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+
+    scrollbar-color: #cbd5e1 transparent;
+
+}
+
+/* Chrome scrollbar styling */
+
+#neuroshield-settings-view::-webkit-scrollbar {
+    width: 6px;
+}
+
+#neuroshield-settings-view::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+#neuroshield-settings-view::-webkit-scrollbar-track {
+    background: transparent;
+}
+/* ============================================================
+   RESET PREFERENCES
+============================================================ */
+
+.ns-reset-button {
+
+    width: 100%;
+    padding: 13px 16px;
+
+    margin-top: 12px;
+
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+
+    background: #fff1f2;
+    color: #dc2626;
+
+    font-size: 13px;
+    font-weight: 600;
 
     cursor: pointer;
 
-    inset: 0;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
 
-    background: #ccd2dd;
-
-    border-radius: 999px;
-
-    transition: 0.3s;
 }
 
-.slider:before {
+.ns-reset-button:hover {
 
-    content: "";
+    background: #ffe4e6;
+    border-color: #fca5a5;
 
-    position: absolute;
-
-    width: 20px;
-    height: 20px;
-
-    left: 3px;
-    top: 3px;
-
-    background: white;
-
-    border-radius: 50%;
-
-    transition: 0.3s;
-
-    box-shadow:
-        0 2px 5px
-        rgba(0,0,0,0.15);
 }
 
-input:checked + .slider {
+.ns-reset-button:disabled {
 
-    background: #6978ff;
+    opacity: 0.6;
+    cursor: not-allowed;
+
 }
 
-input:checked + .slider:before {
+/* Reset card description */
 
-    transform:
-        translateX(22px);
+.ns-settings-card:has(#ns-reset-preferences) > p:not(.ns-reset-message) {
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    color: #64748b;
+
+    margin-top: 8px;
+    margin-bottom: 0;
+
 }
 
+/* Success message */
 
-/* THRESHOLDS */
+.ns-reset-message {
 
-.threshold {
+    font-size: 12px;
+    font-weight: 500;
+
+    line-height: 1.5;
+
+    color: #16a34a;
+
+    margin-top: 12px;
+    margin-bottom: 0;
+
+}
+
+.ns-reset-message:empty {
+
+    display: none;
+
+}
+/* ============================================================
+   ABOUT NEUROSHIELD AI
+============================================================ */
+
+.ns-about-card {
 
     display: flex;
+    flex-direction: column;
 
-    justify-content:
-        space-between;
+    gap: 12px;
 
-    align-items: center;
-
-    padding: 13px;
-
-    border-radius: 12px;
-
-    background: #f8f9fd;
-
-    margin-bottom: 10px;
-
-    font-size: 13px;
 }
 
-.threshold:last-child {
-    margin-bottom: 0;
+.ns-about-description {
+
+    font-size: 12px;
+    line-height: 1.7;
+
+    color: #64748b;
+
+    margin: 0;
+
 }
 
-.green {
-    color: #3e9d59;
-    font-weight: bold;
+.ns-about-divider {
+
+    height: 1px;
+    background: #e8edf4;
+
+    width: 100%;
+
 }
 
-.yellow {
-    color: #d99a20;
-    font-weight: bold;
+.ns-about-item {
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+
 }
 
-.red {
-    color: #df4b4b;
-    font-weight: bold;
+.ns-about-label {
+
+    font-size: 12px;
+    font-weight: 500;
+
+    color: #64748b;
+
+    flex: 1;
+
 }
 
-footer {
+.ns-about-value {
 
-    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
 
-    color: #999;
+    color: #253047;
+
+    text-align: right;
+
+    flex: 1.2;
+
+    overflow-wrap: anywhere;
+
+}
+
+.ns-about-disclaimer {
 
     font-size: 11px;
+    line-height: 1.7;
 
-    margin-top: 30px;
+    color: #7c8799;
+
+    margin: 0;
+
+}
+/* ============================================================
+   REANALYSE CURRENT VIDEO
+============================================================ */
+
+.ns-reanalyse-description {
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    color: #64748b;
+
+    margin: 8px 0 12px;
+
+}
+
+.ns-reanalyse-button {
+
+    width: 100%;
+    padding: 12px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    background: #eef2ff;
+    color: #4f46e5;
+
+    border: 1px solid #c7d2fe;
+    border-radius: 12px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+
+}
+
+.ns-reanalyse-button:hover {
+
+    background: #e0e7ff;
+    border-color: #a5b4fc;
+
+}
+
+.ns-reanalyse-button:disabled {
+
+    opacity: 0.6;
+    cursor: not-allowed;
+
+}
+
+.ns-reanalyse-message {
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    color: #64748b;
+
+    margin-top: 10px;
+    margin-bottom: 0;
+
+}
+
+.ns-reanalyse-message:empty {
+
+    display: none;
+
 }

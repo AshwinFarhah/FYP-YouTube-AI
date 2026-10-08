@@ -277,7 +277,127 @@ async function showAnalysisTemplate() {
     );
 
 
+// Load the embedded Settings interface.
+    try {
+
+        const settingsResponse =
+            await fetch(
+                chrome.runtime.getURL(
+                    "settings/settings.html"
+                )
+            );
+
+        if (!settingsResponse.ok) {
+
+            throw new Error(
+                `Settings HTTP ${settingsResponse.status}`
+            );
+
+        }
+
+        const settingsView =
+            overlay.querySelector(
+                "#neuroshield-settings-view"
+            );
+
+        if (settingsView) {
+
+            settingsView.innerHTML =
+                await settingsResponse.text();
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "NeuroShield AI: Could not load Settings:",
+            error
+        );
+
+    }
+
+
     initialiseOverlayControls();
+
+    // ========================================================
+    // RESTORE MULTIMEDIA VISIBILITY
+    // ========================================================
+
+    chrome.storage.local.get(
+        "neuroshieldMultimediaEnabled"
+    ).then(function (result) {
+
+        updateMultimediaVisibility(
+            result.neuroshieldMultimediaEnabled !== false
+        );
+
+    });
+
+    // Apply saved Explainability preference.
+
+    chrome.storage.local.get(
+        "explainabilityEnabled"
+    ).then(function (result) {
+
+        updateExplainabilityVisibility(
+            result.explainabilityEnabled !== false
+        );
+
+    });
+
+    // Restore saved Multimedia Features preference.
+
+    chrome.storage.local.get(
+        "neuroshieldMultimediaEnabled"
+    ).then(function (result) {
+
+        updateMultimediaVisibility(
+            result.neuroshieldMultimediaEnabled !== false
+        );
+
+    });
+
+
+// ========================================================
+// INITIALISE EMBEDDED SETTINGS
+// ========================================================
+
+    const settingsContainer =
+        document.getElementById(
+            "neuroshield-settings-view"
+        );
+
+    if (
+        settingsContainer &&
+        typeof NeuroShieldSettings !== "undefined"
+    ) {
+
+        await NeuroShieldSettings.initialise(
+            settingsContainer,
+            function () {
+
+                const analysisView =
+                    document.getElementById(
+                        "neuroshield-content"
+                    );
+
+                const settingsView =
+                    document.getElementById(
+                        "neuroshield-settings-view"
+                    );
+
+                if (analysisView && settingsView) {
+
+                    settingsView.style.display = "none";
+
+                    analysisView.style.display = "";
+
+                }
+
+            }
+        );
+
+    }
 
 
     loadOverlayPosition();
@@ -441,7 +561,7 @@ function initialiseOverlayControls() {
 
 
     // ========================================================
-    // SETTINGS
+    // SETTINGS - EMBEDDED OVERLAY NAVIGATION
     // ========================================================
 
     if (settingsButton) {
@@ -451,33 +571,33 @@ function initialiseOverlayControls() {
             function (event) {
 
                 event.preventDefault();
-
                 event.stopPropagation();
 
+                const analysisView =
+                    document.getElementById(
+                        "neuroshield-content"
+                    );
 
-                chrome.runtime.sendMessage(
-                    {
-                        action: "OPEN_SETTINGS"
-                    },
-                    function () {
+                const settingsView =
+                    document.getElementById(
+                        "neuroshield-settings-view"
+                    );
 
-                        if (
-                            chrome.runtime.lastError
-                        ) {
+                if (!analysisView || !settingsView) {
+                    return;
+                }
 
-                            console.log(
-                                "NeuroShield AI: Settings request sent."
-                            );
+                analysisView.style.display =
+                    "none";
 
-                        }
-
-                    }
-                );
+                settingsView.style.display =
+                    "block";
 
             }
         );
 
     }
+
     // ========================================================
     // CLOSE
     // ========================================================
@@ -6556,6 +6676,95 @@ document.addEventListener(
     stopDrag
 );
 
+// ============================================================
+// EXPLAINABILITY VISIBILITY
+// ============================================================
+
+function updateExplainabilityVisibility(enabled) {
+
+    const explainabilityToggle =
+        document.getElementById(
+            "explainabilitySectionToggle"
+        );
+
+    if (!explainabilityToggle) {
+        return;
+    }
+
+    // Hide the entire Explainability Insights section,
+    // including its heading and content.
+    const explainabilitySection =
+        explainabilityToggle.closest("section");
+
+    if (explainabilitySection) {
+
+        explainabilitySection.style.display =
+            enabled ? "" : "none";
+
+    }
+
+}
+
+// ============================================================
+// MULTIMEDIA FEATURES VISIBILITY
+// ============================================================
+
+function updateMultimediaVisibility(enabled) {
+
+    const multimediaToggle =
+        document.getElementById(
+            "multimediaSectionToggle"
+        );
+
+    if (!multimediaToggle) {
+        return;
+    }
+
+    const multimediaSection =
+        multimediaToggle.closest("section");
+
+    if (multimediaSection) {
+
+        multimediaSection.style.display =
+            enabled ? "" : "none";
+
+    }
+
+}
+
+// ============================================================
+// MULTIMEDIA FEATURES VISIBILITY
+// ============================================================
+
+function updateMultimediaVisibility(enabled) {
+
+    const multimediaToggle =
+        document.getElementById(
+            "multimediaSectionToggle"
+        );
+
+    if (!multimediaToggle) {
+        return;
+    }
+
+    const multimediaContent =
+        document.getElementById(
+            "multimediaSectionContent"
+        );
+
+    // Find the parent section containing both
+    // the multimedia heading and its content.
+    const multimediaSection =
+        multimediaContent?.parentElement;
+
+    if (multimediaSection) {
+
+        multimediaSection.style.display =
+            enabled ? "" : "none";
+
+    }
+
+}
 
 // ============================================================
 // STORAGE CHANGES
@@ -6626,6 +6835,42 @@ chrome.storage.onChanged.addListener(
                 );
 
             }
+
+        }
+
+        // ====================================================
+        // EXPLAINABILITY SETTING
+        // ====================================================
+
+        if (changes.explainabilityEnabled) {
+
+            updateExplainabilityVisibility(
+                changes.explainabilityEnabled.newValue !== false
+            );
+
+        }
+
+        // ====================================================
+        // MULTIMEDIA FEATURES SETTING
+        // ====================================================
+
+        if (changes.neuroshieldMultimediaEnabled) {
+
+            updateMultimediaVisibility(
+                changes.neuroshieldMultimediaEnabled.newValue !== false
+            );
+
+        }
+
+        // ====================================================
+        // MULTIMEDIA FEATURES SETTING
+        // ====================================================
+
+        if (changes.neuroshieldMultimediaEnabled) {
+
+            updateMultimediaVisibility(
+                changes.neuroshieldMultimediaEnabled.newValue !== false
+            );
 
         }
 
