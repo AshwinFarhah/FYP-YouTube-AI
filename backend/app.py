@@ -9,10 +9,18 @@ import joblib
 import pandas as pd
 import uuid
 import threading
+import time
 import re
+import os
+import tempfile
+from backend.cache_crypto import (
+    FORMAT as ENCRYPTED_CACHE_FORMAT,
+    encrypt_result, decrypt_result, validate_cache_key,
+)
+from urllib.parse import urlparse, parse_qs
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, StrictStr, ConfigDict
 
 from backend.youtube_downloader import download_youtube_video
 from backend.video_analyzer import analyze_video_features
@@ -55,6 +63,9 @@ CACHE_DIR.mkdir(
     parents=True,
     exist_ok=True
 )
+
+# Fail closed rather than silently writing unencrypted analysis results.
+validate_cache_key()
 
 # ============================================================
 # LOAD MODEL
@@ -141,28 +152,69 @@ LABEL_MAPPING = {
 # ANALYSIS CACHE HELPERS
 # ============================================================
 
-def extract_youtube_video_id(
-        youtube_url
-):
-    patterns = [
+def extract_youtube_video_id(youtube_url: str):
+    try:
+        parsed = urlparse(youtube_url.strip())
 
-        r"(?:v=)([A-Za-z0-9_-]{11})",
+        # Only allow HTTPS YouTube links.
+        if parsed.scheme != "https":
+            return None
 
-        r"(?:youtu\.be/)([A-Za-z0-9_-]{11})",
+        # Reject credentials and nonstandard ports.
+        if parsed.username or parsed.password:
+            return None
 
-        r"(?:shorts/)([A-Za-z0-9_-]{11})"
+        try:
+            if parsed.port is not None:
+                return None
+        except ValueError:
+            return None
 
-    ]
+        hostname = (parsed.hostname or "").lower()
 
-    for pattern in patterns:
+        allowed_hosts = {
+            "youtube.com",
+            "www.youtube.com",
+            "m.youtube.com",
+            "youtu.be",
+            "www.youtu.be",
+        }
 
-        match = re.search(
-            pattern,
-            youtube_url
-        )
+        if hostname not in allowed_hosts:
+            return None
 
-        if match:
-            return match.group(1)
+        video_id = None
+
+        if hostname in {"youtu.be", "www.youtu.be"}:
+            parts = parsed.path.strip("/").split("/")
+
+            if len(parts) == 1:
+                video_id = parts[0]
+
+        else:
+            path = parsed.path.rstrip("/")
+
+            if path == "/watch":
+                query = parse_qs(parsed.query)
+                ids = query.get("v", [])
+
+                if len(ids) == 1:
+                    video_id = ids[0]
+
+            elif path.startswith(("/shorts/", "/embed/", "/live/")):
+                parts = path.strip("/").split("/")
+
+                if len(parts) == 2:
+                    video_id = parts[1]
+
+        if video_id and re.fullmatch(
+                r"[A-Za-z0-9_-]{11}",
+                video_id
+        ):
+            return video_id
+
+    except (TypeError, ValueError, AttributeError):
+        pass
 
     return None
 
@@ -176,90 +228,127 @@ def get_cache_path(
     )
 
 
-def load_cached_result(
-        video_id
-):
+def _atomic_cache_write(cache_path, payload):
+    """Replace a cache file atomically; never expose a partial JSON file."""
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=CACHE_DIR,
+                prefix=".cache-", suffix=".tmp", delete=False
+        ) as file:
+            temp_path = Path(file.name)
+            json.dump(payload, file, separators=(",", ":"))
+            file.flush()
+            os.fsync(file.fileno())
+        # Restrict access to the temporary encrypted cache file
+        # before replacing the destination.
+        if os.name == "posix":
+            os.chmod(temp_path, 0o600)
+
+        os.replace(temp_path, cache_path)
+
+        # Restrict access to the completed cache file.
+        if os.name == "posix":
+            os.chmod(cache_path, 0o600)
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
+
+
+def validate_legacy_cache_result(video_id, result):
+    """
+    Validate the minimum structure of an existing
+    plaintext analysis result before encryption.
+    """
+
+    if not isinstance(result, dict):
+        return False
+
+    required_fields = {
+        "video_id",
+        "prediction",
+        "risk_level",
+        "confidence",
+        "class_probabilities",
+        "hybrid_assessment",
+        "developmental_scores",
+        "explainability",
+    }
+
+    if not required_fields.issubset(result.keys()):
+        return False
+
+    if result["video_id"] != video_id:
+        return False
+
+    if type(result["prediction"]) is not int:
+        return False
+
+    if result["prediction"] not in LABEL_MAPPING:
+        return False
+
+    if not isinstance(result["risk_level"], str):
+        return False
+
+    if not isinstance(result["confidence"], (int, float)):
+        return False
+
+    for field in (
+            "class_probabilities",
+            "hybrid_assessment",
+            "developmental_scores",
+            "explainability",
+    ):
+        if not isinstance(result[field], dict):
+            return False
+
+    return True
+
+
+def load_cached_result(video_id):
     if not video_id:
         return None
 
-    cache_path = (
-        get_cache_path(
-            video_id
-        )
-    )
-
+    cache_path = get_cache_path(video_id)
     if not cache_path.exists():
         return None
 
     try:
+        with cache_path.open("r", encoding="utf-8") as file:
+            stored = json.load(file)
 
-        with open(
-                cache_path,
-                "r",
-                encoding="utf-8"
-        ) as file:
+        if isinstance(stored, dict) and stored.get("format") == ENCRYPTED_CACHE_FORMAT:
+            result = decrypt_result(video_id, stored)
+        elif isinstance(stored, dict) and "format" in stored:
+            # Unknown or corrupted encrypted format: never treat it as plaintext.
+            raise ValueError("Unrecognized cache envelope")
+        elif validate_legacy_cache_result(video_id, stored):
+            # One-time migration of legacy plaintext caches on first access.
+            result = stored
+            _atomic_cache_write(cache_path, encrypt_result(video_id, result))
+            print("NeuroShield AI: Legacy cache migrated.")
+        else:
+            raise ValueError("Invalid legacy cache structure")
 
-            cached_result = (
-                json.load(file)
-            )
-
-        print(
-            "NeuroShield AI: Cached result found:",
-            video_id
-        )
-
-        return cached_result
-
-
+        print("NeuroShield AI: Cached result loaded.")
+        return result
     except Exception as error:
-
-        print(
-            "NeuroShield AI: Could not read cached result:",
-            error
-        )
-
-        return None
+        print("NeuroShield AI: Could not load authenticated cache:", type(error).__name__)
+        # Do not overwrite corrupted or undecryptable cache with new analysis.
+        raise RuntimeError("Encrypted analysis cache could not be read") from error
 
 
-def save_cached_result(
-        video_id,
-        result
-):
+def save_cached_result(video_id, result):
     if not video_id:
         return
 
-    cache_path = (
-        get_cache_path(
-            video_id
-        )
-    )
-
+    cache_path = get_cache_path(video_id)
     try:
-
-        with open(
-                cache_path,
-                "w",
-                encoding="utf-8"
-        ) as file:
-
-            json.dump(
-                result,
-                file,
-                indent=4
-            )
-
-        print(
-            "NeuroShield AI: Analysis result cached:",
-            cache_path
-        )
-
-
+        _atomic_cache_write(cache_path, encrypt_result(video_id, result))
+        print("NeuroShield AI: Encrypted result cached.")
     except Exception as error:
-
-        print(
-            "NeuroShield AI: Could not save analysis cache:",
-            error
-        )
+        print("NeuroShield AI: Could not save encrypted cache:", type(error).__name__)
+        raise RuntimeError("Encrypted analysis cache could not be saved") from error
 
 
 # ============================================================
@@ -279,6 +368,68 @@ def save_cached_result(
 analysis_jobs = {}
 
 analysis_jobs_lock = threading.Lock()
+# ============================================================
+# SECURITY - ANALYSIS JOB RETENTION
+# ============================================================
+
+# Retain completed and failed jobs for 24 hours.
+
+JOB_RETENTION_SECONDS = 86400
+
+
+def cleanup_expired_analysis_jobs():
+    current_time = time.time()
+
+    with analysis_jobs_lock:
+
+        expired_job_ids = []
+
+        for job_id, job in analysis_jobs.items():
+
+            if job.get("status") not in (
+                    "complete",
+                    "failed"
+            ):
+                continue
+
+            completed_at = job.get(
+                "completed_at"
+            )
+
+            if completed_at is None:
+                continue
+
+            if (
+                    current_time - completed_at
+                    >= JOB_RETENTION_SECONDS
+            ):
+                expired_job_ids.append(
+                    job_id
+                )
+
+        for job_id in expired_job_ids:
+            analysis_jobs.pop(
+                job_id,
+                None
+            )
+
+    if expired_job_ids:
+        print(
+            "NeuroShield AI: Cleaned up",
+            len(expired_job_ids),
+            "expired analysis jobs."
+        )
+
+
+# ============================================================
+# SECURITY - CONCURRENT ANALYSIS LIMIT
+# ============================================================
+
+MAX_CONCURRENT_ANALYSES = 2
+
+analysis_semaphore = threading.BoundedSemaphore(
+    value=MAX_CONCURRENT_ANALYSES
+)
 
 # ============================================================
 # FASTAPI APPLICATION
@@ -302,8 +453,21 @@ class PredictionRequest(BaseModel):
     features: dict[str, float]
 
 
+# ============================================================
+# SECURITY - VIDEO ANALYSIS REQUEST VALIDATION
+# ============================================================
+
 class VideoAnalysisRequest(BaseModel):
-    youtube_url: str
+    model_config = ConfigDict(
+        extra="forbid"
+    )
+
+    youtube_url: StrictStr = Field(
+        ...,
+        min_length=1,
+        max_length=2048,
+        description="Valid HTTPS YouTube video URL."
+    )
 
 
 # ============================================================
@@ -476,8 +640,7 @@ def run_video_analysis_job(
         )
 
         print(
-            "Received URL:",
-            youtube_url
+            "NeuroShield AI: Video analysis request received."
         )
 
         # ====================================================
@@ -674,10 +837,7 @@ def run_video_analysis_job(
         )
 
         print(
-            "Main explanation:",
-            explainability[
-                "parent_explanation"
-            ]
+            "NeuroShield AI: Explainability output generated."
         )
 
         # ====================================================
@@ -846,6 +1006,10 @@ def run_video_analysis_job(
                 "result"
             ] = result
 
+            analysis_jobs[job_id][
+                "completed_at"
+            ] = time.time()
+
         # ====================================================
         # TERMINAL OUTPUT
         # ====================================================
@@ -866,8 +1030,7 @@ def run_video_analysis_job(
         )
 
         print(
-            "Video ID:",
-            video_id
+            "Video ID: [redacted]"
         )
 
         print(
@@ -886,31 +1049,78 @@ def run_video_analysis_job(
         print("=" * 65)
 
 
+
     except Exception as error:
 
         print()
+
         print(
-            "NeuroShield AI - "
-            "Background Analysis Error:",
-            error
+            "NeuroShield AI - Background Analysis Error:",
+            type(error).__name__
         )
 
         # ====================================================
-        # SAVE ERROR IN JOB
+        # SECURITY - SAFE ERROR RESPONSE
         # ====================================================
+
+        # Keep detailed errors in backend logs.
+
+        # Do not expose Python exception details through the API.
 
         with analysis_jobs_lock:
 
             if job_id in analysis_jobs:
-                analysis_jobs[job_id][
-                    "status"
-                ] = "failed"
+                analysis_jobs[job_id]["status"] = "failed"
 
-                analysis_jobs[job_id][
-                    "error"
-                ] = str(
-                    error
+                analysis_jobs[job_id]["error"] = (
+
+                    "Video analysis could not be completed. "
+
+                    "Please try again."
+
                 )
+
+                analysis_jobs[job_id]["completed_at"] = (
+
+                    time.time()
+
+                )
+
+
+# ============================================================
+# SECURITY - PROTECTED ANALYSIS WORKER
+# ============================================================
+
+def run_protected_analysis_job(job_id, youtube_url):
+    try:
+        run_video_analysis_job(
+            job_id,
+            youtube_url
+        )
+
+    except Exception as error:
+
+        print(
+            "NeuroShield AI - Protected worker error:",
+            type(error).__name__
+        )
+
+        with analysis_jobs_lock:
+
+            if job_id in analysis_jobs:
+                analysis_jobs[job_id]["status"] = "failed"
+
+                analysis_jobs[job_id]["error"] = (
+                    "Video analysis failed."
+                )
+
+                analysis_jobs[job_id]["completed_at"] = (
+                    time.time()
+                )
+
+    finally:
+        # Always release the analysis slot.
+        analysis_semaphore.release()
 
 
 # ============================================================
@@ -921,6 +1131,12 @@ def run_video_analysis_job(
 def analyze_video(
         request: VideoAnalysisRequest
 ):
+    # --------------------------------------------------------
+    # SECURITY - CLEAN UP EXPIRED ANALYSIS JOBS
+    # --------------------------------------------------------
+
+    cleanup_expired_analysis_jobs()
+
     # --------------------------------------------------------
     # Validate URL
     # --------------------------------------------------------
@@ -944,12 +1160,28 @@ def analyze_video(
             youtube_url
         )
     )
-
-    cached_result = (
-        load_cached_result(
-            video_id
+    if video_id is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or unsupported YouTube video URL."
         )
-    )
+
+    try:
+        cached_result = load_cached_result(video_id)
+
+    except RuntimeError:
+        print(
+            "NeuroShield AI: Secure cache retrieval failed."
+        )
+
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "The saved video analysis is temporarily "
+                "unavailable. Please contact the system "
+                "administrator."
+            )
+        )
 
     if cached_result is not None:
         job_id = str(
@@ -979,7 +1211,10 @@ def analyze_video(
                     cached_result,
 
                 "error":
-                    None
+                    None,
+
+                "completed_at":
+                    time.time()
 
             }
 
@@ -993,8 +1228,7 @@ def analyze_video(
         print("=" * 65)
 
         print(
-            "Video ID:",
-            video_id
+            "Video ID: [redacted]"
         )
 
         print(
@@ -1020,7 +1254,19 @@ def analyze_video(
                 "Cached analysis available."
 
         }
+    # --------------------------------------------------------
+    # SECURITY - CHECK AVAILABLE ANALYSIS CAPACITY
+    # --------------------------------------------------------
 
+    if not analysis_semaphore.acquire(blocking=False):
+        raise HTTPException(
+            status_code=429,
+            detail=(
+                "NeuroShield AI is currently processing "
+                "the maximum number of videos. "
+                "Please try again shortly."
+            )
+        )
     # --------------------------------------------------------
     # Generate unique job ID
     # --------------------------------------------------------
@@ -1061,16 +1307,28 @@ def analyze_video(
     # Start background analysis thread
     # --------------------------------------------------------
 
-    worker = threading.Thread(
-        target=run_video_analysis_job,
-        args=(
-            job_id,
-            youtube_url
-        ),
-        daemon=True
-    )
+    try:
+        worker = threading.Thread(
+            target=run_protected_analysis_job,
+            args=(
+                job_id,
+                youtube_url
+            ),
+            daemon=True
+        )
 
-    worker.start()
+        worker.start()
+
+    except Exception:
+        analysis_semaphore.release()
+
+        with analysis_jobs_lock:
+            analysis_jobs.pop(job_id, None)
+
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to start video analysis."
+        )
 
     print()
     print("=" * 65)
@@ -1088,8 +1346,7 @@ def analyze_video(
     )
 
     print(
-        "URL:",
-        youtube_url
+        "NeuroShield AI: Analysis job queued."
     )
 
     print("=" * 65)
@@ -1123,6 +1380,11 @@ def analyze_video(
 def analysis_status(
         job_id: str
 ):
+    # --------------------------------------------------------
+    # SECURITY - CLEAN UP EXPIRED ANALYSIS JOBS
+    # --------------------------------------------------------
+
+    cleanup_expired_analysis_jobs()
     # --------------------------------------------------------
     # Find job
     # --------------------------------------------------------
