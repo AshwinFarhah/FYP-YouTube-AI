@@ -12,9 +12,9 @@ import pandas as pd
 # CONFIGURATION
 # ============================================================
 
-SHAP_RESULTS_PATH = "results/representative_shap_explanations.csv"
+SHAP_RESULTS_PATH = "../results/representative_shap_explanations.csv"
 
-OUTPUT_PATH = "results/human_readable_explanations.csv"
+OUTPUT_PATH = "../results/human_readable_explanations.csv"
 
 
 # ============================================================

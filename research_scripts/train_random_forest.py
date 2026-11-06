@@ -25,14 +25,14 @@ from sklearn.metrics import (
 # CONFIGURATION
 # ============================================================
 
-X_TRAIN_PATH = "data/ml/X_train.csv"
-X_TEST_PATH = "data/ml/X_test.csv"
+X_TRAIN_PATH = "../data/ml/X_train.csv"
+X_TEST_PATH = "../data/ml/X_test.csv"
 
-Y_TRAIN_PATH = "data/ml/y_train.csv"
-Y_TEST_PATH = "data/ml/y_test.csv"
+Y_TRAIN_PATH = "../data/ml/y_train.csv"
+Y_TEST_PATH = "../data/ml/y_test.csv"
 
-MODEL_DIR = "models"
-RESULTS_DIR = "results"
+MODEL_DIR = "../models"
+RESULTS_DIR = "../results"
 
 MODEL_PATH = os.path.join(
     MODEL_DIR,

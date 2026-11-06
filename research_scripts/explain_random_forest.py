@@ -19,13 +19,13 @@ from sklearn.metrics import accuracy_score
 # CONFIGURATION
 # ============================================================
 
-MODEL_PATH = "models/random_forest_neuroshield.joblib"
-FEATURES_PATH = "models/random_forest_features.json"
+MODEL_PATH = "../models/random_forest_neuroshield.joblib"
+FEATURES_PATH = "../models/random_forest_features.json"
 
-X_TEST_PATH = "data/ml/X_test.csv"
-Y_TEST_PATH = "data/ml/y_test.csv"
+X_TEST_PATH = "../data/ml/X_test.csv"
+Y_TEST_PATH = "../data/ml/y_test.csv"
 
-RESULTS_DIR = "results"
+RESULTS_DIR = "../results"
 
 os.makedirs(RESULTS_DIR, exist_ok=True)
 

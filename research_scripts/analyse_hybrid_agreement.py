@@ -23,12 +23,12 @@ import numpy as np
 # ============================================================
 
 INPUT_PATH = os.path.join(
-    "results",
+    "../results",
     "hybrid_stage1_results.csv"
 )
 
 OUTPUT_PATH = os.path.join(
-    "results",
+    "../results",
     "hybrid_agreement_results.csv"
 )
 

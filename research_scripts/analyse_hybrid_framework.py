@@ -28,13 +28,13 @@ from backend.developmental_scoring import (
 # PATHS
 # ============================================================
 
-X_TEST_PATH = "data/ml/X_test.csv"
-Y_TEST_PATH = "data/ml/y_test.csv"
+X_TEST_PATH = "../data/ml/X_test.csv"
+Y_TEST_PATH = "../data/ml/y_test.csv"
 
-MODEL_PATH = "models/random_forest_neuroshield.joblib"
-FEATURE_PATH = "models/random_forest_features.json"
+MODEL_PATH = "../models/random_forest_neuroshield.joblib"
+FEATURE_PATH = "../models/random_forest_features.json"
 
-RESULTS_DIR = "results"
+RESULTS_DIR = "../results"
 
 OUTPUT_PATH = os.path.join(
     RESULTS_DIR,

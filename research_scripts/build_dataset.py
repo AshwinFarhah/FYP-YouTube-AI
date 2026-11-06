@@ -41,9 +41,9 @@ from utils.transcript_quality import (
 
 VIDEO_ROOT = r"D:\videos\KidsVideos20"
 
-OUTPUT_FILE = "data/final_dataset.csv"
+OUTPUT_FILE = "../data/final_dataset.csv"
 
-os.makedirs("data",exist_ok=True)
+os.makedirs("../data", exist_ok=True)
 
 
 # =====================================================

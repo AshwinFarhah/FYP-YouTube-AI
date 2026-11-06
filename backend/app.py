@@ -469,6 +469,8 @@ class VideoAnalysisRequest(BaseModel):
         description="Valid HTTPS YouTube video URL."
     )
 
+    force: bool = False
+
 
 # ============================================================
 # ROOT ENDPOINT
@@ -1166,21 +1168,34 @@ def analyze_video(
             detail="Invalid or unsupported YouTube video URL."
         )
 
-    try:
-        cached_result = load_cached_result(video_id)
+    # --------------------------------------------------------
+    # CACHE HANDLING - SUPPORT FORCE REANALYSIS
+    # --------------------------------------------------------
 
-    except RuntimeError:
-        print(
-            "NeuroShield AI: Secure cache retrieval failed."
-        )
+    cached_result = None
 
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "The saved video analysis is temporarily "
-                "unavailable. Please contact the system "
-                "administrator."
+    if not request.force:
+        try:
+            cached_result = load_cached_result(video_id)
+
+        except RuntimeError:
+            print(
+                "NeuroShield AI: Secure cache retrieval failed."
             )
+
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "The saved video analysis is temporarily "
+                    "unavailable. Please contact the system "
+                    "administrator."
+                )
+            )
+
+    else:
+        print(
+            "NeuroShield AI: Forced reanalysis requested. "
+            "Bypassing cached result."
         )
 
     if cached_result is not None:

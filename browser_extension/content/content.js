@@ -1555,6 +1555,20 @@ async function reanalyseCurrentVideo() {
 
         manualReanalysisSessionId = analysisSessionId + 1;
 
+        const statusText =
+            document.getElementById("analysisStatusText");
+
+        const liveBadge =
+            document.getElementById("analysisLiveBadge");
+
+        if (statusText) {
+            statusText.textContent = "Reanalysing video...";
+        }
+
+        if (liveBadge) {
+            liveBadge.textContent = "REANALYSING";
+        }
+
         const started = await requestVideoAnalysis(true);
 
         if (!started) {
@@ -1640,6 +1654,20 @@ async function requestVideoAnalysis(forceReanalyse = false) {
 
         if (forceReanalyse) {
             setMonitoringStatus(true);
+
+            const statusText =
+                document.getElementById("analysisStatusText");
+
+            const liveBadge =
+                document.getElementById("analysisLiveBadge");
+
+            if (statusText) {
+                statusText.textContent = "Reanalysing video...";
+            }
+
+            if (liveBadge) {
+                liveBadge.textContent = "REANALYSING";
+            }
         }
 
         void pollAnalysisFromContentScript(

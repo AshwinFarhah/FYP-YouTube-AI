@@ -21,7 +21,7 @@ const BACKEND_URL =
 // ==========================================
 
 chrome.runtime.onMessage.addListener(
-    function(message, sender, sendResponse) {
+    function (message, sender, sendResponse) {
 
         if (!message) {
             return false;
@@ -57,14 +57,14 @@ chrome.runtime.onMessage.addListener(
         ) {
 
             checkBackendStatus()
-                .then(function(result) {
+                .then(function (result) {
 
                     sendResponse(
                         result
                     );
 
                 })
-                .catch(function(error) {
+                .catch(function (error) {
 
                     console.error(
                         "NeuroShield AI: Backend check failed:",
@@ -93,9 +93,10 @@ chrome.runtime.onMessage.addListener(
         ) {
 
             startAnalysisJob(
-                message.youtubeUrl
+                message.youtubeUrl,
+                message.force_reanalyse === true
             )
-                .then(function(data) {
+                .then(function (data) {
 
                     sendResponse({
                         started: true,
@@ -103,7 +104,7 @@ chrome.runtime.onMessage.addListener(
                     });
 
                 })
-                .catch(function(error) {
+                .catch(function (error) {
 
                     console.error(
                         "NeuroShield AI: Could not start analysis:",
@@ -133,7 +134,7 @@ chrome.runtime.onMessage.addListener(
             getAnalysisJobStatus(
                 message.jobId
             )
-                .then(function(data) {
+                .then(function (data) {
 
                     sendResponse({
                         success: true,
@@ -141,7 +142,7 @@ chrome.runtime.onMessage.addListener(
                     });
 
                 })
-                .catch(function(error) {
+                .catch(function (error) {
 
                     console.error(
                         "NeuroShield AI: Could not check analysis status:",
@@ -239,7 +240,7 @@ async function checkBackendStatus() {
             featureCount: 0,
 
             error:
-                error.message
+            error.message
 
         };
 
@@ -253,7 +254,8 @@ async function checkBackendStatus() {
 // ==========================================
 
 async function startAnalysisJob(
-    youtubeUrl
+    youtubeUrl,
+    forceReanalyse = false
 ) {
 
     if (!youtubeUrl) {
@@ -283,8 +285,8 @@ async function startAnalysisJob(
                 },
 
                 body: JSON.stringify({
-                    youtube_url:
-                        youtubeUrl
+                    youtube_url: youtubeUrl,
+                    force: forceReanalyse
                 })
             }
         );

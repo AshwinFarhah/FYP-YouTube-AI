@@ -11,9 +11,9 @@ from sklearn.preprocessing import LabelEncoder
 # CONFIGURATION
 # ============================================================
 
-INPUT_FILE = "data/final_dataset_refined.csv"
+INPUT_FILE = "../data/final_dataset_refined.csv"
 
-OUTPUT_DIR = "data/ml"
+OUTPUT_DIR = "../data/ml"
 
 X_TRAIN_FILE = os.path.join(OUTPUT_DIR, "X_train.csv")
 X_TEST_FILE = os.path.join(OUTPUT_DIR, "X_test.csv")

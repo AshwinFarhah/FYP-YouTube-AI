@@ -12,8 +12,8 @@ import os
 # CONFIGURATION
 # ============================================================
 
-INPUT_FILE = "data/final_dataset.csv"
-OUTPUT_FILE = "data/final_dataset_refined.csv"
+INPUT_FILE = "../data/final_dataset.csv"
+OUTPUT_FILE = "../data/final_dataset_refined.csv"
 
 EXPECTED_DATASET_SIZE = 1650
 
